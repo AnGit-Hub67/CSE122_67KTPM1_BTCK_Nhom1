@@ -12,9 +12,11 @@ Frontend prototype hỗ trợ điều phối sức khỏe tinh thần sinh viên
 
 CampusMind gồm bốn vai trò: Visitor, Student, Counselor và Admin. Nhóm triển khai giao diện bằng HTML, CSS và JavaScript, sử dụng dữ liệu giả và LocalStorage cho prototype. Ba chức năng AI được mô phỏng theo TASK-19.
 
-TASK-01 chỉ khởi tạo repository và quy trình Git. Cấu trúc frontend, layout và các màn hình được triển khai từ TASK-11. Bộ khởi tạo này chưa có ứng dụng để chạy.
+TASK-11 bổ sung cấu trúc frontend, trang chủ, navbar/footer và sidebar dùng chung, cùng bộ component responsive. Xem [hướng dẫn layout và tích hợp](docs/task-11-layout.md). Các khung Student/Counselor/Admin chưa có chức năng nghiệp vụ hoặc xác thực.
 
 ## Bắt đầu
+
+Chạy bản frontend từ thư mục repo với `python -m http.server 8080`, rồi mở `http://localhost:8080/`. Không cần backend hoặc build. Xem bộ component tại `pages/ui-kit.html`.
 
 ```bash
 git clone https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1.git
@@ -55,5 +57,5 @@ Tên tài khoản GitHub tương ứng SV1/SV2/SV3 được nhóm xác nhận ri
 - Repo, `main` và `dev` đã tồn tại.
 - Bộ tài liệu gồm README, CONTRIBUTING và mẫu PR.
 - Nhánh `docs/project-init` chứa tài liệu để nhóm review và tích hợp vào `dev`.
-- Chưa triển khai frontend trong TASK-01.
+- TASK-01 khởi tạo quy trình; TASK-11 bổ sung frontend và layout dùng chung.
 
