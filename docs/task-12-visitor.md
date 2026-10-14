@@ -25,7 +25,7 @@ Không cần build, tài khoản hay backend. JavaScript cần được bật.
 Tại commit gốc `3e7fd3f`, `dev` chưa có frontend hay layout TASK-11.
 Ba trang nằm trong `pages/visitor/`, dùng chung `assets/css/visitor.css`, `assets/js/visitor.js` và `assets/data/visitor.json`.
 CSS sử dụng bảng màu CampusMind từ hướng dẫn dự án: primary `#5B5FEF`, secondary `#14B8A6`, navy `#172554`, background `#F8FAFC`, radius 8/12/16px; nút và chữ dùng sắc tím đậm hơn để dễ đọc. Font Inter có fallback Arial, không phụ thuộc mạng ngoài.
-Khi layout TASK-11 được tích hợp, có thể thay header/footer và chuyển các token sang CSS chung. Chưa tạo trang của vai trò khác hoặc sửa tài liệu TASK-01.
+TASK-11 hiện đã được tích hợp vào nhánh Visitor: các trang nạp `base.css`, `components.css`, `responsive.css` và `main.js` chung. `visitor.css` chỉ còn style hồ sơ chuyên viên. Header/footer được sinh từ `tools/build-layout.cjs`, dùng cùng menu mobile với trang chủ; thư viện và chức năng lưu giữ nguyên. Nhánh `feature/common-layout` vẫn giữ TASK-11 độc lập từ `dev` để review riêng.
 
 CTA đặt lịch hiện mở giải thích về luồng Student chưa được tích hợp, không gửi yêu cầu hoặc giả báo đặt lịch thành công. Lịch theo tuần chỉ là minh họa, không phải lịch trống thực tế. Nội dung và hồ sơ không phải tư vấn chuyên môn hay thông tin chuyên viên thật.
 
