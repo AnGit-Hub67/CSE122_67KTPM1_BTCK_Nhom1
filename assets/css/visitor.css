@@ -1,0 +1,42 @@
+/* Visitor-specific styles; shared primitives live in TASK-11 stylesheets. */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 28px;
+  margin: 32px 0 48px;
+  align-items: start;
+}
+body[data-page="counselors"] .results-bar {
+  margin: 0;
+}
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #e6e7ff;
+  color: #4246c9;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  font-weight: 700;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.slots {
+  list-style: none;
+  padding: 0;
+}
+.slots li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.breadcrumb {
+  margin-top: 28px;
+  font-size: 14px;
+}
+@media (max-width: 900px) { .detail-layout { grid-template-columns: 1fr; } }
