@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Bạn không cần đi qua mọi thứ một mình. Khám phá không gian hỗ trợ phù hợp với nhu cầu của bạn."
+    />
+    <title>Dịch vụ hỗ trợ — CampusMind</title>
+    <link rel="stylesheet" href="../../assets/css/visitor.css" />
+    <script defer src="../../assets/js/visitor.js"></script>
+  </head>
+  <body data-page="services">
+    <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="visitor-service-directory.html"
+          >Campus<span>Mind</span></a
+        >
+        <nav aria-label="Điều hướng chính">
+          <a href="visitor-service-directory.html" aria-current="page"
+            >Dịch vụ</a
+          >
+          <a href="visitor-resource-library.html">Tài nguyên</a>
+          <a href="visitor-counselor-detail.html">Chuyên viên</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="hero" aria-labelledby="page-title">
+        <span class="eyebrow">CampusMind / Đồng hành cùng sinh viên</span>
+        <h1 id="page-title">Dịch vụ hỗ trợ</h1>
+        <p class="lead">
+          Bạn không cần đi qua mọi thứ một mình. Khám phá không gian hỗ trợ phù
+          hợp với nhu cầu của bạn.
+        </p>
+        <p class="notice">
+          Bản prototype · Dịch vụ, hồ sơ và nội dung đều là dữ liệu minh họa.
+        </p>
+      </section>
+      <form id="filters" role="search" aria-label="Tìm dịch vụ">
+        <fieldset
+          id="controls"
+          disabled
+          style="border: 0; padding: 0; margin: 0"
+        >
+          <legend class="eyebrow">Tìm nội dung phù hợp</legend>
+          <div class="toolbar">
+            <label for="search"
+              >Từ khóa<input
+                id="search"
+                type="search"
+                placeholder="Nhập tên hoặc chủ đề…"
+                maxlength="200" /></label
+            ><label for="category"
+              >Chủ đề<select id="category">
+                <option value="">Tất cả chủ đề</option>
+              </select></label
+            ><button id="reset" type="button">Xóa bộ lọc</button>
+          </div>
+        </fieldset>
+      </form>
+      <div class="results-bar">
+        <h2>Khám phá dành cho bạn</h2>
+        <p id="status" role="status" aria-live="polite">Đang tải dữ liệu…</p>
+      </div>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <div id="results" aria-busy="true"></div>
+      <noscript
+        ><p class="notice">
+          Cần bật JavaScript để tải nội dung, tìm kiếm và lưu tài nguyên.
+        </p></noscript
+      >
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span
+          ><strong>CampusMind</strong> · Một điểm tựa trong hành trình sinh
+          viên.</span
+        ><span>Visitor · Không yêu cầu tài khoản</span>
+      </div>
+    </footer>
+    <dialog id="content-dialog" aria-labelledby="dialog-title">
+      <h2 id="dialog-title"></h2>
+      <div id="dialog-body"></div>
+      <button id="close-dialog" type="button" autofocus>Đóng</button>
+    </dialog>
+  </body>
+</html>
