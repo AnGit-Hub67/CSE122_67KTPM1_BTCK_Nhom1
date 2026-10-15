@@ -48,7 +48,7 @@ function files(dir) {
 }
 let changed = 0;
 for (const file of files(root)) {
-  const source = fs.readFileSync(file, "utf8");
+  const source = fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n");
   const relative = path.relative(root, file).replaceAll("\\", "/");
   const href = (target) => {
     const [pathname, fragment] = target.split("#");
@@ -74,7 +74,7 @@ for (const file of files(root)) {
           .join("")}</div>`
       : '<p class="notice">Các trang dịch vụ, tài nguyên và hồ sơ chuyên viên được tích hợp từ TASK-12.</p>',
     sidebar: role
-      ? `<aside class="sidebar" aria-label="Khu vực ${roles.find((item) => item[1] === role)[0]}"><strong>Khu vực ${roles.find((item) => item[1] === role)[0]}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${anchor(["Tổng quan", `pages/${role}/index.html`])}${anchor(["Khám phá dịch vụ", routes[1][1]])}${anchor(["Trang chủ", "index.html"])}<span class="sidebar-note">Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò.</span></nav></aside>`
+      ? `<aside class="sidebar" aria-label="Khu vực ${roles.find((item) => item[1] === role)[0]}"><strong>Khu vực ${roles.find((item) => item[1] === role)[0]}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${anchor(["Tổng quan", `pages/${role}/index.html`])}${role === "admin" ? anchor(["Quản lý dịch vụ", "pages/admin/admin-service-management.html"]) : ""}${anchor(["Khám phá dịch vụ", routes[1][1]])}${anchor(["Trang chủ", "index.html"])}<span class="sidebar-note">${role === "admin" ? "Quản lý danh mục dịch vụ hỗ trợ sinh viên." : "Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò."}</span></nav></aside>`
       : "",
   };
   let output = source;

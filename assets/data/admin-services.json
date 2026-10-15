@@ -1,0 +1,6 @@
+[
+  {"id":"CM-001","name":"Tham vấn cá nhân","category":"Tham vấn","duration":60,"description":"Không gian riêng tư để chia sẻ và tìm hướng giải quyết khó khăn trong học tập, cuộc sống.","status":"active"},
+  {"id":"CM-002","name":"Hỗ trợ thích nghi đại học","category":"Đồng hành","duration":45,"description":"Đồng hành cùng sinh viên trong giai đoạn chuyển tiếp và xây dựng thói quen học tập.","status":"active"},
+  {"id":"CM-003","name":"Nhóm quản lý căng thẳng","category":"Hoạt động nhóm","duration":90,"description":"Thực hành kỹ năng nhận diện và quản lý căng thẳng cùng nhóm nhỏ.","status":"inactive"},
+  {"id":"CM-004","name":"Workshop cân bằng cuộc sống","category":"Workshop","duration":120,"description":"Chương trình thử nghiệm đã kết thúc; giữ lại để tra cứu.","status":"archived"}
+]
