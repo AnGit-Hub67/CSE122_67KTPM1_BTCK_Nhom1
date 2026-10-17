@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="CampusMind — Đồng hành cùng sinh viên" />
+    <title>Lịch làm việc — CampusMind</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/responsive.css" />
+    <script defer src="../../assets/js/main.js"></script>
+  <link rel="stylesheet" href="../../assets/css/counselor.css"><script defer src="../../assets/js/counselor.js"></script></head>
+  <body data-role="counselor">
+    <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+    <!-- campusmind:header -->
+<header class="site-header"><div class="header-inner"><a class="brand" href="../../index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="../../index.html">Trang chủ</a>
+<a href="../visitor/visitor-service-directory.html">Dịch vụ</a>
+<a href="../visitor/visitor-resource-library.html">Tài nguyên</a>
+<a href="../visitor/visitor-counselor-detail.html">Chuyên viên</a></nav></div></header>
+<!-- /campusmind:header -->
+    <div class="app-shell">
+      <!-- campusmind:sidebar -->
+<aside class="sidebar" aria-label="Khu vực Chuyên viên"><strong>Khu vực Chuyên viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"><a href="index.html">Tổng quan</a><a href="counselor-schedule.html" aria-current="page">Lịch làm việc</a><a href="counselor-appointment-queue.html">Hàng đợi lịch hẹn</a><a href="../visitor/visitor-service-directory.html">Khám phá dịch vụ</a><a href="../../index.html">Trang chủ</a><span class="sidebar-note">Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò.</span></nav></aside>
+<!-- /campusmind:sidebar -->
+      <main id="main" tabindex="-1" data-screen="counselor-schedule"><section class="hero"><span class="eyebrow">Chuyên viên</span><h1>Lịch làm việc</h1><p class="lead">Quản lý thời gian tiếp nhận và theo dõi các lịch hẹn.</p></section><noscript><p class="notice error">Cần bật JavaScript để sử dụng chức năng này.</p></noscript><p id="work-status" class="work-status" role="status">Đang tải dữ liệu…</p><div id="work-error" class="notice error" role="alert" hidden></div><button id="retry" type="button" hidden>Thử lại</button><div id="work-content" hidden><section class="panel"><h2>Thêm khung giờ tiếp nhận</h2><form id="slot-form"><div class="fields"><label>Ngày<input class="input" id="slot-date" type="date" required></label><label>Bắt đầu<input class="input" id="slot-start" type="time" required></label><label>Kết thúc<input class="input" id="slot-end" type="time" required></label></div><button type="submit">Thêm khung giờ</button><p id="slot-error" role="alert"></p></form></section><section><h2>Khung giờ tiếp nhận</h2><div id="slots" class="work-list"></div></section><section class="toolbar" aria-label="Bộ lọc"><label>Tìm theo mã hoặc tên<input id="search" type="search"></label><label>Ngày<input class="input" id="date" type="date"></label><button id="clear" type="button">Xóa bộ lọc</button></section><h2>Lịch hẹn</h2><div id="appointments" class="work-list"></div></div></main>
+    </div>
+    <!-- campusmind:footer -->
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a><a href="../ui-kit.html">Bộ giao diện</a></nav></div></footer>
+<!-- /campusmind:footer -->
+  </body>
+</html>
