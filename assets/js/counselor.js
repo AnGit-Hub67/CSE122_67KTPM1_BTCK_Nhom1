@@ -44,7 +44,7 @@
       if(screen==='counselor-schedule'){const link=element('a','Xem hàng đợi','button');link.href=`counselor-appointment-queue.html?date=${encodeURIComponent(a.date)}`;actions.append(link);}
       else {
         if(a.status==='Pending')actions.append(button('Xác nhận lịch',()=>transition(a.id,'Confirmed')));
-        if(['Pending','Confirmed'].includes(a.status))actions.append(button('Hủy lịch',()=>{cancelling=a.id;$('cancel-dialog').showModal();}));
+        if(['Pending','Confirmed'].includes(a.status))actions.append(button('Hủy lịch',()=>{cancelling=a.id;$('cancel-dialog').returnValue='';$('cancel-dialog').showModal();}));
         if(['Confirmed','Completed'].includes(a.status)){const link=element('a','Ghi chú buổi gặp','button');link.href=`counselor-session-note.html?id=${encodeURIComponent(a.id)}`;actions.append(link);}
       }
       card.append(actions);list.append(card);
