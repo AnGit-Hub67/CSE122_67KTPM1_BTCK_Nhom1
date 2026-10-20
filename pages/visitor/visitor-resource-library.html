@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="../../assets/css/visitor.css" />
 <link rel="stylesheet" href="../../assets/css/responsive.css" />
 <script defer src="../../assets/js/main.js"></script>
+    <script defer src="../../assets/js/service-store.js"></script>
     <script defer src="../../assets/js/visitor.js"></script>
   </head>
   <body data-page="resources">
@@ -32,7 +33,7 @@
           riêng mình.
         </p>
         <p class="notice">
-          Bản prototype · Dịch vụ, hồ sơ và nội dung đều là dữ liệu minh họa.
+          Dữ liệu giả lập cho học phần · Không sử dụng hồ sơ cá nhân thật. Mục đã lưu nằm trên trình duyệt này; người dùng chung thiết bị có thể thấy.
         </p>
       </section>
       <form id="filters" role="search" aria-label="Tìm tài nguyên">
@@ -59,6 +60,7 @@
             ><input id="saved-only" type="checkbox" />Chỉ xem tài nguyên đã
             lưu</label
           >
+          <button id="clear-saved" type="button" disabled>Xóa tất cả mục đã lưu</button>
         </fieldset>
       </form>
       <div class="results-bar">
@@ -80,6 +82,12 @@
       <h2 id="dialog-title"></h2>
       <div id="dialog-body"></div>
       <button id="close-dialog" type="button" autofocus>Đóng</button>
+    </dialog>
+    <dialog id="clear-saved-dialog" aria-labelledby="clear-saved-title">
+      <h2 id="clear-saved-title">Xóa tất cả mục đã lưu?</h2>
+      <p>Chỉ xóa danh sách đánh dấu trên trình duyệt này. Nội dung tài nguyên vẫn còn để đọc hoặc lưu lại.</p>
+      <p id="clear-saved-error" role="alert"></p>
+      <div class="actions"><button type="button" data-dialog-close autofocus>Giữ danh sách</button><button id="confirm-clear-saved" type="button">Xóa danh sách</button></div>
     </dialog>
   </body>
 </html>

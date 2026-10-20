@@ -1,54 +1,4 @@
 {
-  "services": [
-    {
-      "id": "individual",
-      "title": "Tham vấn cá nhân",
-      "category": "Tham vấn",
-      "description": "Một không gian riêng để chia sẻ những điều bạn đang trải qua và tìm hướng hỗ trợ phù hợp.",
-      "format": "Trực tiếp hoặc trực tuyến · 50 phút",
-      "counselorId": "minh-anh"
-    },
-    {
-      "id": "academic",
-      "title": "Đồng hành cùng áp lực học tập",
-      "category": "Học tập",
-      "description": "Trao đổi về lịch học, kỳ vọng và những khó khăn trong hành trình đại học.",
-      "format": "Trực tuyến · 45 phút",
-      "counselorId": "quang-huy"
-    },
-    {
-      "id": "group",
-      "title": "Nhóm kết nối sinh viên",
-      "category": "Kết nối",
-      "description": "Gặp gỡ và chia sẻ trải nghiệm đời sống sinh viên trong nhóm nhỏ có người điều phối.",
-      "format": "Trực tiếp · 90 phút",
-      "counselorId": "thu-ha"
-    },
-    {
-      "id": "transition",
-      "title": "Thích nghi với môi trường mới",
-      "category": "Kết nối",
-      "description": "Cùng khám phá những thay đổi khi bắt đầu đại học hoặc sống xa nhà.",
-      "format": "Trực tiếp · 50 phút",
-      "counselorId": "minh-anh"
-    },
-    {
-      "id": "planning",
-      "title": "Sắp xếp việc học và nghỉ ngơi",
-      "category": "Học tập",
-      "description": "Trao đổi về mục tiêu cá nhân và một nhịp sinh hoạt phù hợp với lịch học của bạn.",
-      "format": "Trực tuyến · 45 phút",
-      "counselorId": "quang-huy"
-    },
-    {
-      "id": "relationships",
-      "title": "Lắng nghe chuyện kết nối",
-      "category": "Tham vấn",
-      "description": "Không gian trao đổi về giao tiếp, mối quan hệ và ranh giới cá nhân.",
-      "format": "Trực tiếp · 50 phút",
-      "counselorId": "thu-ha"
-    }
-  ],
   "resources": [
     {
       "id": "study-plan",
@@ -57,7 +7,7 @@
       "description": "Mẫu ghi chú để nhìn lại lịch học và dành chỗ cho những điều quan trọng.",
       "duration": "4 phút đọc",
       "body": [
-        "Đây là tài liệu minh họa của CampusMind, không phải hướng dẫn chuyên môn.",
+        "Trang ghi chú giúp bạn phác thảo lịch tuần. Nội dung không thay thế tư vấn chuyên môn.",
         "Ghi lại các lịch cố định trong tuần, những việc muốn hoàn thành và thời gian dành cho bản thân.",
         "Câu hỏi tự ghi chú: Việc nào cần ưu tiên? Việc nào có thể điều chỉnh? Bạn muốn trao đổi với ai khi cần thêm hỗ trợ?"
       ]
@@ -69,7 +19,7 @@
       "description": "Tìm hiểu cách khám phá thông tin chuyên viên trước khi chọn dịch vụ.",
       "duration": "3 phút đọc",
       "body": [
-        "Nội dung minh họa cho luồng Visitor. Quy trình thực tế cần được đơn vị hỗ trợ xác nhận.",
+        "Trước khi tham gia, hãy hỏi đơn vị hỗ trợ về cách tổ chức buổi gặp và quyền riêng tư.",
         "Bạn có thể xem lĩnh vực chuyên viên phụ trách, hình thức gặp và lịch dự kiến trên trang hồ sơ.",
         "Bạn có thể chuẩn bị các câu hỏi về quy trình, thời lượng và cách thông tin được sử dụng trước khi quyết định tham gia."
       ]
@@ -81,7 +31,7 @@
       "description": "Trang ghi chú về những hoạt động và cộng đồng bạn muốn tìm hiểu.",
       "duration": "3 phút đọc",
       "body": [
-        "Nội dung minh họa, dùng để khám phá thư viện CampusMind.",
+        "Bạn có thể bắt đầu bằng việc tìm thông tin từ khoa, câu lạc bộ hoặc nhóm học tập mà mình quan tâm.",
         "Liệt kê những hoạt động bạn quan tâm: câu lạc bộ, nhóm học tập hoặc một sự kiện của khoa.",
         "Ghi lại thời gian, địa điểm và một câu hỏi bạn muốn hỏi người tổ chức."
       ]
@@ -93,7 +43,7 @@
       "description": "Một vài câu hỏi mở dành cho trang nhật ký của riêng bạn.",
       "duration": "2 phút đọc",
       "body": [
-        "Tài liệu mẫu cho mục đích trình diễn giao diện.",
+        "Những câu hỏi dưới đây dùng cho việc tự ghi chú. Trang này không yêu cầu bạn nhập hoặc gửi câu trả lời.",
         "Hôm nay có điều gì bạn muốn ghi nhớ? Điều gì khiến bạn bận tâm? Bạn muốn dành thời gian cho điều gì vào ngày mai?",
         "Bạn không cần trả lời tất cả. Nội dung bạn ghi riêng không được thu thập bởi trang này."
       ]
@@ -105,8 +55,12 @@
       "name": "Nguyễn Minh Anh",
       "initials": "MA",
       "role": "Chuyên viên tham vấn sinh viên",
-      "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Thích nghi đại học", "Áp lực học tập", "Giao tiếp"],
+      "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ học phần.",
+      "expertise": [
+        "Thích nghi đại học",
+        "Áp lực học tập",
+        "Giao tiếp"
+      ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp / Trực tuyến",
       "availability": [
@@ -120,19 +74,28 @@
       "name": "Trần Quang Huy",
       "initials": "QH",
       "role": "Chuyên viên hỗ trợ học tập",
-      "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Kế hoạch học tập", "Cân bằng sinh hoạt"],
+      "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ học phần.",
+      "expertise": [
+        "Kế hoạch học tập",
+        "Cân bằng sinh hoạt"
+      ],
       "languages": "Tiếng Việt / Tiếng Anh",
       "format": "Trực tuyến",
-      "availability": ["Thứ Ba · 15:00–15:45", "Thứ Năm · 09:00–09:45"]
+      "availability": [
+        "Thứ Ba · 15:00–15:45",
+        "Thứ Năm · 09:00–09:45"
+      ]
     },
     {
       "id": "thu-ha",
       "name": "Lê Thu Hà",
       "initials": "TH",
       "role": "Chuyên viên tham vấn sinh viên",
-      "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Kết nối cộng đồng", "Mối quan hệ"],
+      "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ học phần.",
+      "expertise": [
+        "Kết nối cộng đồng",
+        "Mối quan hệ"
+      ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp",
       "availability": []

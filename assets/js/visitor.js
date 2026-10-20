@@ -13,6 +13,7 @@
   let data;
   let saved = new Set();
   let ready = false;
+  let loadVersion = 0;
   const normalize = (value) =>
     value
       .normalize("NFD")
@@ -78,6 +79,8 @@
     try {
       localStorage.setItem(storageKey, JSON.stringify([...next]));
       saved = next;
+      const clear = document.querySelector("#clear-saved");
+      if (clear) clear.disabled = saved.size === 0;
       feedback.textContent = `${saved.has(resource.id) ? "Đã lưu" : "Đã bỏ lưu"}: ${resource.title}.`;
       if (savedOnly.checked) {
         renderList();
@@ -100,6 +103,8 @@
   }
   function renderList() {
     if (!ready) return;
+    const clear = document.querySelector("#clear-saved");
+    if (clear) clear.disabled = saved.size === 0;
     const items = data[page].filter(
       (item) =>
         (!category.value || item.category === category.value) &&
@@ -134,13 +139,14 @@
         );
         const actions = element("div", undefined, "actions");
         if (page === "services") {
-          actions.append(
+          if (item.counselorId && data.counselors.some(c => c.id === item.counselorId)) actions.append(
             link(
               "Xem chuyên viên →",
               `visitor-counselor-detail.html?id=${encodeURIComponent(item.counselorId)}`,
               "button",
             ),
           );
+          else { const pending = button("Chưa phân công chuyên viên", () => {}); pending.disabled = true; actions.append(pending); }
         } else {
           actions.append(
             button("Đọc tài nguyên", () => openDialog(item.title, item.body)),
@@ -160,7 +166,7 @@
     );
   }
   function renderCounselor() {
-    const id = new URLSearchParams(location.search).get("id") ?? "minh-anh";
+    const id = new URLSearchParams(location.search).get("id") ?? data.counselors[0]?.id;
     const person = data.counselors.find((item) => item.id === id);
     status.textContent = "";
     if (!person) {
@@ -217,7 +223,7 @@
           "Tìm hiểu cách đặt lịch",
           () =>
             openDialog("Đặt lịch với chuyên viên", [
-              "Bạn đang xem bản prototype với dữ liệu giả. Chức năng đăng nhập và đặt lịch sẽ được tích hợp ở luồng Student.",
+              "Thông tin chuyên viên và lịch trên trang là dữ liệu giả lập của học phần. Đăng nhập và đặt lịch thuộc luồng Student, chưa được tích hợp trên nhánh hiện tại.",
               "Hiện tại, trang này chỉ cho phép xem hồ sơ và lịch mẫu; chưa gửi yêu cầu hoặc giữ chỗ.",
             ]),
           "primary",
@@ -243,14 +249,6 @@
   }
   function validate(value) {
     const fields = {
-      services: [
-        "id",
-        "title",
-        "category",
-        "description",
-        "format",
-        "counselorId",
-      ],
       resources: ["id", "title", "category", "description", "duration"],
       counselors: [
         "id",
@@ -288,16 +286,10 @@
         }
       }
     }
-    if (
-      value.services.some(
-        (service) =>
-          !value.counselors.some((person) => person.id === service.counselorId),
-      )
-    )
-      throw new Error("Missing counselor");
     return value;
   }
   async function load() {
+    const version = ++loadVersion;
     ready = false;
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
@@ -308,7 +300,13 @@
         signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) throw new Error("Load failed");
-      data = validate(await response.json());
+      const loaded = validate(await response.json());
+      if (page === "services") {
+        const catalog = await CampusMindServices.read();
+        loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
+      }
+      if (version !== loadVersion) return;
+      data = loaded;
       ready = true;
       if (page === "counselors") renderCounselor();
       else {
@@ -321,6 +319,7 @@
         renderList();
       }
     } catch {
+      if (version !== loadVersion) return;
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
@@ -329,6 +328,7 @@
         load,
       );
     } finally {
+      if (version !== loadVersion) return;
       results.setAttribute("aria-busy", "false");
       if (controls) controls.disabled = !ready;
     }
@@ -341,6 +341,23 @@
     .querySelector("#filters")
     ?.addEventListener("submit", (event) => event.preventDefault());
   if (page === "resources") {
+    const clearDialog = document.querySelector('#clear-saved-dialog');
+    document.querySelector('#clear-saved').addEventListener('click', () => {
+      document.querySelector('#clear-saved-error').textContent = '';
+      clearDialog.showModal();
+    });
+    document.querySelector('#confirm-clear-saved').addEventListener('click', () => {
+      try {
+        localStorage.removeItem(storageKey);
+        saved = new Set();
+        renderList();
+        clearDialog.close();
+        savedOnly.focus();
+        feedback.textContent = 'Đã xóa danh sách tài nguyên đã lưu trên trình duyệt này.';
+      } catch {
+        document.querySelector('#clear-saved-error').textContent = 'Không thể xóa danh sách. Hãy kiểm tra quyền lưu trữ rồi thử lại.';
+      }
+    });
     readSaved();
     window.addEventListener("storage", (event) => {
       if (event.key === storageKey || event.key === null) {
@@ -349,5 +366,8 @@
       }
     });
   }
+  if (page === "services") window.addEventListener("storage", event => {
+    if (event.key === CampusMindServices.key || event.key === null) load();
+  });
   load();
 })();
