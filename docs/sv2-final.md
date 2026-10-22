@@ -1,5 +1,7 @@
 # Bàn giao SV2 — TASK-13 và TASK-17
 
+**Bổ sung 23/10/2026:** đã có SCR-02 `register.html`, lưu user vào store chung và mở phiên sinh viên demo để đặt lịch dưới ID mới. Xem [hướng dẫn Register và kiểm thử](sv2-register.md). Phần này không thay thế Login/xác thực của SV1.
+
 ## Phạm vi và chạy thử
 
 Bốn trang hoàn chỉnh, dữ liệu từ JSON/localStorage, không nhúng người hoặc lịch giả trong HTML:

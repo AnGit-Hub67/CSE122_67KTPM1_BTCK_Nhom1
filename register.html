@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Tạo tài khoản sinh viên demo CampusMind.">
+  <title>Đăng ký sinh viên — CampusMind</title>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/register.css">
+  <script defer src="assets/js/main.js"></script>
+  <script defer src="assets/js/sv2-store.js"></script>
+  <script defer src="assets/js/register.js"></script>
+</head>
+<body class="register-page">
+  <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a>
+    <nav aria-label="Điều hướng chính"><a href="pages/visitor/visitor-resource-library.html">Tài nguyên</a><a href="pages/student/student-dashboard.html">Khu vực sinh viên</a></nav>
+  </div></header>
+  <main id="main" tabindex="-1" class="register-layout">
+    <section class="register-intro" aria-labelledby="intro-title">
+      <span class="eyebrow">Cùng bạn, từng bước nhỏ</span>
+      <h1 id="intro-title">Bắt đầu hành trình <br>cùng CampusMind.</h1>
+      <p class="lead">Một không gian để tìm thông tin hỗ trợ và chủ động sắp xếp những buổi gặp của bạn.</p>
+      <ul class="register-benefits"><li>Khám phá tài nguyên dành cho sinh viên</li><li>Đặt và theo dõi lịch tham vấn</li><li>Chọn thời gian phù hợp với bạn</li></ul>
+      <p class="notice">Bản demo học phần. Chỉ dùng thông tin giả để trải nghiệm; tài khoản được lưu trong trình duyệt này.</p>
+    </section>
+    <section class="panel register-panel" aria-labelledby="form-title">
+      <h2 id="form-title">Tạo tài khoản sinh viên</h2>
+      <p class="meta">Các trường có dấu * là bắt buộc.</p>
+      <p id="register-status" role="status" aria-live="polite">Đang tải dữ liệu…</p>
+      <div id="register-error" class="notice error" role="alert" tabindex="-1" hidden></div>
+      <button id="register-retry" type="button" hidden>Thử tải lại</button>
+      <noscript><p class="notice error">Bật JavaScript để đăng ký tài khoản demo.</p></noscript>
+      <form id="register-form" novalidate aria-busy="true" hidden>
+        <label for="name">Họ và tên *</label>
+        <input class="input" id="name" name="name" autocomplete="name" required minlength="2" maxlength="150" aria-describedby="name-error">
+        <p id="name-error" class="field-error"></p>
+        <label for="email">Email *</label>
+        <input class="input" id="email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="email-help email-error">
+        <p id="email-help" class="meta">Dùng email demo, ví dụ: sinhvien@example.test.</p>
+        <p id="email-error" class="field-error"></p>
+        <label for="password">Mật khẩu mô phỏng *</label>
+        <div class="password-row"><input class="input" id="password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128" aria-describedby="password-help password-error"><button id="show-password" type="button" aria-controls="password confirm-password" aria-pressed="false">Hiện mật khẩu</button></div>
+        <p id="password-help" class="meta">8–128 ký tự, không chỉ có khoảng trắng. Mật khẩu chỉ dùng kiểm tra biểu mẫu, không lưu và không gửi đi; chưa dùng để đăng nhập thật.</p>
+        <p id="password-error" class="field-error"></p>
+        <label for="confirm-password">Nhập lại mật khẩu *</label>
+        <input class="input" id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required maxlength="128" aria-describedby="confirm-password-error">
+        <p id="confirm-password-error" class="field-error"></p>
+        <button id="register-submit" class="primary" type="submit" disabled>Tạo tài khoản demo</button>
+      </form>
+      <section id="register-success" hidden aria-labelledby="success-title" tabindex="-1">
+        <span class="badge teal">Đăng ký thành công</span>
+        <h2 id="success-title">Tài khoản của bạn đã sẵn sàng</h2>
+        <p id="success-name"></p><p id="success-email" class="meta"></p>
+        <p>Tài khoản có vai trò Sinh viên và xuất hiện trong trang quản lý người dùng.</p>
+        <button id="enter-demo" type="button" class="primary">Vào tài khoản vừa tạo (demo)</button>
+        <p class="meta">Mở phiên mô phỏng trong tab này. Đây chưa phải xác thực đăng nhập.</p>
+        <button id="register-another" type="button">Tạo tài khoản khác</button>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Prototype CSE122</small></div><a href="pages/ui-kit.html">Bộ giao diện</a></div></footer>
+</body>
+</html>

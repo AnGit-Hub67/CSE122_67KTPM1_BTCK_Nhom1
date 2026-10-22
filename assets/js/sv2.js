@@ -10,7 +10,7 @@
   const button=(label,fn)=>{const b=el('button',label);b.type='button';b.addEventListener('click',fn);return b;};
   const badge=status=>{const b=el('span',labels[status],'badge');b.dataset.status=status;return b;};
   const name=id=>state.users.find(u=>u.id===id)?.name||S.directory.counselors.find(c=>c.id===id)?.name||'Chuyên viên chưa xác định';
-  const mine=()=>state.schedule.appointments.filter(a=>a.studentId===S.config.studentId);
+  const mine=()=>state.schedule.appointments.filter(a=>a.studentId===S.studentId);
   const when=a=>`${a.date.split('-').reverse().join('/')} · ${a.time}–${a.end||'…'} (UTC+7)`;
   const error=err=>{ $('work-error').textContent=message(err);$('work-error').hidden=false; };
   const message=err=>err instanceof SyntaxError?'JSON lưu trữ bị lỗi. Dữ liệu hiện có được giữ nguyên; xem README để sao lưu và khôi phục.':err.name==='QuotaExceededError'||err.name==='SecurityError'?'Không thể lưu/đọc dữ liệu trình duyệt. Kiểm tra quyền và dung lượng rồi thử lại; thao tác chưa được lưu.':err.message||'Có lỗi xảy ra. Hãy thử lại.';
@@ -107,10 +107,10 @@
     $('work-content').hidden=true;$('work-content').setAttribute('aria-busy','true');$('work-error').hidden=true;$('retry').hidden=true;$('work-status').textContent='Đang tải dữ liệu…';
     try{
       state=await S.init();
-      const id=document.body.dataset.role==='admin'?S.config.adminId:S.config.studentId,role=document.body.dataset.role;
+      const id=document.body.dataset.role==='admin'?S.config.adminId:S.studentId,role=document.body.dataset.role;
       if(!state.users.some(u=>u.id===id&&u.role===role&&u.status==='active'))throw Error('Tài khoản demo đã bị vô hiệu hóa hoặc đổi vai trò. Hãy dùng trang quản trị để cập nhật.');
       if(screen==='student-dashboard')renderDashboard();else if(screen==='student-booking')setupBooking();else renderList();
-      $('work-content').hidden=false;$('work-status').textContent='Dữ liệu demo đã sẵn sàng.';
+      $('work-content').hidden=false;$('work-status').textContent=role==='student'?'Tài khoản demo: '+state.users.find(u=>u.id===id).name:'Dữ liệu demo đã sẵn sàng.';
     }catch(err){error(err);$('retry').hidden=false;$('work-status').textContent='Tải dữ liệu thất bại.';}
     finally{$('work-content').setAttribute('aria-busy','false');}
   }
