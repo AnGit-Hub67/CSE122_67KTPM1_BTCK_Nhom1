@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-22",
+  "browser": "Chromium",
+  "checks": [
+    "Dashboard empty and JSON resources",
+    "Booking disabled state, dialog Escape and focus restoration",
+    "Booking persists and occupied slot disabled",
+    "SV3 queue reads SV2 booking; Confirmed round trip",
+    "Appointment search/status filters and reschedule keeps ID, releases original slot",
+    "Cancellation confirmation and terminal status",
+    "Admin combined filters, edit validation, duplicate email, XSS escaping, persistence",
+    "Disable/enable affects student flow; current admin protected",
+    "Quota failure preserves data and retry succeeds",
+    "Revision conflict rejects stale save",
+    "Slot collision, past slot, explicitly unavailable slot, ownership predicates",
+    "Corrupt localStorage preserved; explicit repair then retry",
+    "Fetch error and retry",
+    "Observable loading state",
+    "12 desktop/tablet/mobile screenshots; no page overflow, landmarks and labels",
+    "Mobile menu keyboard Escape",
+    "No uncaught browser JavaScript errors"
+  ]
+}
