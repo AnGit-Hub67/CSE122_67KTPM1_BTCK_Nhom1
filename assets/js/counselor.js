@@ -1,0 +1,124 @@
+(() => {
+  'use strict';
+  const S=SV3Store, KEY=S.KEY, $=id=>document.getElementById(id);
+  const labels={Pending:'Chờ xác nhận',Confirmed:'Đã xác nhận',Completed:'Hoàn thành',Cancelled:'Đã hủy'};
+  const screen=$('main').dataset.screen;
+  let state,revision,userRevision,counselorId,dirty=false,cancelling=null,busy=false,loadVersion=0;
+  const day=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&Number.isFinite(Date.parse(s))&&new Date(s).toISOString().slice(0,10)===s;
+  const time=s=>typeof s==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(s);
+  const text=(s,max)=>typeof s==='string'&&s.length<=max;
+  const owns=row=>S.counselorOf(row)===counselorId;
+  const element=(tag,content,cls)=>{const e=document.createElement(tag);e.textContent=content;if(cls)e.className=cls;return e;};
+  const button=(label,handler)=>{const e=element('button',label);e.type='button';e.addEventListener('click',handler);return e;};
+  function error(message){$('work-error').textContent=message;$('work-error').hidden=false;}
+  function read(){
+    const raw=localStorage.getItem(KEY),data=raw===null?S.initialSchedule():JSON.parse(raw);
+    if(!data||!['slots','appointments','notes','activity'].every(k=>Array.isArray(data[k])))throw Error('Dữ liệu lịch không hợp lệ.');
+    if(!data.slots.every(s=>s&&text(s.id,100)&&s.id&&day(s.date)&&time(s.start)&&time(s.end)&&s.end>s.start&&(s.counselorId===undefined||text(s.counselorId,100)))||
+      !data.appointments.every(a=>a&&text(a.id,100)&&a.id&&text(a.studentName,150)&&day(a.date)&&time(a.time)&&Object.hasOwn(labels,a.status)&&(a.end===undefined||time(a.end))&&(a.counselorId===undefined||text(a.counselorId,100)))||
+      !data.notes.every(n=>n&&text(n.appointmentId,100)&&text(n.content,5000)&&text(n.plan,3000)&&(n.summary===undefined||text(n.summary,3000)))||
+      !data.activity.every(a=>a&&text(a.text,200)&&Number.isFinite(Date.parse(a.at))))throw Error('Dữ liệu lịch không hợp lệ.');
+    for(const [key,field] of [['slots','id'],['appointments','id'],['notes','appointmentId']])if(new Set(data[key].map(x=>x[field])).size!==data[key].length)throw Error('Dữ liệu bị trùng mã.');
+    return {data,raw};
+  }
+  async function save(change,message){
+    if(busy)return false;busy=true;$('work-content').setAttribute('aria-busy','true');
+    const controls=[...$('work-content').querySelectorAll('button,input,textarea,select')].map(control=>[control,control.disabled]);
+    controls.forEach(([control])=>control.disabled=true);
+    try{return await S.lock(()=>{
+      if(localStorage.getItem(KEY)!==revision||S.users().raw!==userRevision)throw Error('Dữ liệu đã thay đổi ở tab khác. Nội dung đang nhập được giữ; tải lại trước khi lưu.');
+      if(!S.users().items.some(u=>u.id===counselorId&&u.role==='counselor'&&u.status==='active'))throw Error('Tài khoản chuyên viên không còn hoạt động.');
+      const next=structuredClone(state);change(next);
+      next.activity=[{text:message.slice(0,200),at:new Date().toISOString()},...next.activity].slice(0,100);
+      const raw=JSON.stringify(next);localStorage.setItem(KEY,raw);state=next;revision=raw;
+      $('work-error').hidden=true;$('work-status').textContent=message;return true;
+    });}catch(err){error(err.message+' Thay đổi chưa được lưu.');return false;}
+    finally{busy=false;controls.forEach(([control,disabled])=>control.disabled=disabled);$('work-content').setAttribute('aria-busy','false');}
+  }
+  function empty(container,message){container.append(element('p',message,'empty'));}
+  function focusCard(id){const card=[...document.querySelectorAll('[data-appointment]')].find(c=>c.dataset.appointment===id);(card?.querySelector('button,a')||card||$('appointments')).focus();}
+  function renderAppointments(){
+    const list=$('appointments');if(!list)return;list.tabIndex=-1;list.replaceChildren();
+    const query=$('search').value.trim().toLocaleLowerCase('vi');
+    const rows=state.appointments.filter(a=>owns(a)&&(!$('date').value||a.date===$('date').value)&&`${a.id} ${a.studentName}`.toLocaleLowerCase('vi').includes(query)&&(!$('status-filter')||$('status-filter').value==='all'||a.status===$('status-filter').value)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+    if(!rows.length)empty(list,'Chưa có lịch hẹn phù hợp cho chuyên viên và bộ lọc đang chọn.');
+    for(const a of rows){
+      const card=element('article','','panel');card.dataset.appointment=a.id;card.tabIndex=-1;
+      card.append(element('h3',a.studentName||a.id),element('p',`${a.date} · ${a.time} · ${a.id}`),element('span',labels[a.status],'badge'));
+      if(a.reason)card.append(element('p','Lý do đặt lịch: '+a.reason));
+      const actions=element('div','','actions');
+      if(screen==='counselor-schedule'){const link=element('a','Xem hàng đợi','button');link.href=`counselor-appointment-queue.html?date=${encodeURIComponent(a.date)}`;actions.append(link);}
+      else{
+        if(a.status==='Pending')actions.append(button('Xác nhận lịch',()=>transition(a.id,'Confirmed')));
+        if(['Pending','Confirmed'].includes(a.status))actions.append(button('Hủy lịch',()=>{cancelling=a.id;$('cancel-dialog').returnValue='';$('cancel-dialog').showModal();}));
+        if(['Confirmed','Completed'].includes(a.status)){const link=element('a','Ghi chú buổi gặp','button');link.href=`counselor-session-note.html?id=${encodeURIComponent(a.id)}`;actions.append(link);}
+      }
+      card.append(actions);list.append(card);
+    }
+  }
+  async function transition(id,status){
+    const ok=await save(next=>{const a=next.appointments.find(x=>x.id===id&&owns(x));if(!a||!['Pending','Confirmed'].includes(a.status)||(status==='Confirmed'&&a.status!=='Pending'))throw Error('Lịch không còn ở trạng thái phù hợp.');a.status=status;a.updatedAt=new Date().toISOString();},`Lịch ${id}: ${labels[status]}`);
+    if(ok){renderAppointments();focusCard(id);}
+  }
+  function occupied(s){return state.appointments.some(a=>S.counselorOf(a)===S.counselorOf(s)&&a.date===s.date&&a.time<s.end&&(a.end||state.slots.find(slot=>slot.id===a.slotId)?.end||'23:59')>s.start&&a.status!=='Cancelled');}
+  function renderSlots(){
+    if(!$('slots'))return;const list=$('slots');list.replaceChildren();list.tabIndex=-1;
+    const rows=state.slots.filter(owns).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
+    if(!rows.length)empty(list,'Chưa có khung giờ tiếp nhận.');
+    for(const s of rows){const card=element('article','','panel');card.append(element('h3',`${s.date} · ${s.start}–${s.end}`));
+      const remove=button('Xóa khung giờ',async()=>{if(occupied(s))return;const ok=await save(next=>{next.slots=next.slots.filter(x=>x.id!==s.id||!owns(x));},'Đã xóa khung giờ tiếp nhận');if(ok){renderSlots();(list.querySelector('button')||list).focus();}});
+      remove.disabled=occupied(s);card.append(remove);if(remove.disabled)card.append(element('p','Khung giờ có lịch hẹn nên không thể xóa.'));list.append(card);
+    }
+  }
+  function noteAppointment(){const id=new URLSearchParams(location.search).get('id');return state?.appointments.find(x=>x.id===id&&owns(x));}
+  function renderNote(){
+    if(!$('note-context'))return;const a=noteAppointment();$('note-context').replaceChildren();$('note-form').hidden=true;
+    if(!a){empty($('note-context'),'Không tìm thấy lịch hẹn của chuyên viên đang chọn. Hãy chọn lịch trong hàng đợi.');return;}
+    $('note-context').append(element('h2',a.studentName||a.id),element('p',`${a.date} · ${a.time} · ${labels[a.status]}`));
+    if(!['Confirmed','Completed'].includes(a.status)){empty($('note-context'),'Cần xác nhận lịch trước khi ghi chú.');return;}
+    const note=state.notes.find(n=>n.appointmentId===a.id);$('note-content').value=note?.content||'';$('note-plan').value=note?.plan||'';$('note-summary').value=note?.summary||'';
+    $('note-form').hidden=false;$('complete').disabled=a.status==='Completed';$('complete').textContent=a.status==='Completed'?'Buổi gặp đã hoàn thành':'Hoàn thành buổi gặp';
+    window.dispatchEvent(new Event('campusmind:note-loaded'));
+  }
+  async function saveNote(complete){
+    const a=noteAppointment();if(!a||!['Confirmed','Completed'].includes(a.status)||!$('note-form').reportValidity())return;
+    const content=$('note-content').value.trim();if(!content){error('Nội dung ghi chú không được để trống.');$('note-content').focus();return;}
+    const plan=$('note-plan').value.trim(),summary=$('note-summary').value.trim();
+    const ok=await save(next=>{const old=next.notes.find(n=>n.appointmentId===a.id)||{};const note={...old,appointmentId:a.id,content,plan,summary,updatedAt:new Date().toISOString()};next.notes=next.notes.filter(n=>n.appointmentId!==a.id);next.notes.push(note);if(complete)next.appointments.find(x=>x.id===a.id).status='Completed';},complete?`Đã hoàn thành lịch ${a.id}`:`Đã lưu ghi chú lịch ${a.id}`);
+    if(ok){dirty=false;$('note-saved').textContent='Đã lưu ghi chú và tóm tắt lúc '+new Date().toLocaleTimeString('vi-VN');renderNote();}
+  }
+  function buildSelector(){
+    if($('counselor-account'))return;
+    const box=element('section','','panel'),label=element('label','Chuyên viên demo đang làm việc');label.htmlFor='counselor-account';const select=element('select','');select.id='counselor-account';box.append(label,select);$('work-content').prepend(box);
+    select.addEventListener('change',()=>{
+      if(dirty||busy){select.value=counselorId;error('Hãy lưu hoặc bỏ thay đổi ghi chú trước khi chuyển chuyên viên.');return;}
+      try{sessionStorage.setItem(S.SESSION,JSON.stringify({id:select.value,role:'counselor'}));load();}catch{select.value=counselorId;error('Không lưu được lựa chọn chuyên viên.');}
+    });
+  }
+  async function load(){
+    const version=++loadVersion;$('work-content').hidden=true;$('retry').hidden=true;$('work-error').hidden=true;$('work-status').textContent='Đang tải dữ liệu…';
+    try{await S.init();if(version!==loadVersion)return;const users=S.users();userRevision=users.raw;
+      const session=sessionStorage.getItem(S.SESSION);const selected=session?JSON.parse(session):null;
+      const counselors=users.items.filter(u=>u.role==='counselor'&&u.status==='active');
+      counselorId=selected?.role==='counselor'?selected.id:counselorId||counselors[0]?.id;
+      if(!counselors.some(u=>u.id===counselorId))throw Error('Không có chuyên viên đang hoạt động phù hợp. Hãy chọn lại tài khoản tại trang Đăng nhập demo.');
+      const result=read();state=result.data;revision=result.raw;buildSelector();$('counselor-account').replaceChildren(...counselors.map(u=>new Option(u.name,u.id)));$('counselor-account').value=counselorId;
+      renderAppointments();renderSlots();renderNote();$('work-content').hidden=false;$('work-status').textContent='Dữ liệu đã sẵn sàng. Giờ Việt Nam (UTC+7).';
+    }catch(err){if(version!==loadVersion)return;error(err.message+' Dữ liệu hiện có được giữ nguyên.');$('retry').hidden=false;$('work-status').textContent='Tải dữ liệu thất bại.';}
+  }
+  ['search','date','status-filter'].forEach(id=>$(id)?.addEventListener('input',renderAppointments));
+  $('clear')?.addEventListener('click',()=>{$('search').value='';$('date').value='';if($('status-filter'))$('status-filter').value='all';renderAppointments();});
+  const dateParam=new URLSearchParams(location.search).get('date');if($('date')&&day(dateParam))$('date').value=dateParam;
+  $('slot-form')?.addEventListener('submit',async e=>{e.preventDefault();const date=$('slot-date').value,start=$('slot-start').value,end=$('slot-end').value;$('slot-error').textContent='';
+    if(!day(date)||!time(start)||!time(end)||end<=start||Date.parse(`${date}T${start}:00+07:00`)<=Date.now()){$('slot-error').textContent='Chọn thời gian trong tương lai; giờ kết thúc phải sau giờ bắt đầu (UTC+7).';$('slot-date').focus();return;}
+    if(state.slots.some(s=>owns(s)&&s.date===date&&start<s.end&&end>s.start)){$('slot-error').textContent='Khung giờ trùng với thời gian đã có của chuyên viên này.';return;}
+    if(await save(next=>next.slots.push({id:crypto.randomUUID(),counselorId,date,start,end}),'Đã thêm khung giờ tiếp nhận')){renderSlots();$('slot-form').reset();$('slot-date').focus();}
+  });
+  $('cancel-dialog')?.addEventListener('close',()=>{const id=cancelling;cancelling=null;if($('cancel-dialog').returnValue==='confirm')transition(id,'Cancelled');});
+  $('note-form')?.addEventListener('input',()=>dirty=true);$('note-form')?.addEventListener('submit',e=>{e.preventDefault();saveNote(false);});$('complete')?.addEventListener('click',()=>saveNote(true));
+  $('note-discard')?.addEventListener('click',()=>$('discard-dialog').showModal());
+  $('discard-dialog')?.addEventListener('close',()=>{if($('discard-dialog').returnValue==='discard'){dirty=false;load();}});
+  window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+  window.addEventListener('storage',e=>{if([KEY,S.USERS].includes(e.key)||e.key===null){if(dirty||busy)error('Dữ liệu đã thay đổi ở tab khác. Nội dung đang nhập được giữ; lưu bản nháp riêng hoặc bỏ thay đổi để tải lại.');else load();}});
+  $('retry').addEventListener('click',load);load();
+})();

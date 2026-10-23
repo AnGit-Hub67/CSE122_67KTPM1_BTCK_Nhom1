@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const check = process.argv.includes("--check");
+const exists = file => fs.existsSync(path.join(root, file));
 const visitorReady = fs.existsSync(
   path.join(root, "pages/visitor/visitor-service-directory.html"),
 );
@@ -26,6 +27,7 @@ const roles = [
   ["Chuyên viên", "counselor"],
   ["Quản trị viên", "admin"],
 ];
+if (exists('profile.html')) routes.push(['Hồ sơ', 'profile.html']);
 const escape = (value) =>
   value
     .replaceAll("&", "&amp;")
@@ -66,7 +68,7 @@ for (const file of files(root)) {
     footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}${anchor(["Bộ giao diện", "pages/ui-kit.html"])}</nav></div></footer>`,
     "visitor-entry": visitorReady
       ? `<div class="actions">${routes
-          .slice(1)
+          .slice(1, 4)
           .map(
             ([label, target]) =>
               `<a class="button" href="${href(target)}">${label}</a>`,
@@ -77,6 +79,16 @@ for (const file of files(root)) {
       ? `<aside class="sidebar" aria-label="Khu vực ${roles.find((item) => item[1] === role)[0]}"><strong>Khu vực ${roles.find((item) => item[1] === role)[0]}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${anchor(["Tổng quan", `pages/${role}/index.html`])}${role === "admin" ? anchor(["Quản lý dịch vụ", "pages/admin/admin-service-management.html"]) : ""}${anchor(["Khám phá dịch vụ", routes[1][1]])}${anchor(["Trang chủ", "index.html"])}<span class="sidebar-note">${role === "admin" ? "Quản lý danh mục dịch vụ hỗ trợ sinh viên." : "Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò."}</span></nav></aside>`
       : "",
   };
+  if (role) {
+    const menus = {
+      student: [['Dashboard','pages/student/student-dashboard.html'],['Đặt lịch','pages/student/student-booking.html'],['Lịch hẹn','pages/student/student-appointments.html']],
+      counselor: [['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],
+      admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html']]
+    };
+    const links = [['Tổng quan', `pages/${role}/index.html`], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : []), ['Khám phá dịch vụ',routes[1][1]],['Trang chủ','index.html']];
+    const label = roles.find(item=>item[1]===role)[0];
+    parts.sidebar = `<aside class="sidebar" aria-label="Khu vực ${label}"><strong>Khu vực ${label}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${links.map(anchor).join('')}<span class="sidebar-note">Dữ liệu giả lập phục vụ học phần.</span></nav></aside>`;
+  }
   let output = source;
   for (const [key, html] of Object.entries(parts)) {
     output = output.replace(

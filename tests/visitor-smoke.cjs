@@ -77,6 +77,7 @@ const server = http.createServer((req, res) => {
     await page.locator("#reset").click();
     assert.equal(await page.locator("article").count(), 4);
     await page.locator("[data-save]").first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-save][aria-pressed="true"]').length === 1);
     await page.reload();
     await page.waitForSelector('#results[aria-busy="false"]');
     assert.equal(await page.locator('[aria-pressed="true"]').count(), 1);
@@ -100,6 +101,7 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('[aria-pressed="true"]').count(),0);
     assert(await page.locator('#clear-saved').isDisabled());
     await page.locator('[data-save]').first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-save][aria-pressed="true"]').length === 1);
     await page.locator("#saved-only").check();
     assert.equal(await page.locator("article").count(), 1);
     await page.getByRole("button", { name: "Đọc tài nguyên" }).click();
@@ -134,6 +136,7 @@ const server = http.createServer((req, res) => {
       };
     });
     await page.locator("[data-save]").first().click();
+    await page.waitForFunction(() => document.querySelector('#feedback').textContent.includes('Thay đổi chưa được lưu'));
     assert.match(
       await page.locator("#feedback").innerText(),
       /Thay đổi chưa được lưu/,

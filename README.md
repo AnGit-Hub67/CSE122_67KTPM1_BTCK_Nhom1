@@ -2,6 +2,10 @@
 
 Frontend prototype hỗ trợ điều phối sức khỏe tinh thần sinh viên, môn CSE122, nhóm 1.
 
+## Bổ sung SV3
+
+Profile, lịch/hàng đợi theo chuyên viên, ghi chú với AI-3 mô phỏng, thống kê users/services và điều hướng chung được bổ sung trên `feature/sv3-complete`. Xem [bàn giao SV3 và kiểm thử](docs/sv3-completion.md) và [checklist tích hợp/triển khai/nộp bài](docs/sv3-release-checklist.md). Chạy local bằng `node tools/serve.cjs`. Tài khoản GitHub **AnGit-Hub67** đã được xác thực cho phần SV3; không merge dev/main.
+
 ## Bổ sung SV1 ngày 23/10/2026
 
 Nhánh `feature/sv1-complete` tiếp tục bản SV1 trong PR #7: thêm `login.html` (chọn tài khoản demo, tương thích đăng ký SV2), gợi ý mô phỏng trên Service Directory/Resource Library, nối Counselor Detail sang Booking và bảo vệ lưu tài nguyên giữa các tab. Xem [phạm vi, phụ thuộc và kiểm thử SV1](docs/sv1-completion.md).
@@ -64,4 +68,3 @@ Tên tài khoản GitHub tương ứng SV1/SV2/SV3 được nhóm xác nhận ri
 - Bộ tài liệu gồm README, CONTRIBUTING và mẫu PR.
 - Nhánh `docs/project-init` chứa tài liệu để nhóm review và tích hợp vào `dev`.
 - TASK-01 khởi tạo quy trình; TASK-11 bổ sung frontend và layout dùng chung.
-
