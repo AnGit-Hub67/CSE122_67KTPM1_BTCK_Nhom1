@@ -24,7 +24,7 @@
 .service-form .actions { justify-content:flex-end; padding-top:8px; }
 .service-dialog h2 { margin-top:0; }
 .service-dialog .danger { background:#be123c; color:white; border-color:#be123c; }
-.service-dialog .danger:hover { background:#9f1239; }
+.service-dialog .danger:hover { background:#9f1239;  }
 .service-feedback:empty { display:none; }
 @media(max-width:1000px) { .service-heading { align-items:flex-start; flex-direction:column; } }
 @media(max-width:600px) { .service-summary { gap:8px; } .service-summary div { padding:12px; } .service-summary dt { font-size:12px; } .service-heading button { width:100%; } .service-dialog { padding:20px; } .service-form .actions button { flex:1; } }
