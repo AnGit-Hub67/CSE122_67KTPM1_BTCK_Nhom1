@@ -1,7 +1,7 @@
 .sv2 .hero{max-width:none;padding-top:36px}.sv2 .hero h1{font-size:clamp(28px,3.4vw,42px)}
 .sv2 textarea{font:inherit;resize:vertical}.sv2-ai{margin-bottom:24px}.sv2-ai form{display:grid;gap:12px;max-width:650px}.sv2-ai #ai-result{margin-top:24px;border-top:1px solid #e2e8f0;padding-top:18px}.sv2-ai #ai-target{margin-top:16px}.sv2 #add-user{margin-bottom:20px}
 .sv2 #work-content{padding-top:12px}.sv2 #work-status{color:#0c655f;font-weight:600;min-height:26px}
-.sv2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px}
+.sv2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px }
 .sv2-stat{padding:20px 24px;border:1px solid #e2e8f0;border-radius:16px;background:white}.sv2-stat strong{display:block;font-size:32px;line-height:1.4;color:var(--navy)}
 .sv2-columns{display:grid;grid-template-columns:1.1fr 1fr;gap:24px}.sv2-columns>*{min-width:0}.sv2-columns .panel h2{margin-top:0}
 .sv2-form{max-width:760px}.sv2-form>label,.sv2 #edit-form>label{margin-top:18px}.sv2-form .input{margin-top:8px;min-height:48px}
