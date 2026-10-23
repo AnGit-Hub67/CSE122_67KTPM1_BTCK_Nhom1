@@ -73,12 +73,17 @@
     renderList();
     search.focus();
   }
-  function toggleSave(resource, target) {
-    const next = new Set(saved);
-    next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
+  async function toggleSave(resource, target) {
     try {
-      localStorage.setItem(storageKey, JSON.stringify([...next]));
-      saved = next;
+      const write = () => {
+        const value = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (!Array.isArray(value) || !value.every(id => typeof id === 'string')) throw new Error('Invalid saved data');
+        const next = new Set(value);
+        next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
+        localStorage.setItem(storageKey, JSON.stringify([...next]));
+        saved = next;
+      };
+      if (navigator.locks) await navigator.locks.request(storageKey, write); else write();
       const clear = document.querySelector("#clear-saved");
       if (clear) clear.disabled = saved.size === 0;
       feedback.textContent = `${saved.has(resource.id) ? "Đã lưu" : "Đã bỏ lưu"}: ${resource.title}.`;
@@ -220,12 +225,19 @@
       availability.append(
         slots,
         button(
-          "Tìm hiểu cách đặt lịch",
-          () =>
-            openDialog("Đặt lịch với chuyên viên", [
-              "Thông tin chuyên viên và lịch trên trang là dữ liệu giả lập của học phần. Đăng nhập và đặt lịch thuộc luồng Student, chưa được tích hợp trên nhánh hiện tại.",
-              "Hiện tại, trang này chỉ cho phép xem hồ sơ và lịch mẫu; chưa gửi yêu cầu hoặc giữ chỗ.",
-            ]),
+          "Đặt lịch với chuyên viên",
+          async (event) => {
+            const target = event.currentTarget;
+            target.disabled = true;
+            try {
+              const url = `../student/student-booking.html?counselor=${encodeURIComponent(person.id)}`;
+              const response = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(10000) });
+              if (response.ok) location.href = url;
+              else openDialog("Trang đặt lịch chưa sẵn sàng", ["Trang đặt lịch chưa có trong bản demo này; chưa gửi yêu cầu hoặc giữ chỗ."]);
+            } catch {
+              openDialog("Không mở được trang đặt lịch", ["Hãy kiểm tra kết nối rồi thử lại. Chưa gửi yêu cầu hoặc giữ chỗ."]);
+            } finally { target.disabled = false; }
+          },
           "primary",
         ),
       );
@@ -290,6 +302,7 @@
   }
   async function load() {
     const version = ++loadVersion;
+    window.dispatchEvent(new CustomEvent('campusmind:catalog-loading'));
     ready = false;
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
@@ -317,9 +330,11 @@
           ),
         );
         renderList();
+        window.dispatchEvent(new CustomEvent('campusmind:catalog', { detail: { page, items: data[page] } }));
       }
     } catch {
       if (version !== loadVersion) return;
+      window.dispatchEvent(new CustomEvent('campusmind:catalog-error'));
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
@@ -334,6 +349,14 @@
     }
   }
   search?.addEventListener("input", renderList);
+  window.addEventListener('campusmind:accept-suggestion', event => {
+    if (!ready || !data[page]?.some(item => item.id === event.detail.id)) return;
+    search.value = event.detail.title;
+    category.value = '';
+    if (savedOnly) savedOnly.checked = false;
+    renderList();
+    search.focus();
+  });
   category?.addEventListener("change", renderList);
   savedOnly?.addEventListener("change", renderList);
   document.querySelector("#reset")?.addEventListener("click", reset);

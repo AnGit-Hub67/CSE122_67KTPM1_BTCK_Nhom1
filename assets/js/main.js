@@ -1,6 +1,13 @@
 // Shared progressive enhancement. Navigation remains visible without JavaScript.
 (() => {
   "use strict";
+  const navigation = document.querySelector('#primary-navigation');
+  if (navigation) {
+    const login = document.createElement('a');
+    login.href = new URL('../../login.html', document.currentScript.src).href;
+    login.textContent = 'Đăng nhập demo';
+    navigation.append(login);
+  }
   const compact = matchMedia("(max-width: 700px)");
   document.querySelectorAll("[data-nav-toggle]").forEach((button) => {
     const navigation = document.getElementById(

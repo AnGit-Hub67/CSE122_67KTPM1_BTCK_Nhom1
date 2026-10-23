@@ -2,6 +2,12 @@
 
 Frontend prototype hỗ trợ điều phối sức khỏe tinh thần sinh viên, môn CSE122, nhóm 1.
 
+## Bổ sung SV1 ngày 23/10/2026
+
+Nhánh `feature/sv1-complete` tiếp tục bản SV1 trong PR #7: thêm `login.html` (chọn tài khoản demo, tương thích đăng ký SV2), gợi ý mô phỏng trên Service Directory/Resource Library, nối Counselor Detail sang Booking và bảo vệ lưu tài nguyên giữa các tab. Xem [phạm vi, phụ thuộc và kiểm thử SV1](docs/sv1-completion.md).
+
+Chạy qua HTTP như hướng dẫn bên dưới, mở `/login.html` hoặc danh mục Visitor. Booking/Register/Counselor vẫn ở các nhánh phụ trách, cần tích hợp để chạy toàn bộ hành trình. Login là mô phỏng frontend, không có xác thực mật khẩu hoặc phân quyền máy chủ. Không có merge vào `dev`/`main` trong lượt bổ sung này.
+
 ## Liên kết dự án
 
 - Repository: https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1

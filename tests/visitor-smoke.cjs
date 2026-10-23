@@ -113,6 +113,7 @@ const server = http.createServer((req, res) => {
       false,
     );
     await page.locator("[data-save]").click();
+    await page.waitForFunction(() => document.querySelectorAll('#results article').length === 0);
     assert.equal(await page.locator("article").count(), 0);
     assert.equal(
       await page
@@ -151,7 +152,9 @@ const server = http.createServer((req, res) => {
       /Không tìm thấy chuyên viên/,
     );
     await visit("counselor-detail");
-    await page.getByRole("button", { name: "Tìm hiểu cách đặt lịch" }).click();
+      await page.route('**/student-booking.html?*', route => route.fulfill({ status: 404, body: '' }));
+      await page.getByRole("button", { name: "Đặt lịch với chuyên viên" }).click();
+      await page.locator('#content-dialog[open]').waitFor();
     assert.match(await page.locator("#content-dialog").innerText(), /chưa gửi yêu cầu/);
     await page.keyboard.press("Escape");
     await page.route("**/assets/data/visitor.json", (route) =>
