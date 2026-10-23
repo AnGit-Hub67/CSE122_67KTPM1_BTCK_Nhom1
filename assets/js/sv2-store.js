@@ -1,5 +1,5 @@
-/* SV2 adapter: additive fields preserve the TASK-14 counselor contract. */
-(() => {
+
+(() => { 
   'use strict';
   const KEY = 'campusmind.counselor.v1', USERS = 'campusmind.sv2.users.v1';
   const SESSION = 'campusmind.sv2.student.session.v1';
