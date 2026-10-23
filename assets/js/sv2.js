@@ -3,7 +3,7 @@
   const S=window.SV2Store, $=id=>document.getElementById(id), screen=document.body.dataset.screen;
   const labels={Pending:'Pending · Chờ xác nhận',Confirmed:'Confirmed · Đã xác nhận',Completed:'Completed · Hoàn thành',Cancelled:'Cancelled · Đã hủy',active:'Hoạt động',disabled:'Vô hiệu hóa'};
   const roles={student:'Sinh viên',counselor:'Chuyên viên',admin:'Quản trị viên'};
-  let state,selected='',editingUser=null,action=null,returnFocus=null;
+  let state,selected='',editingUser=null,action=null,returnFocus=null; 
   const editId=new URLSearchParams(location.search).get('edit');
   const el=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n;};
   const link=(label,url,cls='')=>{const a=el('a',label,cls);a.href=url;return a;};
