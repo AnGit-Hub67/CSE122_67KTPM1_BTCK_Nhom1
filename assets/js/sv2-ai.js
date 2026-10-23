@@ -1,4 +1,4 @@
-/* AI-1 mock: deterministic navigation suggestions, no model or external API. */
+
 (() => {
   'use strict';
   const $=id=>document.getElementById(id),KEY='campusmind.sv2.navigator.v1';
