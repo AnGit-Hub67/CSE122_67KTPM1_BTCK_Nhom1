@@ -1,5 +1,5 @@
 (() => {
-  'use strict';
+  'use strict'; 
   const S=window.SV2Store,$=id=>document.getElementById(id);
   const fields=['name','email','password','confirm-password'];
   let busy=false,created=null;
