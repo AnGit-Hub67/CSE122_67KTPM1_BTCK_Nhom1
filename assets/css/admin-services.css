@@ -1,7 +1,7 @@
 .service-heading { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:40px 0 24px; }
 .service-heading h1 { font-size:clamp(28px,3vw,38px); margin-bottom:12px; }
 .service-heading p { margin:0; }
-.service-heading button { flex-shrink:0; }
+.service-heading button { flex-shrink:0; } 
 .service-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-bottom:24px; }
 .service-summary div { background:white; border:1px solid #e2e8f0; border-radius:var(--radius-md); padding:18px 22px; }
 .service-summary dt { color:var(--muted); font-size:14px; }
