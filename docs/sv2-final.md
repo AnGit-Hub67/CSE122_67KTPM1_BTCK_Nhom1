@@ -1,5 +1,7 @@
 # Bàn giao SV2 — TASK-13 và TASK-17
 
+**Hoàn thiện bổ sung 23/10/2026:** Booking đã có lý do, Dashboard có AI-1 mock đầy đủ vòng tương tác, Admin có Create User. Xem [phạm vi, schema và kiểm thử bổ sung](sv2-completion.md). Các mục mô tả bản đầu bên dưới được giữ làm lịch sử bàn giao; thông tin mới trong tài liệu bổ sung được ưu tiên.
+
 **Bổ sung 23/10/2026:** đã có SCR-02 `register.html`, lưu user vào store chung và mở phiên sinh viên demo để đặt lịch dưới ID mới. Xem [hướng dẫn Register và kiểm thử](sv2-register.md). Phần này không thay thế Login/xác thực của SV1.
 
 ## Phạm vi và chạy thử

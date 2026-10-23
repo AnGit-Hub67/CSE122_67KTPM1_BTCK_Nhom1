@@ -57,7 +57,7 @@
   function validateSchedule(s) {
     if (!s || !['slots','appointments','notes','activity'].every(k=>Array.isArray(s[k])) || !unique(s.slots) || !unique(s.appointments) ||
       !s.slots.every(x=>text(x.id,100)&&dateOK(x.date)&&timeOK(x.start)&&timeOK(x.end)&&x.end>x.start&&(!x.counselorId||text(x.counselorId,100))) ||
-      !s.appointments.every(x=>text(x.id,100)&&text(x.studentName,150)&&dateOK(x.date)&&timeOK(x.time)&&statuses.includes(x.status)&&(!x.end||timeOK(x.end))) ||
+      !s.appointments.every(x=>text(x.id,100)&&text(x.studentName,150)&&dateOK(x.date)&&timeOK(x.time)&&statuses.includes(x.status)&&(!x.end||timeOK(x.end))&&(x.reason===undefined||text(x.reason,500))) ||
       !s.notes.every(x=>typeof x.appointmentId==='string'&&typeof x.content==='string'&&typeof x.plan==='string') ||
       !s.activity.every(x=>text(x.text,200)&&Number.isFinite(Date.parse(x.at)))) fail('Dữ liệu lịch hẹn không hợp lệ. Không tự xóa hoặc đặt lại dữ liệu.');
   }
@@ -104,7 +104,8 @@
     };
     return navigator.locks?navigator.locks.request('campusmind.sv2.write',task):task();
   }
-  async function book(snapshot,slotId,editId) {
+  async function book(snapshot,slotId,editId,reason) {
+    if(typeof reason!=='string'||reason.trim().length<5||reason.trim().length>500)fail('Lý do đặt lịch cần từ 5 đến 500 ký tự.');
     return mutate(snapshot,'schedule',state=>{
       if(!active(state.users,studentId(),'student'))fail('Tài khoản sinh viên không hoạt động hoặc đã đổi vai trò.');
       const slot=state.schedule.slots.find(s=>s.id===slotId);
@@ -112,7 +113,7 @@
       if(editId&&(!old||!['Pending','Confirmed'].includes(old.status)||!future(old.date,old.time)))fail('Lịch này không thể đổi.');
       if(!slot||!available(state,slot,editId))fail('Khung giờ không còn khả dụng. Vui lòng chọn lại.');
       if(old&&old.slotId===slot.id)fail('Hãy chọn một khung giờ khác lịch hiện tại.');
-      const a={...(old||{}),id:old?.id||crypto.randomUUID(),studentId:studentId(),studentName:state.users.find(u=>u.id===studentId()).name,counselorId:counselorOf(slot),slotId:slot.id,date:slot.date,time:slot.start,end:slot.end,status:'Pending',updatedAt:new Date().toISOString()};
+      const a={...(old||{}),id:old?.id||crypto.randomUUID(),studentId:studentId(),studentName:state.users.find(u=>u.id===studentId()).name,counselorId:counselorOf(slot),slotId:slot.id,date:slot.date,time:slot.start,end:slot.end,reason:reason.trim(),status:'Pending',updatedAt:new Date().toISOString()};
       if(old)state.schedule.appointments[state.schedule.appointments.indexOf(old)]=a;else state.schedule.appointments.push(a);
     },editId?'Sinh viên đã đổi lịch hẹn':'Sinh viên đã đặt lịch hẹn');
   }
@@ -121,6 +122,12 @@
     const a=state.schedule.appointments.find(a=>a.id===id&&a.studentId===studentId());
     if(!a||!['Pending','Confirmed'].includes(a.status)||!future(a.date,a.time))fail('Không thể hủy lịch này.');a.status='Cancelled';a.updatedAt=new Date().toISOString();
   },'Sinh viên đã hủy lịch hẹn');
+  const createUser=(snapshot,fields)=>mutate(snapshot,'users',state=>{
+    if(!active(state.users,config.adminId,'admin'))fail('Tài khoản quản trị không hoạt động.');
+    const user={id:crypto.randomUUID(),name:String(fields.name||'').trim(),email:String(fields.email||'').trim().toLowerCase(),role:fields.role,status:'active'};
+    if(state.users.some(u=>u.email.toLowerCase()===user.email))fail('Email đã được sử dụng bởi người dùng khác.');
+    state.users.push(user);validateUsers(state.users);
+  },'Đã thêm người dùng');
   const updateUser=(snapshot,id,patch)=>mutate(snapshot,'users',state=>{
     if(!active(state.users,config.adminId,'admin'))fail('Tài khoản quản trị không hoạt động.');
     const user=state.users.find(u=>u.id===id);if(!user)fail('Không tìm thấy người dùng.');
@@ -131,5 +138,5 @@
     if(!next.name)fail('Họ tên không được chỉ chứa khoảng trắng.');
     Object.assign(user,next);validateUsers(state.users);
   },'Cập nhật người dùng');
-  window.SV2Store={KEY,USERS,SESSION,init,initRegistration,register,enterStudentDemo,read,book,cancel,updateUser,available,counselorOf,today,future,get studentId(){return studentId();},get config(){return config;},get directory(){return directory;}};
+  window.SV2Store={KEY,USERS,SESSION,init,initRegistration,register,enterStudentDemo,read,book,cancel,createUser,updateUser,available,counselorOf,today,future,get studentId(){return studentId();},get config(){return config;},get directory(){return directory;}};
 })();

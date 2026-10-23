@@ -28,6 +28,7 @@
   function stats(items){$('summary').replaceChildren(...items.map(([label,value])=>{const p=el('div','','sv2-stat');p.append(el('strong',String(value)),el('span',label));return p;}));}
   function appointment(a,actions=true){
     const card=el('article','','panel');card.append(el('h2',name(S.counselorOf(a))),el('p',when(a)),badge(a.status),el('p',`Mã lịch: ${a.id}`,'meta'));
+    if(a.reason)card.append(el('p','Lý do: '+a.reason));
     if(actions){const row=el('div','','actions');const can=['Pending','Confirmed'].includes(a.status)&&S.future(a.date,a.time);
       if(can){row.append(link('Đổi lịch',`student-booking.html?edit=${encodeURIComponent(a.id)}`,'button'),button('Hủy lịch',()=>confirmation('Hủy lịch hẹn?',`${name(S.counselorOf(a))} · ${when(a)}. Bạn có thể đặt lịch mới sau khi hủy.`,async()=>{success(await S.cancel(state,a.id),'Đã hủy lịch hẹn.');renderAppointments();})));}
       else{const b=button('Không thể đổi / hủy',()=>{});b.disabled=true;row.append(b);card.append(el('p','Chỉ đổi hoặc hủy lịch Pending/Confirmed còn ở tương lai.','meta'));}card.append(row);
@@ -39,6 +40,7 @@
     $('upcoming').replaceChildren(next?appointment(next,false):el('p','Bạn chưa có lịch hẹn sắp tới. Chọn một thời gian khi bạn sẵn sàng.','sv2-empty'));
     $('resources').replaceChildren(...S.directory.resources.slice(0,2).map(r=>{const item=el('article','','sv2-resource');item.append(el('h3',r.title),el('p',r.description));return item;}));
     if(!S.directory.resources.length)$('resources').append(el('p','Chưa có tài nguyên.','sv2-empty'));
+    window.SV2AI?.init(S);
   }
   function renderAppointments(){
     const q=$('search').value.trim().toLocaleLowerCase('vi'),status=$('status-filter').value;
@@ -72,12 +74,14 @@
     const requested=new URLSearchParams(location.search).get('counselor');
     const cid=old?S.counselorOf(old):requested;
     if(cid&&[...$('counselor').options].some(o=>o.value===cid&&!o.disabled))$('counselor').value=cid;
-    $('date').value=old?.date||S.today();renderSlots();
+    $('date').value=old?.date||S.today();$('reason').value=old?.reason||'';renderSlots();
   }
   $('booking-form')?.addEventListener('submit',e=>{
     e.preventDefault();if(!$('booking-form').reportValidity()||!selected)return;
-    const slotId=selected;confirmation(editId?'Xác nhận đổi lịch?':'Xác nhận đặt lịch?',$('selection').textContent+(editId?' · Lịch cũ sẽ được thay thế và chuyển về Pending.':''),async()=>{
-      success(await S.book(state,slotId,editId),editId?'Đã đổi lịch. Yêu cầu đang chờ xác nhận.':'Đặt lịch thành công. Yêu cầu đang chờ xác nhận.');renderSlots();
+    const reason=$('reason').value.trim();if(reason.length<5||reason.length>500){$('reason-error').textContent='Lý do cần từ 5 đến 500 ký tự.';$('reason').setAttribute('aria-invalid','true');$('reason').focus();return;}
+    $('reason-error').textContent='';$('reason').setAttribute('aria-invalid','false');
+    const slotId=selected;confirmation(editId?'Xác nhận đổi lịch?':'Xác nhận đặt lịch?',$('selection').textContent+' · Lý do: '+reason+(editId?' · Lịch cũ sẽ được thay thế và chuyển về Pending.':''),async()=>{
+      success(await S.book(state,slotId,editId,reason),editId?'Đã đổi lịch. Yêu cầu đang chờ xác nhận.':'Đặt lịch thành công. Yêu cầu đang chờ xác nhận.');renderSlots();
     });
   });
   ['counselor','date'].forEach(id=>$(id)?.addEventListener('change',renderSlots));
@@ -87,18 +91,19 @@
     const rows=state.users.filter(u=>(!role||u.role===role)&&(!status||u.status===status)&&`${u.name} ${u.email} ${u.id}`.toLocaleLowerCase('vi').includes(q));
     $('result-count').textContent=`${rows.length} / ${state.users.length} người dùng`;$('users-empty').hidden=rows.length>0;$('users').replaceChildren();
     for(const u of rows){const row=el('tr'),who=el('td',u.name);who.append(el('small',u.id));const statusCell=el('td');statusCell.append(badge(u.status));const actions=el('td'),wrap=el('div','','actions');
-      const edit=button('Chỉnh sửa',()=>{editingUser=u.id;$('edit-id').textContent=u.id;$('edit-name').value=u.name;$('edit-email').value=u.email;$('edit-role').value=u.role;$('edit-error').textContent='';$('edit-dialog').showModal();});edit.setAttribute('aria-label','Chỉnh sửa '+u.name);
+      const edit=button('Chỉnh sửa',()=>{editingUser=u.id;$('edit-title').textContent='Chỉnh sửa người dùng';$('edit-id').textContent=u.id;$('edit-name').value=u.name;$('edit-email').value=u.email;$('edit-role').value=u.role;$('edit-error').textContent='';$('edit-dialog').showModal();});edit.setAttribute('aria-label','Chỉnh sửa '+u.name);
       const toggle=button(u.status==='active'?'Vô hiệu hóa':'Kích hoạt',()=>confirmation(u.status==='active'?'Vô hiệu hóa người dùng?':'Kích hoạt người dùng?',`${u.name} (${u.email}). ${u.status==='active'?'Dữ liệu và lịch hẹn hiện có sẽ được giữ lại.':''}`,async()=>{success(await S.updateUser(state,u.id,{status:u.status==='active'?'disabled':'active'}),'Đã cập nhật trạng thái người dùng.');renderUsers();}));
       toggle.setAttribute('aria-label',(u.status==='active'?'Vô hiệu hóa ':'Kích hoạt ')+u.name);toggle.disabled=u.id===S.config.adminId;
       wrap.append(edit,toggle);actions.append(wrap);if(toggle.disabled)actions.append(el('small','Tài khoản quản trị đang dùng'));row.append(who,el('td',u.email),el('td',roles[u.role]),statusCell,actions);$('users').append(row);
     }
   }
+  $('add-user')?.addEventListener('click',()=>{editingUser=null;$('edit-form').reset();$('edit-title').textContent='Thêm người dùng';$('edit-id').textContent='Tài khoản mới sẽ có trạng thái Hoạt động.';$('edit-error').textContent='';$('edit-dialog').showModal();});
   $('edit-form')?.addEventListener('submit',e=>{
     e.preventDefault();if(!$('edit-form').reportValidity())return;
     const patch={name:$('edit-name').value.trim(),email:$('edit-email').value.trim().toLowerCase(),role:$('edit-role').value};
     if(!patch.name){$('edit-error').textContent='Họ tên không được chỉ chứa khoảng trắng.';$('edit-name').focus();return;}
     if(state.users.some(u=>u.id!==editingUser&&u.email.toLowerCase()===patch.email)){$('edit-error').textContent='Email đã được sử dụng.';$('edit-email').focus();return;}
-    confirmation('Lưu thay đổi người dùng?',`${patch.name} · ${patch.email} · ${roles[patch.role]}`,async()=>{success(await S.updateUser(state,editingUser,patch),'Đã lưu thông tin người dùng.');$('edit-dialog').close();renderUsers();});
+    confirmation(editingUser?'Lưu thay đổi người dùng?':'Thêm người dùng mới?',`${patch.name} · ${patch.email} · ${roles[patch.role]}`,async()=>{success(editingUser?await S.updateUser(state,editingUser,patch):await S.createUser(state,patch),editingUser?'Đã lưu thông tin người dùng.':'Đã thêm người dùng.');$('edit-dialog').close();renderUsers();});
   });
   function renderList(){if(screen==='student-appointments')renderAppointments();else if(screen==='admin-user-management')renderUsers();}
   ['search','status-filter','role-filter'].forEach(id=>$(id)?.addEventListener('input',renderList));
