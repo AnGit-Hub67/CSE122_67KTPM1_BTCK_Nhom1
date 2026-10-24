@@ -82,7 +82,7 @@ for (const file of files(root)) {
   };
   if (role) {
     const menus = {
-      student: [['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html']],
+      student: [['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html'],['Thư viện tài nguyên','pages/visitor/visitor-resource-library.html']],
       counselor: [['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],
       admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html']]
     };
@@ -95,6 +95,11 @@ for (const file of files(root)) {
   if (!role) parts.header = parts.header.replace('Campus<span>Mind</span>', logo);
   parts.footer += '<p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>';
   let output = source;
+  // Legacy SV2 pages predate layout markers. Replace only the shared shell,
+  // leaving main, dialogs and all business scripts byte-for-byte unchanged.
+  for(const [key,pattern] of [['header',/<header class="site-header">[\s\S]*?<\/header>/],['sidebar',/<aside class="sidebar"[^>]*>[\s\S]*?<\/aside>/],['footer',/<footer class="site-footer">[\s\S]*?<\/footer>/]]){
+    if(!source.includes(`<!-- campusmind:${key} -->`))output=output.replace(pattern,`<!-- campusmind:${key} -->\n${parts[key]}\n<!-- /campusmind:${key} -->`);
+  }
   if (!source.includes('assets/js/demo-sync.js')) output = output.replace(/<script defer src="([^"]*assets\/js\/main.js)"><\/script>/, `<script defer src="${href('assets/js/demo-sync.js')}"></script>$&`);
   output = output.replace(/ data-student-dashboard="[^"]*"/g, '').replace('<body', `<body data-student-dashboard="${exists('pages/student/student-dashboard.html')?'pages/student/student-dashboard.html':'pages/student/index.html'}"`);
   if (!source.includes('assets/js/shared-upgrade.js')) output = output.replace('</head>', `<script defer src="${href('assets/js/shared-upgrade.js')}"></script></head>`);

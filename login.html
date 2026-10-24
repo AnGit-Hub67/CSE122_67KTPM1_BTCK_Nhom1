@@ -4,7 +4,13 @@
 <link rel="stylesheet" href="assets/css/base.css"><link rel="stylesheet" href="assets/css/components.css"><link rel="stylesheet" href="assets/css/responsive.css"><link rel="stylesheet" href="assets/css/login.css">
 <script defer src="assets/js/demo-sync.js"></script><script defer src="assets/js/main.js"></script><script defer src="assets/js/login.js"></script><script defer src="assets/js/shared-upgrade.js"></script><link rel="stylesheet" href="assets/css/shared-upgrade.css"></head>
 <body data-student-dashboard="pages/student/index.html"><a class="skip-link" href="#main">Bỏ qua điều hướng</a>
-<header class="site-header"><div class="header-inner"><a class="brand" href="index.html">Campus<span>Mind</span></a><a href="pages/visitor/visitor-service-directory.html">Khám phá dịch vụ</a></div></header>
+<!-- campusmind:header -->
+<header class="site-header"><div class="header-inner"><a class="brand" href="index.html" aria-label="CampusMind — Trang chủ"><img class="brand-logo" src="assets/images/campusmind-logo.png" alt="CampusMind" width="540" height="422"></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="index.html">Trang chủ</a>
+<a href="pages/visitor/visitor-service-directory.html">Dịch vụ</a>
+<a href="pages/visitor/visitor-resource-library.html">Tài nguyên</a>
+<a href="pages/visitor/visitor-counselor-detail.html">Chuyên viên</a>
+<a href="profile.html">Hồ sơ</a></nav></div></header>
+<!-- /campusmind:header -->
 <main id="main" tabindex="-1"><section class="hero"><span class="eyebrow">Chào mừng trở lại</span><h1>Đăng nhập demo</h1><p class="lead">Chọn tài khoản để khám phá hành trình CampusMind.</p></section>
 <section class="panel login-panel" aria-label="Chọn tài khoản"><p class="notice">Đây là mô phỏng frontend, không xác thực mật khẩu hoặc phân quyền bảo mật. Chỉ dùng dữ liệu học phần.</p>
 <p id="login-status" role="status">Đang tải tài khoản…</p><p id="login-error" role="alert" tabindex="-1"></p><button id="login-retry" type="button" hidden>Thử lại</button>
