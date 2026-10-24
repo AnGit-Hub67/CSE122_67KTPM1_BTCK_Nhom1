@@ -18,10 +18,7 @@
   function users(){const raw=localStorage.getItem(USERS);return {raw,items:validateUsers(raw===null?structuredClone(seeds):JSON.parse(raw))};}
   function current(){
     const raw=sessionStorage.getItem(SESSION);const session=raw===null?null:JSON.parse(raw);
-    const student=sessionStorage.getItem('campusmind.sv2.student.session.v1');
-    // Registration can establish a newer student session without modifying the SV1 key.
-    const id=session?.role==='student'&&student?student:session?.id||student;
-    return users().items.find(u=>u.id===id&&u.status==='active'&&(!session||u.role===session.role))||null;
+    return users().items.find(u=>u.id===session?.id&&u.status==='active'&&u.role===session.role)||null;
   }
   const lock=fn=>navigator.locks?navigator.locks.request('campusmind.sv2.write',fn):Promise.resolve().then(fn);
   async function updateProfile(snapshot,id,fields){return lock(()=>{

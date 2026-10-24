@@ -4,10 +4,10 @@
   async function load(){
     const request=++version;$('work-status').textContent='Đang tải số liệu…';$('work-content').hidden=true;$('work-error').hidden=true;$('retry').hidden=true;
     try{
-      await S.init();const users=S.users().items;const catalog=await CampusMindServices.read();
+      await S.init();if(S.current()?.role!=='admin')throw Error('Cần đăng nhập demo bằng tài khoản quản trị.');const users=S.users().items;const catalog=await CampusMindServices.read();
       const work=JSON.parse(localStorage.getItem(S.KEY)||'{"appointments":[],"activity":[]}');
       if(!work||!Array.isArray(work.appointments)||!Array.isArray(work.activity)||!work.appointments.every(a=>a&&typeof a.id==='string'&&['Pending','Confirmed','Completed','Cancelled'].includes(a.status))||!work.activity.every(a=>a&&typeof a.text==='string'&&Number.isFinite(Date.parse(a.at))))throw Error('Dữ liệu lịch không hợp lệ.');
-      if(request!==version)return;
+      if(request!==version)return;if(S.current()?.role!=='admin')throw Error('Phiên quản trị đã thay đổi.');
       $('services-count').textContent=catalog.items.filter(s=>s.status==='active').length;
       $('users-count').textContent=users.length;$('active-users-count').textContent=users.filter(u=>u.status==='active').length;
       $('pending-count').textContent=work.appointments.filter(a=>a.status==='Pending').length;$('completed-count').textContent=work.appointments.filter(a=>a.status==='Completed').length;
@@ -20,7 +20,7 @@
   }
   $('refresh').addEventListener('click',load);$('retry').addEventListener('click',load);
   $('users-link').addEventListener('click',async e=>{
-    e.preventDefault();try{const r=await fetch(e.currentTarget.href,{method:'HEAD',signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error();location.href='admin-user-management.html';}
+    e.preventDefault();try{if(S.current()?.role!=='admin')throw Error();const r=await fetch(e.currentTarget.href,{method:'HEAD',signal:AbortSignal.timeout(10000)});if(!r.ok||S.current()?.role!=='admin')throw Error();location.href='admin-user-management.html';}
     catch{$('users-help').textContent='Trang quản lý người dùng chưa sẵn sàng trong bản demo này. Hãy kiểm tra bản tích hợp hoặc kết nối rồi thử lại.';}
   });
   window.addEventListener('storage',e=>{if([CampusMindServices.key,S.USERS,S.KEY].includes(e.key)||e.key===null)load();});load();

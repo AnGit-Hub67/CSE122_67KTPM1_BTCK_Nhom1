@@ -27,7 +27,7 @@
     controls.forEach(([control])=>control.disabled=true);
     try{return await S.lock(()=>{
       if(localStorage.getItem(KEY)!==revision||S.users().raw!==userRevision)throw Error('Dữ liệu đã thay đổi ở tab khác. Nội dung đang nhập được giữ; tải lại trước khi lưu.');
-      if(!S.users().items.some(u=>u.id===counselorId&&u.role==='counselor'&&u.status==='active'))throw Error('Tài khoản chuyên viên không còn hoạt động.');
+      if(S.current()?.id!==counselorId||S.current()?.role!=='counselor')throw Error('Tài khoản chuyên viên không còn hoạt động.');
       const next=structuredClone(state);change(next);
       next.activity=[{text:message.slice(0,200),at:new Date().toISOString()},...next.activity].slice(0,100);
       const raw=JSON.stringify(next);localStorage.setItem(KEY,raw);state=next;revision=raw;
@@ -57,7 +57,12 @@
     }
   }
   async function transition(id,status){
-    const ok=await save(next=>{const a=next.appointments.find(x=>x.id===id&&owns(x));if(!a||!['Pending','Confirmed'].includes(a.status)||(status==='Confirmed'&&a.status!=='Pending'))throw Error('Lịch không còn ở trạng thái phù hợp.');a.status=status;a.updatedAt=new Date().toISOString();},`Lịch ${id}: ${labels[status]}`);
+    const ok=await save(next=>{const a=next.appointments.find(x=>x.id===id&&owns(x));if(!a||!['Pending','Confirmed'].includes(a.status)||(status==='Confirmed'&&a.status!=='Pending'))throw Error('Lịch không còn ở trạng thái phù hợp.');if(status==='Confirmed'){
+      const slot=next.slots.find(s=>s.id===a.slotId&&S.counselorOf(s)===counselorId&&s.date===a.date&&s.start===a.time);
+      if(!slot||slot.available===false||Date.parse(a.date+'T'+a.time+':00+07:00')<=Date.now())throw Error('Khung giờ không còn khả dụng.');
+      const end=a.end||slot.end;
+      if(next.appointments.some(x=>x.id!==a.id&&x.status!=='Cancelled'&&x.date===a.date&&(S.counselorOf(x)===counselorId||(a.studentId&&x.studentId===a.studentId))&&x.time<end&&(x.end||next.slots.find(s=>s.id===x.slotId)?.end||'23:59')>a.time))throw Error('Lịch hẹn bị trùng thời gian.');
+    }a.status=status;a.updatedAt=new Date().toISOString();},`Lịch ${id}: ${labels[status]}`);
     if(ok){renderAppointments();focusCard(id);}
   }
   function occupied(s){return state.appointments.some(a=>S.counselorOf(a)===S.counselorOf(s)&&a.date===s.date&&a.time<s.end&&(a.end||state.slots.find(slot=>slot.id===a.slotId)?.end||'23:59')>s.start&&a.status!=='Cancelled');}
@@ -67,7 +72,7 @@
     if(!rows.length)empty(list,'Chưa có khung giờ tiếp nhận.');
     for(const s of rows){const card=element('article','','panel');card.append(element('h3',`${s.date} · ${s.start}–${s.end}`));
       const remove=button('Xóa khung giờ',async()=>{if(occupied(s))return;const ok=await save(next=>{next.slots=next.slots.filter(x=>x.id!==s.id||!owns(x));},'Đã xóa khung giờ tiếp nhận');if(ok){renderSlots();(list.querySelector('button')||list).focus();}});
-      remove.disabled=occupied(s);card.append(remove);if(remove.disabled)card.append(element('p','Khung giờ có lịch hẹn nên không thể xóa.'));list.append(card);
+      remove.disabled=occupied(s);card.append(element('p',s.available===false?'Không tiếp nhận đặt lịch':Date.parse(s.date+'T'+s.start+':00+07:00')<=Date.now()?'Khung giờ đã qua':remove.disabled?'Đã có lịch hẹn':'Có thể đặt lịch'));card.append(remove);if(remove.disabled)card.append(element('p','Khung giờ có lịch hẹn nên không thể xóa.'));list.append(card);
     }
   }
   function noteAppointment(){const id=new URLSearchParams(location.search).get('id');return state?.appointments.find(x=>x.id===id&&owns(x));}
@@ -84,25 +89,22 @@
     const a=noteAppointment();if(!a||!['Confirmed','Completed'].includes(a.status)||!$('note-form').reportValidity())return;
     const content=$('note-content').value.trim();if(!content){error('Nội dung ghi chú không được để trống.');$('note-content').focus();return;}
     const plan=$('note-plan').value.trim(),summary=$('note-summary').value.trim();
-    const ok=await save(next=>{const old=next.notes.find(n=>n.appointmentId===a.id)||{};const note={...old,appointmentId:a.id,content,plan,summary,updatedAt:new Date().toISOString()};next.notes=next.notes.filter(n=>n.appointmentId!==a.id);next.notes.push(note);if(complete)next.appointments.find(x=>x.id===a.id).status='Completed';},complete?`Đã hoàn thành lịch ${a.id}`:`Đã lưu ghi chú lịch ${a.id}`);
+    const ok=await save(next=>{const old=next.notes.find(n=>n.appointmentId===a.id)||{};const note={...old,appointmentId:a.id,content,plan,summary,updatedAt:new Date().toISOString()};next.notes=next.notes.filter(n=>n.appointmentId!==a.id);next.notes.push(note);if(complete){const appointment=next.appointments.find(x=>x.id===a.id);appointment.status='Completed';appointment.updatedAt=new Date().toISOString();}},complete?`Đã hoàn thành lịch ${a.id}`:`Đã lưu ghi chú lịch ${a.id}`);
     if(ok){dirty=false;$('note-saved').textContent='Đã lưu ghi chú và tóm tắt lúc '+new Date().toLocaleTimeString('vi-VN');renderNote();}
   }
   function buildSelector(){
     if($('counselor-account'))return;
-    const box=element('section','','panel'),label=element('label','Chuyên viên demo đang làm việc');label.htmlFor='counselor-account';const select=element('select','');select.id='counselor-account';box.append(label,select);$('work-content').prepend(box);
-    select.addEventListener('change',()=>{
-      if(dirty||busy){select.value=counselorId;error('Hãy lưu hoặc bỏ thay đổi ghi chú trước khi chuyển chuyên viên.');return;}
-      try{sessionStorage.setItem(S.SESSION,JSON.stringify({id:select.value,role:'counselor'}));load();}catch{select.value=counselorId;error('Không lưu được lựa chọn chuyên viên.');}
-    });
+    const box=element('section','','panel'),label=element('p','Chuyên viên demo đang làm việc'),name=element('strong','');
+    name.id='counselor-account';const link=element('a','Đổi tài khoản tại trang đăng nhập');link.href=new URL('login.html',S.root).href;
+    box.append(label,name,element('br',''),link);$('work-content').prepend(box);
   }
   async function load(){
     const version=++loadVersion;$('work-content').hidden=true;$('retry').hidden=true;$('work-error').hidden=true;$('work-status').textContent='Đang tải dữ liệu…';
     try{await S.init();if(version!==loadVersion)return;const users=S.users();userRevision=users.raw;
-      const session=sessionStorage.getItem(S.SESSION);const selected=session?JSON.parse(session):null;
-      const counselors=users.items.filter(u=>u.role==='counselor'&&u.status==='active');
-      counselorId=selected?.role==='counselor'?selected.id:counselorId||counselors[0]?.id;
-      if(!counselors.some(u=>u.id===counselorId))throw Error('Không có chuyên viên đang hoạt động phù hợp. Hãy chọn lại tài khoản tại trang Đăng nhập demo.');
-      const result=read();state=result.data;revision=result.raw;buildSelector();$('counselor-account').replaceChildren(...counselors.map(u=>new Option(u.name,u.id)));$('counselor-account').value=counselorId;
+      const active=S.current();
+      if(active?.role!=='counselor')throw Error('Cần đăng nhập demo bằng tài khoản chuyên viên.');
+      counselorId=active.id;
+      const result=read();state=result.data;revision=result.raw;buildSelector();$('counselor-account').textContent=active.name;
       renderAppointments();renderSlots();renderNote();$('work-content').hidden=false;$('work-status').textContent='Dữ liệu đã sẵn sàng. Giờ Việt Nam (UTC+7).';
     }catch(err){if(version!==loadVersion)return;error(err.message+' Dữ liệu hiện có được giữ nguyên.');$('retry').hidden=false;$('work-status').textContent='Tải dữ liệu thất bại.';}
   }
@@ -111,7 +113,7 @@
   const dateParam=new URLSearchParams(location.search).get('date');if($('date')&&day(dateParam))$('date').value=dateParam;
   $('slot-form')?.addEventListener('submit',async e=>{e.preventDefault();const date=$('slot-date').value,start=$('slot-start').value,end=$('slot-end').value;$('slot-error').textContent='';
     if(!day(date)||!time(start)||!time(end)||end<=start||Date.parse(`${date}T${start}:00+07:00`)<=Date.now()){$('slot-error').textContent='Chọn thời gian trong tương lai; giờ kết thúc phải sau giờ bắt đầu (UTC+7).';$('slot-date').focus();return;}
-    if(state.slots.some(s=>owns(s)&&s.date===date&&start<s.end&&end>s.start)){$('slot-error').textContent='Khung giờ trùng với thời gian đã có của chuyên viên này.';return;}
+    if(state.slots.some(s=>owns(s)&&s.date===date&&start<s.end&&end>s.start)||state.appointments.some(a=>owns(a)&&a.status!=='Cancelled'&&a.date===date&&a.time<end&&(a.end||state.slots.find(s=>s.id===a.slotId)?.end||'23:59')>start)){$('slot-error').textContent='Khung giờ trùng với thời gian đã có của chuyên viên này.';return;}
     if(await save(next=>next.slots.push({id:crypto.randomUUID(),counselorId,date,start,end}),'Đã thêm khung giờ tiếp nhận')){renderSlots();$('slot-form').reset();$('slot-date').focus();}
   });
   $('cancel-dialog')?.addEventListener('close',()=>{const id=cancelling;cancelling=null;if($('cancel-dialog').returnValue==='confirm')transition(id,'Cancelled');});
