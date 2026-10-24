@@ -32,6 +32,15 @@
   }
   window.addEventListener('campusmind:session',e=>enhance(e.detail));
   window.CampusSession?.ready.then(enhance);
+  // Loading has structure; empty/error remain their own existing views.
+  const content=document.querySelector('#work-content')||document.querySelector('#profile-form');
+  const workStatus=document.querySelector('#work-status')||document.querySelector('#profile-status');
+  if(content&&workStatus){
+    const skeleton=document.createElement('div');skeleton.id='shared-skeleton';skeleton.setAttribute('aria-hidden','true');
+    for(let i=0;i<3;i++){const row=document.createElement('div');row.className='skeleton-block';skeleton.append(row);}workStatus.after(skeleton);
+    const update=()=>{skeleton.hidden=!content.hidden||!workStatus.textContent.startsWith('Đang');};
+    new MutationObserver(update).observe(workStatus,{childList:true,subtree:true,characterData:true});new MutationObserver(update).observe(content,{attributes:true,attributeFilter:['hidden']});update();
+  }
   window.addEventListener('campusmind:remote-status',e=>{
     let box=document.querySelector('#remote-status');if(!box){box=document.createElement('p');box.id='remote-status';box.setAttribute('role','status');document.querySelector('#work-status')?.after(box);}
     box.textContent=e.detail;const retry=button('Thử đồng bộ lại','data-remote-retry');retry.onclick=()=>window.CampusDemoSync?.publish();box.append(document.createTextNode(' '),retry);

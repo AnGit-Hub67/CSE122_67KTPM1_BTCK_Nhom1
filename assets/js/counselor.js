@@ -42,7 +42,7 @@
     const list=$('appointments');if(!list)return;list.tabIndex=-1;list.replaceChildren();
     const query=$('search').value.trim().toLocaleLowerCase('vi');
     const rows=state.appointments.filter(a=>owns(a)&&(!$('date').value||a.date===$('date').value)&&`${a.id} ${a.studentName}`.toLocaleLowerCase('vi').includes(query)&&(!$('status-filter')||$('status-filter').value==='all'||a.status===$('status-filter').value)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-    if(!rows.length)empty(list,'Chưa có lịch hẹn phù hợp cho chuyên viên và bộ lọc đang chọn.');
+    if(!rows.length)empty(list,'Chưa có lịch hẹn phù hợp. Hãy xóa bộ lọc hoặc chờ sinh viên gửi yêu cầu đặt lịch.');
     for(const a of rows){
       const card=element('article','','panel');card.dataset.appointment=a.id;card.tabIndex=-1;
       card.append(element('h3',a.studentName||a.id),element('p',`${a.date} · ${a.time} · ${a.id}`),element('span',labels[a.status],'badge'));
@@ -70,7 +70,7 @@
   function renderSlots(){
     if(!$('slots'))return;const list=$('slots');list.replaceChildren();list.tabIndex=-1;
     const rows=state.slots.filter(owns).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
-    if(!rows.length)empty(list,'Chưa có khung giờ tiếp nhận.');
+    if(!rows.length)empty(list,'Chưa có khung giờ tiếp nhận. Dùng biểu mẫu Thêm khung giờ phía trên để mở lịch.');
     for(const s of rows){const card=element('article','','panel');card.append(element('h3',`${s.date} · ${s.start}–${s.end}`));
       const remove=button('Xóa khung giờ',async()=>{if(occupied(s))return;const ok=await save(next=>{next.slots=next.slots.filter(x=>x.id!==s.id||!owns(x));},'Đã xóa khung giờ tiếp nhận');if(ok){renderSlots();(list.querySelector('button')||list).focus();}});
       remove.disabled=occupied(s);card.append(element('p',s.available===false?'Không tiếp nhận đặt lịch':Date.parse(s.date+'T'+s.start+':00+07:00')<=Date.now()?'Khung giờ đã qua':remove.disabled?'Đã có lịch hẹn':'Có thể đặt lịch'));card.append(remove);if(remove.disabled)card.append(element('p','Khung giờ có lịch hẹn nên không thể xóa.'));list.append(card);
