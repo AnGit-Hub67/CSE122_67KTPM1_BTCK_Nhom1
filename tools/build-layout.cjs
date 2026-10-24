@@ -87,7 +87,7 @@ for (const file of files(root)) {
       admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html']]
     };
     const dashboard = role === 'student' && exists('pages/student/student-dashboard.html') ? 'pages/student/student-dashboard.html' : `pages/${role}/index.html`;
-    const links = [[role==='student'?'Tổng quan sinh viên':'Tổng quan', dashboard], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : [])];
+    const links = [[role==='student'?'Tổng quan sinh viên':role==='admin'?'Đánh giá dịch vụ':'Tổng quan chuyên viên', dashboard], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : [])];
     const label = roles.find(item=>item[1]===role)[0];
     parts.header = '';
     parts.sidebar = `<aside class="sidebar" aria-label="Khu vực ${label}"><a class="brand" href="${href(dashboard)}">${logo}</a><strong>${role==='student'?'Không gian Sinh viên':'Khu vực '+label}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${links.map(anchor).join('')}<button type="button" data-theme-toggle>Đổi giao diện</button><button type="button" data-logout>Đăng xuất</button></nav></aside>`;
