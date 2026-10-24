@@ -11,6 +11,7 @@
   const dialog = document.querySelector("#content-dialog");
   const storageKey = "campusmind.visitor.savedResources.v1";
   let data;
+  let publicSlots = [], scheduleError = false;
   let saved = new Set();
   let ready = false;
   let loadVersion = 0;
@@ -137,6 +138,7 @@
           element("p", item.description),
           element("p", item.format || item.duration, "meta"),
         );
+        if (page === "services") card.append(element("p", "Thời lượng dịch vụ là dự kiến. Xem giờ bắt đầu–kết thúc ở hồ sơ chuyên viên trước khi đặt lịch.", "meta"));
         const actions = element("div", undefined, "actions");
         if (page === "services") {
           if (item.counselorId && data.counselors.some(c => c.id === item.counselorId)) actions.append(
@@ -204,47 +206,34 @@
     );
     const availability = element("section", undefined, "panel");
     availability.setAttribute("aria-labelledby", "availability-title");
-    const heading = element("h2", "Lịch gặp dự kiến");
+    const heading = element("h2", "Lịch khả dụng");
     heading.id = "availability-title";
-    availability.append(
-      heading,
-      element(
-        "p",
-        "Lịch mẫu theo tuần · Giờ Việt Nam (UTC+7). Đây không phải lịch trống thực tế.",
-        "meta",
-      ),
-    );
-    if (person.availability.length) {
-      const slots = element("ul", undefined, "slots");
-      person.availability.forEach((slot) => slots.append(element("li", slot)));
-      availability.append(
-        slots,
-        button(
-          "Tìm hiểu cách đặt lịch",
-          () =>
-            openDialog("Đặt lịch với chuyên viên", [
-              "Thông tin chuyên viên và lịch trên trang là dữ liệu giả lập của học phần. Đăng nhập và đặt lịch thuộc luồng Student, chưa được tích hợp trên nhánh hiện tại.",
-              "Hiện tại, trang này chỉ cho phép xem hồ sơ và lịch mẫu; chưa gửi yêu cầu hoặc giữ chỗ.",
-            ]),
-          "primary",
-        ),
-      );
+    availability.append(heading, element("p", "Giờ Việt Nam (UTC+7). Lịch lấy từ nguồn Student/Counselor trên cùng trình duyệt; thời lượng buổi gặp là khoảng từ giờ bắt đầu đến giờ kết thúc.", "meta"));
+    if (scheduleError) {
+      availability.append(element("p", "Chưa đọc được lịch chung. Cần tích hợp Student/Counselor và cho phép lưu trữ trình duyệt. Hồ sơ vẫn có thể xem; không có khung giờ nào được xác nhận là còn trống.", "notice"), button("Tải lại lịch", load));
     } else {
-      availability.append(
-        element("p", "Chuyên viên hiện chưa có lịch tiếp nhận.", "notice"),
-      );
-      const unavailable = button("Chưa có lịch trống", () => {});
-      unavailable.disabled = true;
-      availability.append(unavailable);
+      const available = publicSlots.filter(slot => slot.counselorId === person.id);
+      if (available.length) {
+        const slots = element("ul", undefined, "slots");
+        available.forEach(slot => slots.append(element("li", `${slot.date.split('-').reverse().join('/')} · ${slot.start}–${slot.end}`)));
+        availability.append(slots, link("Đặt lịch với chuyên viên", `../student/student-booking.html?counselor=${encodeURIComponent(person.id)}`, "button primary"));
+      } else {
+        availability.append(element("p", "Chưa có lịch trống trong dữ liệu hiện tại. Hãy chọn chuyên viên khác hoặc quay lại sau.", "notice"));
+        const unavailable = button("Chưa có lịch trống", () => {});
+        unavailable.disabled = true;
+        availability.append(unavailable);
+      }
+      const alternatives = [...new Set(publicSlots.map(slot => slot.counselorId))].filter(id => id !== person.id);
+      for (const id of alternatives) {
+        const other = data.counselors.find(c => c.id === id);
+        if (other) availability.append(link(`Xem lịch còn trống: ${other.name}`, `visitor-counselor-detail.html?id=${encodeURIComponent(id)}`, "button"));
+      }
     }
-    availability.append(
-      element(
-        "p",
-        "Bạn có thể quay lại danh mục để khám phá chuyên viên khác.",
-        "meta",
-      ),
-      link("Khám phá dịch vụ khác →", "visitor-service-directory.html"),
-    );
+    availability.append(button("Tìm hiểu cách đặt lịch", () => openDialog("Quy trình đặt lịch", [
+      "Đăng nhập ở khu vực Sinh viên và chọn thời gian. Yêu cầu mới ở trạng thái chờ xác nhận; chuyên viên xác nhận trong khu vực của mình. Xem trạng thái tại Lịch hẹn của tôi.",
+      "Bạn có thể đổi hoặc hủy lịch đang chờ/đã xác nhận khi giờ hẹn còn ở tương lai. Đổi lịch sẽ chuyển yêu cầu về chờ xác nhận. Việc xem hồ sơ chưa gửi yêu cầu hoặc giữ chỗ.",
+      "Thao tác chỉ lưu trên trình duyệt, không gửi email hay tin nhắn và không đồng bộ giữa thiết bị. Không nhập thông tin tham vấn cá nhân thật."
+    ])), link("Khám phá dịch vụ khác →", "visitor-service-directory.html"));
     results.replaceChildren(profile, availability);
   }
   function validate(value) {
@@ -276,7 +265,7 @@
         for (const field of key === "resources"
           ? ["body"]
           : key === "counselors"
-            ? ["expertise", "availability"]
+            ? ["expertise"]
             : []) {
           if (
             !Array.isArray(item[field]) ||
@@ -304,6 +293,16 @@
       if (page === "services") {
         const catalog = await CampusMindServices.read();
         loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
+      }
+      if (page === "counselors") {
+        try {
+          const slots = await Promise.race([CampusMindPublicSchedule.read(), new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))]);
+          if (version !== loadVersion) return;
+          publicSlots = slots; scheduleError = false;
+        } catch {
+          if (version !== loadVersion) return;
+          publicSlots = []; scheduleError = true;
+        }
       }
       if (version !== loadVersion) return;
       data = loaded;
@@ -369,5 +368,13 @@
   if (page === "services") window.addEventListener("storage", event => {
     if (event.key === CampusMindServices.key || event.key === null) load();
   });
+  if (page === "counselors") {
+    window.addEventListener("storage", event => {
+      if ([null, "campusmind.counselor.v1", "campusmind.sv2.users.v1"].includes(event.key)) load();
+    });
+    window.addEventListener("pageshow", event => { if (event.persisted) load(); });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+    setInterval(() => { if (!document.hidden && ready) load(); }, 60000);
+  }
   load();
 })();

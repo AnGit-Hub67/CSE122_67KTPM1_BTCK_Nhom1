@@ -3,7 +3,7 @@
     "id": "CM-001",
     "name": "Tham vấn cá nhân",
     "category": "Tham vấn",
-    "duration": 60,
+    "duration": 50,
     "description": "Không gian riêng tư để chia sẻ và tìm hướng giải quyết khó khăn trong học tập, cuộc sống.",
     "status": "active",
     "counselorId": "minh-anh"

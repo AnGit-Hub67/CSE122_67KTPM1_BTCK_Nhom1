@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../assets/css/components.css" />
     <link rel="stylesheet" href="../../assets/css/responsive.css" />
     <link rel="stylesheet" href="../../assets/css/admin-services.css" />
-    <script defer src="../../assets/js/main.js"></script>
+    <script defer src="../../assets/js/main.js"></script><script defer src="../../assets/js/public-copy.js"></script>
     <script defer src="../../assets/js/service-store.js"></script>
     <script defer src="../../assets/js/admin-services.js"></script>
   </head>
@@ -39,7 +39,7 @@
   </section>
 </main>
     </div>
-<dialog id="service-dialog" class="service-dialog" aria-labelledby="form-title"><h2 id="form-title">Thêm dịch vụ</h2><p class="muted">Các trường trừ chuyên viên đều bắt buộc. Lưu trữ dịch vụ qua thao tác trong bảng.</p><form id="service-form" class="service-form" novalidate>
+<dialog id="service-dialog" class="service-dialog" aria-labelledby="form-title"><h2 id="form-title">Thêm dịch vụ</h2><p class="muted">Các trường trừ chuyên viên đều bắt buộc. Lưu trữ dịch vụ qua thao tác trong bảng. Thời lượng là số phút buổi gặp, không gồm khoảng nghỉ; tham vấn cá nhân hiện dùng 50 phút. Sửa danh mục không thay đổi lịch đã tạo.</p><form id="service-form" class="service-form" novalidate>
 <div><label for="service-name">Tên dịch vụ</label><input class="input" id="service-name" name="name" maxlength="100" required aria-describedby="name-error" /><p id="name-error" class="field-error"></p></div>
 <div><label for="service-category">Nhóm dịch vụ</label><select id="service-category" name="category" required aria-describedby="category-error"><option value="">Chọn nhóm</option><option>Tham vấn</option><option>Đồng hành</option><option>Hoạt động nhóm</option><option>Workshop</option></select><p id="category-error" class="field-error"></p></div>
 <div><label for="service-duration">Thời lượng (phút)</label><input class="input" id="service-duration" name="duration" type="number" min="15" max="240" step="5" required aria-describedby="duration-error" /><p id="duration-error" class="field-error"></p></div>
@@ -49,7 +49,7 @@
 <p id="save-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close>Hủy</button><button class="primary" type="submit">Lưu dịch vụ</button></div></form></dialog>
 <dialog id="archive-dialog" class="service-dialog" aria-labelledby="archive-title" aria-describedby="archive-description"><h2 id="archive-title">Lưu trữ dịch vụ?</h2><p id="archive-description"></p><p class="muted">Dịch vụ vẫn được giữ để tra cứu trong bộ lọc “Đã lưu trữ” và được ẩn khỏi danh mục Visitor.</p><p id="archive-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close autofocus>Giữ dịch vụ</button><button type="button" id="confirm-archive" class="danger">Lưu trữ dịch vụ</button></div></dialog>
     <!-- campusmind:footer -->
-<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a><a href="../ui-kit.html">Bộ giao diện</a></nav></div></footer>
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a><a href="../../index.html#contact">Liên hệ</a><a href="../../index.html#privacy">Dữ liệu và quyền xem</a></nav></div></footer>
 <!-- /campusmind:footer -->
   </body>
 </html>

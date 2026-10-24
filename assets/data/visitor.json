@@ -62,12 +62,7 @@
         "Giao tiếp"
       ],
       "languages": "Tiếng Việt",
-      "format": "Trực tiếp / Trực tuyến",
-      "availability": [
-        "Thứ Hai · 09:00–09:50",
-        "Thứ Tư · 14:00–14:50",
-        "Thứ Sáu · 10:00–10:50"
-      ]
+      "format": "Trực tiếp / Trực tuyến"
     },
     {
       "id": "quang-huy",
@@ -80,11 +75,7 @@
         "Cân bằng sinh hoạt"
       ],
       "languages": "Tiếng Việt / Tiếng Anh",
-      "format": "Trực tuyến",
-      "availability": [
-        "Thứ Ba · 15:00–15:45",
-        "Thứ Năm · 09:00–09:45"
-      ]
+      "format": "Trực tuyến"
     },
     {
       "id": "thu-ha",
@@ -97,8 +88,7 @@
         "Mối quan hệ"
       ],
       "languages": "Tiếng Việt",
-      "format": "Trực tiếp",
-      "availability": []
+      "format": "Trực tiếp"
     }
   ]
 }

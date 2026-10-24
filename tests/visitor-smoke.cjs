@@ -139,12 +139,7 @@ const server = http.createServer((req, res) => {
     );
     assert.equal(await page.locator('[aria-pressed="true"]').count(), 0);
     await visit("counselor-detail", "?id=thu-ha");
-    assert.equal(
-      await page
-        .getByRole("button", { name: "Chưa có lịch trống" })
-        .isDisabled(),
-      true,
-    );
+    assert(await page.getByRole("button", {name: "Tải lại lịch"}).isVisible());
     await visit("counselor-detail", "?id=missing");
     assert.match(
       await page.locator("#results").innerText(),

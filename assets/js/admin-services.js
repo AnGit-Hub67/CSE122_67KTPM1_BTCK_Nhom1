@@ -1,5 +1,6 @@
-(() => {
+(async () => {
   'use strict';
+  if (window.CampusSession && (await window.CampusSession.ready)?.role !== 'admin') return;
   const store = window.CampusMindServices;
   let snapshot = null, counselors = [], loadVersion = 0;
   const $ = (id) => document.getElementById(id);
@@ -63,8 +64,10 @@
     finally { if (version !== loadVersion) return; $('loading-state').hidden = true; $('service-results').setAttribute('aria-busy', 'false'); }
   }
   async function persist(next, errorId) {
-    try { snapshot = await store.write(next, snapshot); services = next; return true; }
-    catch (cause) { const error = $(errorId); error.textContent = cause.message.includes('tab khác') ? cause.message : 'Không thể lưu thay đổi. Kiểm tra quyền hoặc dung lượng lưu trữ của trình duyệt rồi thử lại. Nội dung bạn nhập vẫn được giữ.'; error.hidden = false; return false; }
+    try {
+      if (window.CampusSession && window.CampusSession.current()?.role !== 'admin') throw new Error('Phiên quản trị không còn hợp lệ. Đăng nhập lại.');
+      snapshot = await store.write(next, snapshot); services = next; return true; }
+    catch (cause) { const error = $(errorId); error.textContent = (cause.message.includes('tab khác') || cause.message.includes('Phiên quản trị')) ? cause.message : 'Không thể lưu thay đổi. Kiểm tra quyền hoặc dung lượng lưu trữ của trình duyệt rồi thử lại. Nội dung bạn nhập vẫn được giữ.'; error.hidden = false; return false; }
   }
   function resetFilters() { $('service-search').value = ''; $('status-filter').value = 'all'; render(); }
   function openForm(service, button) {
