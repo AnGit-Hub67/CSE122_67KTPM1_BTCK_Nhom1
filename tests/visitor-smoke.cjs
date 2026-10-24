@@ -50,16 +50,16 @@ const server = http.createServer((req, res) => {
       await page.waitForSelector('#results[aria-busy="false"]');
     };
     await visit("service-directory");
-    assert.equal(await page.locator("article").count(), 6);
-    await page.locator("#search").fill("ap luc");
+    assert.equal(await page.locator("article").count(), 2);
+    await page.locator("#search").fill("tham van");
     assert.equal(await page.locator("article").count(), 1);
-    await page.locator("#category").selectOption("Kết nối");
+    await page.locator("#category").selectOption("Đồng hành");
     assert.equal(await page.locator("article").count(), 0);
     await page
       .getByRole("button", { name: "Xóa bộ lọc", exact: true })
       .last()
       .click();
-    assert.equal(await page.locator("article").count(), 6);
+    assert.equal(await page.locator("article").count(), 2);
     const serviceLinks = await page
       .locator("article a")
       .evaluateAll((nodes) => nodes.map((node) => node.href));
@@ -92,16 +92,24 @@ const server = http.createServer((req, res) => {
       () => document.querySelectorAll('[aria-pressed="true"]').length === 1,
     );
     await otherTab.close();
+    await page.locator('#clear-saved').click();
+    await page.getByRole('button', {name:'Giữ danh sách',exact:true}).click();
+    assert.equal(await page.locator('[aria-pressed="true"]').count(),1);
+    await page.locator('#clear-saved').click();
+    await page.locator('#confirm-clear-saved').click();
+    assert.equal(await page.locator('[aria-pressed="true"]').count(),0);
+    assert(await page.locator('#clear-saved').isDisabled());
+    await page.locator('[data-save]').first().click();
     await page.locator("#saved-only").check();
     assert.equal(await page.locator("article").count(), 1);
     await page.getByRole("button", { name: "Đọc tài nguyên" }).click();
     assert.equal(
-      await page.locator("dialog").evaluate((node) => node.open),
+      await page.locator("#content-dialog").evaluate((node) => node.open),
       true,
     );
     await page.keyboard.press("Escape");
     assert.equal(
-      await page.locator("dialog").evaluate((node) => node.open),
+      await page.locator("#content-dialog").evaluate((node) => node.open),
       false,
     );
     await page.locator("[data-save]").click();
@@ -131,12 +139,7 @@ const server = http.createServer((req, res) => {
     );
     assert.equal(await page.locator('[aria-pressed="true"]').count(), 0);
     await visit("counselor-detail", "?id=thu-ha");
-    assert.equal(
-      await page
-        .getByRole("button", { name: "Chưa có lịch trống" })
-        .isDisabled(),
-      true,
-    );
+    assert(await page.getByRole("button", {name: "Tải lại lịch"}).isVisible());
     await visit("counselor-detail", "?id=missing");
     assert.match(
       await page.locator("#results").innerText(),
@@ -144,7 +147,7 @@ const server = http.createServer((req, res) => {
     );
     await visit("counselor-detail");
     await page.getByRole("button", { name: "Tìm hiểu cách đặt lịch" }).click();
-    assert.match(await page.locator("dialog").innerText(), /chưa gửi yêu cầu/);
+    assert.match(await page.locator("#content-dialog").innerText(), /chưa gửi yêu cầu/);
     await page.keyboard.press("Escape");
     await page.route("**/assets/data/visitor.json", (route) =>
       route.fulfill({ status: 500 }),
@@ -158,7 +161,7 @@ const server = http.createServer((req, res) => {
     await page.unroute("**/assets/data/visitor.json");
     await page.getByRole("button", { name: "Thử lại" }).click();
     await page.waitForSelector("article");
-    assert.equal(await page.locator("article").count(), 6);
+    assert.equal(await page.locator("article").count(), 2);
     await page.route("**/assets/data/visitor.json", (route) =>
       route.fulfill({ json: { services: [{}] } }),
     );

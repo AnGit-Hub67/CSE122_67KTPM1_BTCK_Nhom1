@@ -11,8 +11,10 @@
   const dialog = document.querySelector("#content-dialog");
   const storageKey = "campusmind.visitor.savedResources.v1";
   let data;
+  let publicSlots = [], scheduleError = false;
   let saved = new Set();
   let ready = false;
+  let loadVersion = 0;
   const normalize = (value) =>
     value
       .normalize("NFD")
@@ -78,6 +80,8 @@
     try {
       localStorage.setItem(storageKey, JSON.stringify([...next]));
       saved = next;
+      const clear = document.querySelector("#clear-saved");
+      if (clear) clear.disabled = saved.size === 0;
       feedback.textContent = `${saved.has(resource.id) ? "Đã lưu" : "Đã bỏ lưu"}: ${resource.title}.`;
       if (savedOnly.checked) {
         renderList();
@@ -100,6 +104,8 @@
   }
   function renderList() {
     if (!ready) return;
+    const clear = document.querySelector("#clear-saved");
+    if (clear) clear.disabled = saved.size === 0;
     const items = data[page].filter(
       (item) =>
         (!category.value || item.category === category.value) &&
@@ -132,15 +138,17 @@
           element("p", item.description),
           element("p", item.format || item.duration, "meta"),
         );
+        if (page === "services") card.append(element("p", "Thời lượng dịch vụ là dự kiến. Xem giờ bắt đầu–kết thúc ở hồ sơ chuyên viên trước khi đặt lịch.", "meta"));
         const actions = element("div", undefined, "actions");
         if (page === "services") {
-          actions.append(
+          if (item.counselorId && data.counselors.some(c => c.id === item.counselorId)) actions.append(
             link(
               "Xem chuyên viên →",
               `visitor-counselor-detail.html?id=${encodeURIComponent(item.counselorId)}`,
               "button",
             ),
           );
+          else { const pending = button("Chưa phân công chuyên viên", () => {}); pending.disabled = true; actions.append(pending); }
         } else {
           actions.append(
             button("Đọc tài nguyên", () => openDialog(item.title, item.body)),
@@ -160,7 +168,7 @@
     );
   }
   function renderCounselor() {
-    const id = new URLSearchParams(location.search).get("id") ?? "minh-anh";
+    const id = new URLSearchParams(location.search).get("id") ?? data.counselors[0]?.id;
     const person = data.counselors.find((item) => item.id === id);
     status.textContent = "";
     if (!person) {
@@ -198,59 +206,38 @@
     );
     const availability = element("section", undefined, "panel");
     availability.setAttribute("aria-labelledby", "availability-title");
-    const heading = element("h2", "Lịch gặp dự kiến");
+    const heading = element("h2", "Lịch khả dụng");
     heading.id = "availability-title";
-    availability.append(
-      heading,
-      element(
-        "p",
-        "Lịch mẫu theo tuần · Giờ Việt Nam (UTC+7). Đây không phải lịch trống thực tế.",
-        "meta",
-      ),
-    );
-    if (person.availability.length) {
-      const slots = element("ul", undefined, "slots");
-      person.availability.forEach((slot) => slots.append(element("li", slot)));
-      availability.append(
-        slots,
-        button(
-          "Tìm hiểu cách đặt lịch",
-          () =>
-            openDialog("Đặt lịch với chuyên viên", [
-              "Bạn đang xem bản prototype với dữ liệu giả. Chức năng đăng nhập và đặt lịch sẽ được tích hợp ở luồng Student.",
-              "Hiện tại, trang này chỉ cho phép xem hồ sơ và lịch mẫu; chưa gửi yêu cầu hoặc giữ chỗ.",
-            ]),
-          "primary",
-        ),
-      );
+    availability.append(heading, element("p", "Giờ Việt Nam (UTC+7). Lịch lấy từ nguồn Student/Counselor trên cùng trình duyệt; thời lượng buổi gặp là khoảng từ giờ bắt đầu đến giờ kết thúc.", "meta"));
+    if (scheduleError) {
+      availability.append(element("p", "Chưa đọc được lịch chung. Cần tích hợp Student/Counselor và cho phép lưu trữ trình duyệt. Hồ sơ vẫn có thể xem; không có khung giờ nào được xác nhận là còn trống.", "notice"), button("Tải lại lịch", load));
     } else {
-      availability.append(
-        element("p", "Chuyên viên hiện chưa có lịch tiếp nhận.", "notice"),
-      );
-      const unavailable = button("Chưa có lịch trống", () => {});
-      unavailable.disabled = true;
-      availability.append(unavailable);
+      const available = publicSlots.filter(slot => slot.counselorId === person.id);
+      if (available.length) {
+        const slots = element("ul", undefined, "slots");
+        available.forEach(slot => slots.append(element("li", `${slot.date.split('-').reverse().join('/')} · ${slot.start}–${slot.end}`)));
+        availability.append(slots, link("Đặt lịch với chuyên viên", `../student/student-booking.html?counselor=${encodeURIComponent(person.id)}`, "button primary"));
+      } else {
+        availability.append(element("p", "Chưa có lịch trống trong dữ liệu hiện tại. Hãy chọn chuyên viên khác hoặc quay lại sau.", "notice"));
+        const unavailable = button("Chưa có lịch trống", () => {});
+        unavailable.disabled = true;
+        availability.append(unavailable);
+      }
+      const alternatives = [...new Set(publicSlots.map(slot => slot.counselorId))].filter(id => id !== person.id);
+      for (const id of alternatives) {
+        const other = data.counselors.find(c => c.id === id);
+        if (other) availability.append(link(`Xem lịch còn trống: ${other.name}`, `visitor-counselor-detail.html?id=${encodeURIComponent(id)}`, "button"));
+      }
     }
-    availability.append(
-      element(
-        "p",
-        "Bạn có thể quay lại danh mục để khám phá chuyên viên khác.",
-        "meta",
-      ),
-      link("Khám phá dịch vụ khác →", "visitor-service-directory.html"),
-    );
+    availability.append(button("Tìm hiểu cách đặt lịch", () => openDialog("Quy trình đặt lịch", [
+      "Đăng nhập ở khu vực Sinh viên và chọn thời gian. Yêu cầu mới ở trạng thái chờ xác nhận; chuyên viên xác nhận trong khu vực của mình. Xem trạng thái tại Lịch hẹn của tôi.",
+      "Bạn có thể đổi hoặc hủy lịch đang chờ/đã xác nhận khi giờ hẹn còn ở tương lai. Đổi lịch sẽ chuyển yêu cầu về chờ xác nhận. Việc xem hồ sơ chưa gửi yêu cầu hoặc giữ chỗ.",
+      "Thao tác chỉ lưu trên trình duyệt, không gửi email hay tin nhắn và không đồng bộ giữa thiết bị. Không nhập thông tin tham vấn cá nhân thật."
+    ])), link("Khám phá dịch vụ khác →", "visitor-service-directory.html"));
     results.replaceChildren(profile, availability);
   }
   function validate(value) {
     const fields = {
-      services: [
-        "id",
-        "title",
-        "category",
-        "description",
-        "format",
-        "counselorId",
-      ],
       resources: ["id", "title", "category", "description", "duration"],
       counselors: [
         "id",
@@ -278,7 +265,7 @@
         for (const field of key === "resources"
           ? ["body"]
           : key === "counselors"
-            ? ["expertise", "availability"]
+            ? ["expertise"]
             : []) {
           if (
             !Array.isArray(item[field]) ||
@@ -288,16 +275,10 @@
         }
       }
     }
-    if (
-      value.services.some(
-        (service) =>
-          !value.counselors.some((person) => person.id === service.counselorId),
-      )
-    )
-      throw new Error("Missing counselor");
     return value;
   }
   async function load() {
+    const version = ++loadVersion;
     ready = false;
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
@@ -308,7 +289,23 @@
         signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) throw new Error("Load failed");
-      data = validate(await response.json());
+      const loaded = validate(await response.json());
+      if (page === "services") {
+        const catalog = await CampusMindServices.read();
+        loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
+      }
+      if (page === "counselors") {
+        try {
+          const slots = await Promise.race([CampusMindPublicSchedule.read(), new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))]);
+          if (version !== loadVersion) return;
+          publicSlots = slots; scheduleError = false;
+        } catch {
+          if (version !== loadVersion) return;
+          publicSlots = []; scheduleError = true;
+        }
+      }
+      if (version !== loadVersion) return;
+      data = loaded;
       ready = true;
       if (page === "counselors") renderCounselor();
       else {
@@ -321,6 +318,7 @@
         renderList();
       }
     } catch {
+      if (version !== loadVersion) return;
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
@@ -329,6 +327,7 @@
         load,
       );
     } finally {
+      if (version !== loadVersion) return;
       results.setAttribute("aria-busy", "false");
       if (controls) controls.disabled = !ready;
     }
@@ -341,6 +340,23 @@
     .querySelector("#filters")
     ?.addEventListener("submit", (event) => event.preventDefault());
   if (page === "resources") {
+    const clearDialog = document.querySelector('#clear-saved-dialog');
+    document.querySelector('#clear-saved').addEventListener('click', () => {
+      document.querySelector('#clear-saved-error').textContent = '';
+      clearDialog.showModal();
+    });
+    document.querySelector('#confirm-clear-saved').addEventListener('click', () => {
+      try {
+        localStorage.removeItem(storageKey);
+        saved = new Set();
+        renderList();
+        clearDialog.close();
+        savedOnly.focus();
+        feedback.textContent = 'Đã xóa danh sách tài nguyên đã lưu trên trình duyệt này.';
+      } catch {
+        document.querySelector('#clear-saved-error').textContent = 'Không thể xóa danh sách. Hãy kiểm tra quyền lưu trữ rồi thử lại.';
+      }
+    });
     readSaved();
     window.addEventListener("storage", (event) => {
       if (event.key === storageKey || event.key === null) {
@@ -348,6 +364,17 @@
         renderList();
       }
     });
+  }
+  if (page === "services") window.addEventListener("storage", event => {
+    if (event.key === CampusMindServices.key || event.key === null) load();
+  });
+  if (page === "counselors") {
+    window.addEventListener("storage", event => {
+      if ([null, "campusmind.counselor.v1", "campusmind.sv2.users.v1"].includes(event.key)) load();
+    });
+    window.addEventListener("pageshow", event => { if (event.persisted) load(); });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+    setInterval(() => { if (!document.hidden && ready) load(); }, 60000);
   }
   load();
 })();

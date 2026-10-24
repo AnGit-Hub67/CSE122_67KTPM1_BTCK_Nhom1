@@ -63,7 +63,7 @@ for (const file of files(root)) {
   const role = source.match(/data-role="(student|counselor|admin)"/)?.[1];
   const parts = {
     header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
-    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}${anchor(["Bộ giao diện", "pages/ui-kit.html"])}</nav></div></footer>`,
+    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}${anchor(["Liên hệ", "index.html#contact"])}${anchor(["Dữ liệu và quyền xem", "index.html#privacy"])}</nav></div></footer>`,
     "visitor-entry": visitorReady
       ? `<div class="actions">${routes
           .slice(1)
