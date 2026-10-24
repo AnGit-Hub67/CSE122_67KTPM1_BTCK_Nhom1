@@ -26,6 +26,7 @@
       toggle.onclick=()=>{nav.hidden=!nav.hidden;toggle.setAttribute('aria-expanded',String(!nav.hidden));if(!nav.hidden)nav.querySelector('a')?.focus();};
     }
     const header=document.querySelector('.site-header');if(header)header.hidden=Boolean(user);
+    if(sidebar&&document.body.dataset.role)sidebar.hidden=!user||user.role!==document.body.dataset.role;
     if(!user&&sidebar?.hasAttribute('data-dynamic-sidebar')){const shell=sidebar.parentElement;shell.before(shell.querySelector('main'));shell.remove();sidebar=null;}
     if(!sidebar&&!document.querySelector('[data-theme-toggle]'))document.querySelector('.header-inner')?.append(button('Đổi giao diện','data-theme-toggle'));
     try{theme(localStorage.getItem(themeKey));}catch{}

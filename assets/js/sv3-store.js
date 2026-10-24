@@ -29,6 +29,12 @@
     if(name.length<2||name.length>150)throw Error('Họ tên cần 2–150 ký tự.');
     if(now.items.some(u=>u.id!==id&&u.email.toLowerCase()===email))throw Error('Email đã được sử dụng.');
     const item=now.items.find(u=>u.id===id);Object.assign(item,{name,email});validateUsers(now.items);
+    if(fields.counselorProfile!==undefined){
+      if(user.role!=='counselor')throw Error('Chỉ chuyên viên được cập nhật hồ sơ chuyên môn.');
+      const limits={qualification:150,organization:150,specialties:300,experience:500,bio:1500};
+      const profile={};for(const [key,max] of Object.entries(limits)){const value=fields.counselorProfile[key];if(typeof value!=='string'||value.length>max)throw Error('Thông tin chuyên môn không hợp lệ.');profile[key]=value.trim();}
+      item.counselorProfile=profile;
+    }
     localStorage.setItem(USERS,JSON.stringify(now.items));window.CampusDemoSync?.announce(USERS);return users();
   });}
   function initialSchedule(){

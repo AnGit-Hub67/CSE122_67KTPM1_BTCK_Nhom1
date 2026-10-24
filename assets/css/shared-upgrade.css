@@ -15,6 +15,9 @@
 [data-theme="dark"] .primary { background:#484bd2; color:#fff; }
 .report-tools { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; }
 .report-tools label { display:grid; gap:4px; }
+#professional-profile label { display:grid; gap:8px; margin:18px 0; }
+#professional-preview { margin-top:20px; overflow-wrap:anywhere; }
+[data-theme="dark"] :is(#ai-draft,#note-summary) { background:var(--surface);color:var(--text); }
 .drawer-close { display:none; }
 @media(max-width:700px) { .drawer-close { display:block; } }
 @media(max-width:700px) { .sidebar { position:relative; max-height:none; } .sidebar .brand-logo { width:90px; } .sidebar #role-navigation:not([hidden]) { position:fixed; top:0; left:0; bottom:0; width:min(300px,85vw); padding:24px; background:var(--surface); z-index:30; box-shadow:0 0 0 100vmax #0006; overflow:auto; flex-wrap:nowrap; } }
