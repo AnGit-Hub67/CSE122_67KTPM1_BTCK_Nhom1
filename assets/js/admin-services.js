@@ -1,5 +1,7 @@
-(() => {
+(async () => {
   'use strict';
+  // Shared frontend guard; production still requires server-side authorization.
+  if((await window.CampusSession.ready)?.role!=='admin')return;
   const KEY = 'campusmind.admin.services.v1';
   const $ = (id) => document.getElementById(id);
   const labels = { active: 'Đang hoạt động', inactive: 'Tạm ngưng', archived: 'Đã lưu trữ' };
@@ -66,6 +68,10 @@
     finally { $('loading-state').hidden = true; $('service-results').setAttribute('aria-busy', 'false'); }
   }
   function persist(next, errorId) {
+    if(window.CampusSession.current()?.role!=='admin'){
+      $(errorId).textContent='Phiên quản trị không còn hợp lệ. Đăng nhập lại.';
+      $(errorId).hidden=false;return false;
+    }
     try { localStorage.setItem(KEY, JSON.stringify(next)); services = next; return true; }
     catch { const error = $(errorId); error.textContent = 'Không thể lưu thay đổi. Kiểm tra quyền hoặc dung lượng lưu trữ của trình duyệt rồi thử lại. Nội dung bạn nhập vẫn được giữ.'; error.hidden = false; return false; }
   }

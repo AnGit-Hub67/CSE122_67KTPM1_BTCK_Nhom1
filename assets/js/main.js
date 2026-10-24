@@ -1,3 +1,36 @@
+// Frontend demo session only: this does not provide server authorization.
+(() => {
+  const root=new URL('../../',document.currentScript.src);
+  const key='campusmind.session.v1', usersKey='campusmind.sv2.users.v1';
+  let seeds=[];
+  const current=()=>{
+    const session=JSON.parse(sessionStorage.getItem(key)||'null');
+    const users=JSON.parse(localStorage.getItem(usersKey)||'null')||seeds;
+    if(!Array.isArray(users))throw Error('Dữ liệu người dùng không hợp lệ.');
+    return users.find(u=>u.id===session?.id&&u.role===session?.role&&u.status==='active')||null;
+  };
+  const main=document.querySelector('main'),admin=document.body.dataset.role==='admin';
+  if(admin&&main)main.hidden=true;
+  const login=new URL('sv2-login.html',root).href;
+  const ready=(async()=>{
+    try{
+      const r=await fetch(new URL('assets/data/sv2.json',root));
+      if(!r.ok)throw Error('Không tải được tài khoản demo.');
+      seeds=(await r.json()).users;
+      const user=current(),nav=document.getElementById('primary-navigation');
+      const entry=document.createElement('a');entry.href=login;entry.textContent=user?user.name+' · Đổi tài khoản':'Đăng nhập demo';nav?.append(entry);
+      if(user){const exit=document.createElement('button');exit.type='button';exit.textContent='Đăng xuất';exit.addEventListener('click',()=>{sessionStorage.removeItem(key);sessionStorage.removeItem('campusmind.sv2.student.session.v1');location.reload();});nav?.append(exit);}
+      if(admin&&user?.role!=='admin')throw Error('Cần đăng nhập demo bằng tài khoản quản trị.');
+      if(admin&&main)main.hidden=false;
+      return user;
+    }catch(err){
+      const notice=document.createElement('p');notice.className='notice';notice.setAttribute('role','alert');notice.textContent=err.message+' ';
+      const a=document.createElement('a');a.href=login;a.textContent='Đăng nhập demo';notice.append(a);main?.before(notice);return null;
+    }
+  })();
+  window.CampusSession={current,ready};
+  window.addEventListener('storage',event=>{if(event.key===usersKey||event.key===null){try{if(!current()||admin&&current().role!=='admin')location.reload();}catch{location.reload();}}});
+})();
 // Shared progressive enhancement. Navigation remains visible without JavaScript.
 (() => {
   "use strict";

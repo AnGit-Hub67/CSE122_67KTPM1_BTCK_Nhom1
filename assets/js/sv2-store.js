@@ -14,7 +14,13 @@
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const future = (date, time) => Date.parse(`${date}T${time}:00+07:00`) > Date.now();
   const unique = rows => new Set(rows.map(x => x.id)).size === rows.length;
-  const studentId = () => sessionStorage.getItem(SESSION) || config.studentId;
+  const currentUser = () => {
+    const raw=sessionStorage.getItem('campusmind.session.v1');
+    if(!raw)return null;
+    const session=JSON.parse(raw);
+    return readUsers().users.find(u=>u.id===session.id&&u.role===session.role&&u.status==='active')||null;
+  };
+  const studentId = () => {const u=currentUser();return u?.role==='student'?u.id:null;};
   async function getJSON(file) {
     const r=await fetch(new URL(file,dataURL),{cache:'no-cache'});
     if(!r.ok)fail('Không tải được JSON ('+r.status+'). Hãy chạy bằng máy chủ HTTP và thử lại.');
@@ -49,7 +55,8 @@
   }
   function enterStudentDemo(id) {
     if(!readUsers().users.some(u=>u.id===id&&u.role==='student'&&u.status==='active'))fail('Tài khoản không còn hoạt động.');
-    sessionStorage.setItem(SESSION,id);
+    sessionStorage.setItem('campusmind.session.v1',JSON.stringify({id,role:'student'}));
+    sessionStorage.removeItem(SESSION);
   }
   function validateUsers(users) {
     if (!Array.isArray(users) || !unique(users) || !users.every(u => text(u.id,100) && text(u.name,150) && text(u.email,254) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u.email) && roles.includes(u.role) && ['active','disabled'].includes(u.status)) || new Set(users.map(u=>u.email.toLowerCase())).size!==users.length) fail('Dữ liệu người dùng không hợp lệ. Dữ liệu gốc được giữ nguyên.');
@@ -123,20 +130,20 @@
     if(!a||!['Pending','Confirmed'].includes(a.status)||!future(a.date,a.time))fail('Không thể hủy lịch này.');a.status='Cancelled';a.updatedAt=new Date().toISOString();
   },'Sinh viên đã hủy lịch hẹn');
   const createUser=(snapshot,fields)=>mutate(snapshot,'users',state=>{
-    if(!active(state.users,config.adminId,'admin'))fail('Tài khoản quản trị không hoạt động.');
+    if(!active(state.users,currentUser()?.id,'admin'))fail('Tài khoản quản trị không hoạt động.');
     const user={id:crypto.randomUUID(),name:String(fields.name||'').trim(),email:String(fields.email||'').trim().toLowerCase(),role:fields.role,status:'active'};
     if(state.users.some(u=>u.email.toLowerCase()===user.email))fail('Email đã được sử dụng bởi người dùng khác.');
     state.users.push(user);validateUsers(state.users);
   },'Đã thêm người dùng');
   const updateUser=(snapshot,id,patch)=>mutate(snapshot,'users',state=>{
-    if(!active(state.users,config.adminId,'admin'))fail('Tài khoản quản trị không hoạt động.');
+    if(!active(state.users,currentUser()?.id,'admin'))fail('Tài khoản quản trị không hoạt động.');
     const user=state.users.find(u=>u.id===id);if(!user)fail('Không tìm thấy người dùng.');
-    const next={...user,...patch};next.name=next.name.trim();next.email=next.email.trim().toLowerCase();
-    if(id===config.adminId&&(next.role!=='admin'||next.status!=='active'))fail('Không thể vô hiệu hóa hoặc đổi vai trò tài khoản quản trị đang dùng.');
+    const next={...user,...Object.fromEntries(Object.entries(patch).filter(([key])=>['name','email','role','status'].includes(key)))};next.name=next.name.trim();next.email=next.email.trim().toLowerCase();
+    if(id===currentUser()?.id&&(next.role!=='admin'||next.status!=='active'))fail('Không thể vô hiệu hóa hoặc đổi vai trò tài khoản quản trị đang dùng.');
     if(user.role==='admin'&&user.status==='active'&&(next.role!=='admin'||next.status!=='active')&&state.users.filter(u=>u.role==='admin'&&u.status==='active').length<=1)fail('Cần giữ ít nhất một quản trị viên hoạt động.');
     if(state.users.some(u=>u.id!==id&&u.email.toLowerCase()===next.email))fail('Email đã được sử dụng bởi người dùng khác.');
     if(!next.name)fail('Họ tên không được chỉ chứa khoảng trắng.');
     Object.assign(user,next);validateUsers(state.users);
   },'Cập nhật người dùng');
-  window.SV2Store={KEY,USERS,SESSION,init,initRegistration,register,enterStudentDemo,read,book,cancel,createUser,updateUser,available,counselorOf,today,future,get studentId(){return studentId();},get config(){return config;},get directory(){return directory;}};
+  window.SV2Store={KEY,USERS,SESSION,currentUser,init,initRegistration,register,enterStudentDemo,read,book,cancel,createUser,updateUser,available,counselorOf,today,future,get studentId(){return studentId();},get config(){return config;},get directory(){return directory;}};
 })();

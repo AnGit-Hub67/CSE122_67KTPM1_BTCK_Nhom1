@@ -74,7 +74,7 @@
     const requested=new URLSearchParams(location.search).get('counselor');
     const cid=old?S.counselorOf(old):requested;
     if(cid&&[...$('counselor').options].some(o=>o.value===cid&&!o.disabled))$('counselor').value=cid;
-    $('date').value=old?.date||S.today();$('reason').value=old?.reason||'';renderSlots();
+    $('date').value=old?.date||state.schedule.slots.filter(s=>S.counselorOf(s)===cid&&S.available(state,s)).map(s=>s.date).sort()[0]||S.today();$('reason').value=old?.reason||'';renderSlots();
   }
   $('booking-form')?.addEventListener('submit',e=>{
     e.preventDefault();if(!$('booking-form').reportValidity()||!selected)return;
@@ -84,7 +84,10 @@
       success(await S.book(state,slotId,editId,reason),editId?'Đã đổi lịch. Yêu cầu đang chờ xác nhận.':'Đặt lịch thành công. Yêu cầu đang chờ xác nhận.');renderSlots();
     });
   });
-  ['counselor','date'].forEach(id=>$(id)?.addEventListener('change',renderSlots));
+  $('date')?.addEventListener('change',renderSlots);
+  $('counselor')?.addEventListener('change',()=>{
+    $('date').value=state.schedule.slots.filter(s=>S.counselorOf(s)===$('counselor').value&&S.available(state,s,editId)).map(s=>s.date).sort()[0]||S.today();renderSlots();
+  });
   function renderUsers(){
     stats([['Tổng người dùng',state.users.length],['Đang hoạt động',state.users.filter(u=>u.status==='active').length],['Đã vô hiệu hóa',state.users.filter(u=>u.status==='disabled').length]]);
     const q=$('search').value.trim().toLocaleLowerCase('vi'),role=$('role-filter').value,status=$('status-filter').value;
@@ -93,7 +96,7 @@
     for(const u of rows){const row=el('tr'),who=el('td',u.name);who.append(el('small',u.id));const statusCell=el('td');statusCell.append(badge(u.status));const actions=el('td'),wrap=el('div','','actions');
       const edit=button('Chỉnh sửa',()=>{editingUser=u.id;$('edit-title').textContent='Chỉnh sửa người dùng';$('edit-id').textContent=u.id;$('edit-name').value=u.name;$('edit-email').value=u.email;$('edit-role').value=u.role;$('edit-error').textContent='';$('edit-dialog').showModal();});edit.setAttribute('aria-label','Chỉnh sửa '+u.name);
       const toggle=button(u.status==='active'?'Vô hiệu hóa':'Kích hoạt',()=>confirmation(u.status==='active'?'Vô hiệu hóa người dùng?':'Kích hoạt người dùng?',`${u.name} (${u.email}). ${u.status==='active'?'Dữ liệu và lịch hẹn hiện có sẽ được giữ lại.':''}`,async()=>{success(await S.updateUser(state,u.id,{status:u.status==='active'?'disabled':'active'}),'Đã cập nhật trạng thái người dùng.');renderUsers();}));
-      toggle.setAttribute('aria-label',(u.status==='active'?'Vô hiệu hóa ':'Kích hoạt ')+u.name);toggle.disabled=u.id===S.config.adminId;
+      toggle.setAttribute('aria-label',(u.status==='active'?'Vô hiệu hóa ':'Kích hoạt ')+u.name);toggle.disabled=u.id===S.currentUser()?.id;
       wrap.append(edit,toggle);actions.append(wrap);if(toggle.disabled)actions.append(el('small','Tài khoản quản trị đang dùng'));row.append(who,el('td',u.email),el('td',roles[u.role]),statusCell,actions);$('users').append(row);
     }
   }
@@ -112,8 +115,8 @@
     $('work-content').hidden=true;$('work-content').setAttribute('aria-busy','true');$('work-error').hidden=true;$('retry').hidden=true;$('work-status').textContent='Đang tải dữ liệu…';
     try{
       state=await S.init();
-      const id=document.body.dataset.role==='admin'?S.config.adminId:S.studentId,role=document.body.dataset.role;
-      if(!state.users.some(u=>u.id===id&&u.role===role&&u.status==='active'))throw Error('Tài khoản demo đã bị vô hiệu hóa hoặc đổi vai trò. Hãy dùng trang quản trị để cập nhật.');
+      const id=S.currentUser()?.id,role=document.body.dataset.role;
+      if(!state.users.some(u=>u.id===id&&u.role===role&&u.status==='active'))throw Error('Bạn chưa đăng nhập đúng vai trò hoặc tài khoản đã bị vô hiệu hóa. Chọn Đăng nhập demo để tiếp tục.');
       if(screen==='student-dashboard')renderDashboard();else if(screen==='student-booking')setupBooking();else renderList();
       $('work-content').hidden=false;$('work-status').textContent=role==='student'?'Tài khoản demo: '+state.users.find(u=>u.id===id).name:'Dữ liệu demo đã sẵn sàng.';
     }catch(err){error(err);$('retry').hidden=false;$('work-status').textContent='Tải dữ liệu thất bại.';}
