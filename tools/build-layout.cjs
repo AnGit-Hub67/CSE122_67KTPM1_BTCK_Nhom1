@@ -63,6 +63,7 @@ for (const file of files(root)) {
   const anchor = ([label, target]) =>
     `<a href="${href(target)}"${relative === target ? ' aria-current="page"' : ""}>${label}</a>`;
   const role = source.match(/data-role="(student|counselor|admin)"/)?.[1];
+  const logo = `<img class="brand-logo" src="${href('assets/images/campusmind-logo.png')}" alt="CampusMind" width="540" height="422">`;
   const parts = {
     header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
     footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}</nav></div></footer>`,
@@ -81,15 +82,22 @@ for (const file of files(root)) {
   };
   if (role) {
     const menus = {
-      student: [['Dashboard','pages/student/student-dashboard.html'],['Đặt lịch','pages/student/student-booking.html'],['Lịch hẹn','pages/student/student-appointments.html']],
+      student: [['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html']],
       counselor: [['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],
       admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html']]
     };
-    const links = [['Tổng quan', `pages/${role}/index.html`], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : []), ['Khám phá dịch vụ',routes[1][1]],['Trang chủ','index.html']];
+    const dashboard = role === 'student' && exists('pages/student/student-dashboard.html') ? 'pages/student/student-dashboard.html' : `pages/${role}/index.html`;
+    const links = [[role==='student'?'Tổng quan sinh viên':'Tổng quan', dashboard], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : [])];
     const label = roles.find(item=>item[1]===role)[0];
-    parts.sidebar = `<aside class="sidebar" aria-label="Khu vực ${label}"><strong>Khu vực ${label}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${links.map(anchor).join('')}<span class="sidebar-note">Dữ liệu giả lập phục vụ học phần.</span></nav></aside>`;
+    parts.header = '';
+    parts.sidebar = `<aside class="sidebar" aria-label="Khu vực ${label}"><a class="brand" href="${href(dashboard)}">${logo}</a><strong>${role==='student'?'Không gian Sinh viên':'Khu vực '+label}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${links.map(anchor).join('')}<button type="button" data-theme-toggle>Đổi giao diện</button><button type="button" data-logout>Đăng xuất</button></nav></aside>`;
   }
+  if (!role) parts.header = parts.header.replace('Campus<span>Mind</span>', logo);
+  parts.footer += '<p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>';
   let output = source;
+  output = output.replace(/ data-student-dashboard="[^"]*"/g, '').replace('<body', `<body data-student-dashboard="${exists('pages/student/student-dashboard.html')?'pages/student/student-dashboard.html':'pages/student/index.html'}"`);
+  if (!source.includes('assets/js/shared-upgrade.js')) output = output.replace('</head>', `<script defer src="${href('assets/js/shared-upgrade.js')}"></script></head>`);
+  if (!source.includes('assets/css/shared-upgrade.css')) output = output.replace('</head>', `<link rel="stylesheet" href="${href('assets/css/shared-upgrade.css')}"></head>`);
   for (const [key, html] of Object.entries(parts)) {
     output = output.replace(
       new RegExp(

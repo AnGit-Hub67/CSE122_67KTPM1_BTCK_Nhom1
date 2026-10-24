@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const root=new URL('../../',document.currentScript.src),key='campusmind.session.v1',usersKey='campusmind.sv2.users.v1';
-  const main=document.querySelector('main'),role=['admin','counselor'].includes(document.body.dataset.role)?document.body.dataset.role:null;
+  const main=document.querySelector('main'),role=['student','admin','counselor'].includes(document.body.dataset.role)?document.body.dataset.role:null;
   const login=new URL('login.html',root).href;let seeds=[],notice;
   if(role&&main)main.hidden=true;
   const current=()=>{
@@ -23,6 +23,7 @@
       if(!allowed){if(!notice){notice=document.createElement('p');notice.className='notice';notice.setAttribute('role','alert');main.before(notice);}notice.replaceChildren(document.createTextNode(problem||'Cần đăng nhập demo đúng vai trò để mở khu vực này. '));const a=document.createElement('a');a.href=login;a.textContent='Đăng nhập demo';notice.append(a);}
       else{notice?.remove();notice=null;}
     }
+    window.dispatchEvent(new CustomEvent('campusmind:session',{detail:user}));
     return user;
   }
   const ready=(async()=>{try{let r=await fetch(new URL('assets/data/sv2.json',root),{signal:AbortSignal.timeout(10000)});if(r.status===404)r=await fetch(new URL('assets/data/login-demo.json',root),{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error();seeds=(await r.json()).users;}catch{seeds=[];}return render();})();

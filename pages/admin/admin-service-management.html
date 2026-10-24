@@ -12,19 +12,15 @@
     <script defer src="../../assets/js/main.js"></script>
     <script defer src="../../assets/js/service-store.js"></script>
     <script defer src="../../assets/js/admin-services.js"></script>
-  </head>
-  <body data-role="admin">
+  <script defer src="../../assets/js/shared-upgrade.js"></script><link rel="stylesheet" href="../../assets/css/shared-upgrade.css"></head>
+  <body data-student-dashboard="pages/student/index.html" data-role="admin">
     <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
     <!-- campusmind:header -->
-<header class="site-header"><div class="header-inner"><a class="brand" href="../../index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="../../index.html">Trang chủ</a>
-<a href="../visitor/visitor-service-directory.html">Dịch vụ</a>
-<a href="../visitor/visitor-resource-library.html">Tài nguyên</a>
-<a href="../visitor/visitor-counselor-detail.html">Chuyên viên</a>
-<a href="../../profile.html">Hồ sơ</a></nav></div></header>
+
 <!-- /campusmind:header -->
     <div class="app-shell">
       <!-- campusmind:sidebar -->
-<aside class="sidebar" aria-label="Khu vực Quản trị viên"><strong>Khu vực Quản trị viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"><a href="index.html">Tổng quan</a><a href="admin-dashboard.html">Bảng tổng quan</a><a href="admin-service-management.html" aria-current="page">Quản lý dịch vụ</a><a href="../../profile.html">Hồ sơ</a><a href="../visitor/visitor-service-directory.html">Khám phá dịch vụ</a><a href="../../index.html">Trang chủ</a><span class="sidebar-note">Dữ liệu giả lập phục vụ học phần.</span></nav></aside>
+<aside class="sidebar" aria-label="Khu vực Quản trị viên"><a class="brand" href="index.html"><img class="brand-logo" src="../../assets/images/campusmind-logo.png" alt="CampusMind" width="540" height="422"></a><strong>Khu vực Quản trị viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"><a href="index.html">Tổng quan</a><a href="admin-dashboard.html">Bảng tổng quan</a><a href="admin-service-management.html" aria-current="page">Quản lý dịch vụ</a><a href="../../profile.html">Hồ sơ</a><button type="button" data-theme-toggle>Đổi giao diện</button><button type="button" data-logout>Đăng xuất</button></nav></aside>
 <!-- /campusmind:sidebar -->
       <main id="main" tabindex="-1">
   <section class="service-heading" aria-labelledby="page-title"><div><span class="eyebrow">CampusMind / Quản trị</span><h1 id="page-title">Quản lý dịch vụ</h1><p class="muted">Quản lý các dịch vụ đồng hành cùng sinh viên.</p></div><button id="add-service" class="primary" disabled>+ Thêm dịch vụ</button></section>
@@ -50,7 +46,7 @@
 <p id="save-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close>Hủy</button><button class="primary" type="submit">Lưu dịch vụ</button></div></form></dialog>
 <dialog id="archive-dialog" class="service-dialog" aria-labelledby="archive-title" aria-describedby="archive-description"><h2 id="archive-title">Lưu trữ dịch vụ?</h2><p id="archive-description"></p><p class="muted">Dịch vụ vẫn được giữ để tra cứu trong bộ lọc “Đã lưu trữ” và được ẩn khỏi danh mục Visitor.</p><p id="archive-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close autofocus>Giữ dịch vụ</button><button type="button" id="confirm-archive" class="danger">Lưu trữ dịch vụ</button></div></dialog>
     <!-- campusmind:footer -->
-<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a></nav></div></footer>
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a></nav></div></footer><p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>
 <!-- /campusmind:footer -->
   </body>
 </html>

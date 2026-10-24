@@ -1,0 +1,22 @@
+:root { --surface: #fff; --border: #cbd5e1; --accent-soft: #eef0ff; color-scheme: light; }
+[data-theme="dark"] { --background:#101827; --surface:#1c293c; --white:#1c293c; --text:#e5edf8; --muted:#bdcbe0; --navy:#e5edf8; --border:#586981; --accent-soft:#303e60; --primary:#b3b5ff; color-scheme:dark; }
+.brand-logo { display:block; width:130px; height:auto; object-fit:contain; border-radius:8px; }
+.sidebar .brand-logo { width:160px; max-width:100%; }
+.sidebar { align-self:start; position:sticky; top:0; max-height:100vh; overflow:auto; }
+.sidebar nav { align-items:stretch; }
+.sidebar [data-logout] { margin-top:20px; }
+.crisis-line { text-align:center; padding:12px 18px; font-size:14px; color:var(--muted); }
+.skeleton-block { height:70px; margin:12px 0; border-radius:12px; background:linear-gradient(90deg,var(--border),var(--surface),var(--border)); background-size:200% 100%; animation:loading-shimmer 1.4s infinite; }
+@keyframes loading-shimmer { to { background-position:-200% 0; } }
+[data-theme="dark"] :is(.site-header,.site-footer,.sidebar,.panel,.card,.toolbar,.notice,.stat-card,dialog,input,textarea,select,button,.button,.skip-link) { background:var(--surface); color:var(--text); border-color:var(--border); }
+[data-theme="dark"] :is(a,.eyebrow,nav a[aria-current],.brand span) { color:#c0c2ff; }
+[data-theme="dark"] :is(.badge,.empty,.meta,.lead) { color:var(--muted); background:var(--surface); }
+[data-theme="dark"] :is(button:hover,.button:hover,nav a:hover) { background:var(--accent-soft); }
+[data-theme="dark"] .primary { background:#484bd2; color:#fff; }
+.report-tools { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; }
+.report-tools label { display:grid; gap:4px; }
+.drawer-close { display:none; }
+@media(max-width:700px) { .drawer-close { display:block; } }
+@media(max-width:700px) { .sidebar { position:relative; max-height:none; } .sidebar .brand-logo { width:90px; } .sidebar #role-navigation:not([hidden]) { position:fixed; top:0; left:0; bottom:0; width:min(300px,85vw); padding:24px; background:var(--surface); z-index:30; box-shadow:0 0 0 100vmax #0006; overflow:auto; flex-wrap:nowrap; } }
+@media(prefers-reduced-motion:reduce) { .skeleton-block { animation:none; } }
+@media print { .sidebar,.site-header,.site-footer,.report-tools,button,.skip-link,.crisis-line { display:none!important; } .app-shell { display:block; } main { max-width:none; padding:0; } :root,[data-theme="dark"] { --background:white; --surface:white; --text:black; --navy:black; --muted:#333; } .panel,.stat-card { break-inside:avoid; } }
