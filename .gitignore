@@ -6,6 +6,7 @@ coverage/
 
 # Local configuration
 .env
+assets/data/config.json
 .env.*
 !.env.example
 

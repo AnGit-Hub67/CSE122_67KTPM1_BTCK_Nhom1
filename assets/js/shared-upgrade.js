@@ -32,6 +32,10 @@
   }
   window.addEventListener('campusmind:session',e=>enhance(e.detail));
   window.CampusSession?.ready.then(enhance);
+  window.addEventListener('campusmind:remote-status',e=>{
+    let box=document.querySelector('#remote-status');if(!box){box=document.createElement('p');box.id='remote-status';box.setAttribute('role','status');document.querySelector('#work-status')?.after(box);}
+    box.textContent=e.detail;const retry=button('Thử đồng bộ lại','data-remote-retry');retry.onclick=()=>window.CampusDemoSync?.publish();box.append(document.createTextNode(' '),retry);
+  });
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-theme-toggle]')){const value=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(value);try{localStorage.setItem(themeKey,value);}catch{}channel?.postMessage({type:'theme',value});}
     if(e.target.closest('[data-logout]')){try{sessionStorage.removeItem('campusmind.session.v1');sessionStorage.removeItem('campusmind.sv2.student.session.v1');location.href=new URL('login.html',root);}catch{e.target.textContent='Không thể đăng xuất — thử lại';}}

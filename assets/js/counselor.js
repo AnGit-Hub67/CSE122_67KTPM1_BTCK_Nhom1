@@ -31,6 +31,7 @@
       const next=structuredClone(state);change(next);
       next.activity=[{text:message.slice(0,200),at:new Date().toISOString()},...next.activity].slice(0,100);
       const raw=JSON.stringify(next);localStorage.setItem(KEY,raw);state=next;revision=raw;
+      window.CampusDemoSync?.announce(KEY);window.CampusDemoSync?.publish();
       $('work-error').hidden=true;$('work-status').textContent=message;return true;
     });}catch(err){error(err.message+' Thay đổi chưa được lưu.');return false;}
     finally{busy=false;controls.forEach(([control,disabled])=>control.disabled=disabled);$('work-content').setAttribute('aria-busy','false');}

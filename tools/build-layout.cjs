@@ -95,6 +95,7 @@ for (const file of files(root)) {
   if (!role) parts.header = parts.header.replace('Campus<span>Mind</span>', logo);
   parts.footer += '<p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>';
   let output = source;
+  if (!source.includes('assets/js/demo-sync.js')) output = output.replace(/<script defer src="([^"]*assets\/js\/main.js)"><\/script>/, `<script defer src="${href('assets/js/demo-sync.js')}"></script>$&`);
   output = output.replace(/ data-student-dashboard="[^"]*"/g, '').replace('<body', `<body data-student-dashboard="${exists('pages/student/student-dashboard.html')?'pages/student/student-dashboard.html':'pages/student/index.html'}"`);
   if (!source.includes('assets/js/shared-upgrade.js')) output = output.replace('</head>', `<script defer src="${href('assets/js/shared-upgrade.js')}"></script></head>`);
   if (!source.includes('assets/css/shared-upgrade.css')) output = output.replace('</head>', `<link rel="stylesheet" href="${href('assets/css/shared-upgrade.css')}"></head>`);

@@ -3,7 +3,7 @@
   'use strict';
   const USERS='campusmind.sv2.users.v1', KEY='campusmind.counselor.v1', SESSION='campusmind.session.v1';
   const root=new URL('../../',document.currentScript.src);
-  let seeds,config,legacy='minh-anh';
+  let seeds,config,legacy='minh-anh',hydrated=false;
   const text=(v,max)=>typeof v==='string'&&v.length>0&&v.length<=max;
   function validateUsers(rows){
     if(!Array.isArray(rows)||new Set(rows.map(u=>u?.id)).size!==rows.length||!rows.every(u=>u&&text(u.id,100)&&text(u.name,150)&&text(u.email,254)&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u.email)&&['student','counselor','admin'].includes(u.role)&&['active','disabled'].includes(u.status))||new Set(rows.map(u=>u.email.toLowerCase())).size!==rows.length)throw Error('Dữ liệu người dùng không hợp lệ; dữ liệu gốc được giữ nguyên.');
@@ -13,7 +13,8 @@
     let r=await fetch(new URL('assets/data/sv2.json',root),{signal:AbortSignal.timeout(10000)});
     if(r.status===404)r=await fetch(new URL('assets/data/login-demo.json',root),{signal:AbortSignal.timeout(10000)});
     if(!r.ok)throw Error('Không tải được dữ liệu người dùng.');
-    config=await r.json();seeds=validateUsers(config.users);legacy=config.legacyCounselorId||'minh-anh';return users();
+    config=await r.json();seeds=validateUsers(config.users);legacy=config.legacyCounselorId||'minh-anh';
+    if(!hydrated){hydrated=true;await window.CampusDemoSync?.hydrate();}return users();
   }
   function users(){const raw=localStorage.getItem(USERS);return {raw,items:validateUsers(raw===null?structuredClone(seeds):JSON.parse(raw))};}
   function current(){
@@ -28,7 +29,7 @@
     if(name.length<2||name.length>150)throw Error('Họ tên cần 2–150 ký tự.');
     if(now.items.some(u=>u.id!==id&&u.email.toLowerCase()===email))throw Error('Email đã được sử dụng.');
     const item=now.items.find(u=>u.id===id);Object.assign(item,{name,email});validateUsers(now.items);
-    localStorage.setItem(USERS,JSON.stringify(now.items));return users();
+    localStorage.setItem(USERS,JSON.stringify(now.items));window.CampusDemoSync?.announce(USERS);return users();
   });}
   function initialSchedule(){
     const slots=[];
