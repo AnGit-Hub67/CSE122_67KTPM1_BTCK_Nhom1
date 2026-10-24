@@ -67,7 +67,45 @@
     if(ok){renderAppointments();focusCard(id);}
   }
   function occupied(s){return state.appointments.some(a=>S.counselorOf(a)===S.counselorOf(s)&&a.date===s.date&&a.time<s.end&&(a.end||state.slots.find(slot=>slot.id===a.slotId)?.end||'23:59')>s.start&&a.status!=='Cancelled');}
+  let weekOffset=0;
+  const vnToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  function renderWeek(){
+    if(screen!=='counselor-schedule')return;
+    let section=$('weekly-calendar');
+    if(!section){section=element('section','','panel');section.id='weekly-calendar';$('slot-form').closest('section').before(section);}
+    section.replaceChildren();section.append(element('h2','Lịch làm việc theo tuần'));
+    const monday=new Date(vnToday()+'T00:00:00Z');monday.setUTCDate(monday.getUTCDate()-(monday.getUTCDay()+6)%7+weekOffset*7);
+    const days=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10);});
+    const controls=element('div','','actions');
+    controls.append(button('Tuần trước',()=>{weekOffset--;renderWeek();}),element('strong',days[0]+' — '+days[6]),button('Tuần sau',()=>{weekOffset++;renderWeek();}),button('Tuần hiện tại',()=>{weekOffset=0;renderWeek();}));section.append(controls);
+    section.append(element('p','Giờ Việt Nam (UTC+7). Chọn ô còn trống/nghỉ để đổi lịch tiếp nhận; ô đã có lịch hẹn mở hàng đợi. Khung giờ đã qua không chỉnh sửa.'));
+    const wrapper=element('div','','week-scroll');wrapper.tabIndex=0;wrapper.setAttribute('role','region');wrapper.setAttribute('aria-label','Lịch tuần, cuộn ngang để xem đủ bảy ngày');
+    const table=element('table','','week-table'),caption=element('caption','Lịch tuần từ '+days[0]+' đến '+days[6]);table.append(caption);
+    const head=element('thead',''),header=element('tr','');const timeHead=element('th','Giờ');timeHead.scope='col';header.append(timeHead);
+    days.forEach((date,i)=>{const th=element('th',(i===6?'Chủ nhật':'Thứ '+(i+2))+' '+date.slice(8)+'/'+date.slice(5,7));th.scope='col';header.append(th);});head.append(header);table.append(head);
+    const body=element('tbody','');
+    for(const start of ['08:00','09:00','10:00','13:30','14:30','15:30','19:00']){
+      const end=String(Number(start.slice(0,2))+1).padStart(2,'0')+start.slice(2),row=element('tr',''),th=element('th',start);th.scope='row';row.append(th);
+      for(const date of days){
+        const cell=element('td',''),slot=state.slots.find(s=>owns(s)&&s.date===date&&s.start<end&&s.end>start);
+        const booked=occupied({counselorId,date,start,end}),past=Date.parse(date+'T'+start+':00+07:00')<=Date.now();
+        const available=slot&&slot.available!==false,label=booked?'Đã có lịch hẹn':available?'Còn trống':'Nghỉ';
+        const action=button(label,async()=>{
+          if(booked){location.href='counselor-appointment-queue.html?date='+encodeURIComponent(date);return;}
+          const ok=await save(next=>{
+            if(Date.parse(date+'T'+start+':00+07:00')<=Date.now())throw Error('Khung giờ đã qua.');
+            if(slot){const target=next.slots.find(s=>s.id===slot.id&&owns(s));if(!target||occupied(target))throw Error('Khung giờ đã có lịch hẹn.');target.available=!available;}
+            else next.slots.push({id:crypto.randomUUID(),counselorId,date,start,end,available:true});
+          },`${date} ${slot?slot.start+'–'+slot.end:start+'–'+end}: ${available?'Đã chuyển sang nghỉ':'Đã mở lịch tiếp nhận'}`);
+          if(ok){renderSlots();$('weekly-calendar').querySelector(`[data-cell="${date}-${start}"]`)?.focus();}
+        });action.dataset.cell=date+'-'+start;action.className='week-cell '+(booked?'booked':available?'available':'rest');action.disabled=past&&!booked;
+        action.setAttribute('aria-label',`${date} ${start}–${end}: ${label}${past?' · Đã qua':''}${slot?' · Khung thực tế '+slot.start+'–'+slot.end:''}`);
+        cell.append(action);if(past)cell.append(element('small','Đã qua'));row.append(cell);
+      }body.append(row);
+    }table.append(body);wrapper.append(table);section.append(wrapper);
+  }
   function renderSlots(){
+    renderWeek();
     if(!$('slots'))return;const list=$('slots');list.replaceChildren();list.tabIndex=-1;
     const rows=state.slots.filter(owns).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
     if(!rows.length)empty(list,'Chưa có khung giờ tiếp nhận. Dùng biểu mẫu Thêm khung giờ phía trên để mở lịch.');
