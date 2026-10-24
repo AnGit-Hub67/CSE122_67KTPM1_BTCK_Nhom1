@@ -4,7 +4,7 @@ const root=path.resolve(process.env.CAMPUSMIND_ROOT||path.join(__dirname,'..')),
 const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+decodeURIComponent(req.url.split('?')[0]));if(!file.startsWith(root+path.sep))return res.writeHead(403).end();fs.readFile(file,(e,data)=>{if(e)return res.writeHead(404).end();res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.js':'application/javascript','.json':'application/json','.css':'text/css','.png':'image/png'})[path.extname(file)]||'text/plain');res.end(data);});});
 (async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});const checks=[],pass=s=>{checks.push(s);console.log('PASS '+s);};
 try{
-const context=await browser.newContext(),page=await context.newPage(),other=await context.newPage(),errors=[];for(const p of [page,other])p.on('pageerror',e=>errors.push(e.message));
+const context=await browser.newContext();await context.route("**/assets/data/config.json",route=>route.fulfill({json:{enableDemoRemoteSync:false}}));const page=await context.newPage(),other=await context.newPage(),errors=[];for(const p of [page,other])p.on('pageerror',e=>errors.push(e.message));
 const base='http://127.0.0.1:'+server.address().port,go=(route,p=page)=>p.goto(base+'/'+route),ready=p=>(p||page).locator('#work-content').waitFor();
 await go('index.html');await go('index.html',other);
 await page.evaluate(()=>sessionStorage.setItem('campusmind.session.v1',JSON.stringify({id:'minh-anh',role:'counselor'})));

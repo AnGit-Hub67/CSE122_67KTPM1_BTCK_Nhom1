@@ -12,6 +12,8 @@
   if(channel)channel.onmessage=e=>{if(e.data?.type==='theme')theme(e.data.value);};
   function button(text,attribute){const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute(attribute,'');return b;}
   function enhance(user){
+    const continuation=document.querySelector('#login-continue');
+    if(continuation&&['admin','counselor'].includes(user?.role))continuation.href=new URL(`pages/${user.role}/index.html`,root);
     let sidebar=document.querySelector('.sidebar');
     if(user&&!sidebar&&document.querySelector('main')){
       const shell=document.createElement('div');shell.className='app-shell';const main=document.querySelector('main');main.before(shell);

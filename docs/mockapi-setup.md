@@ -1,6 +1,8 @@
 # Cấu hình Fake REST cho SV3
 
-Mặc định chạy local/offline qua HTTP localhost, không cần tài khoản dịch vụ. Không có endpoint hoặc secret mặc định. `storage` đồng bộ các tab cùng origin; BroadcastChannel bổ sung tín hiệu invalidation (không truyền nội dung tư vấn). Phiên từng role ở sessionStorage riêng mỗi tab.
+Đã kết nối URL do người dùng cung cấp: `https://6add2cd4fa5e73d4ab2de718.mockapi.io/api/v1/schedules/1`. Record 1 được tạo trên resource rỗng, kiểm tra GET/PUT thực tế thành công. `assets/data/config.public.json` chứa URL public này (không phải secret). Trình duyệt ưu tiên `config.json` local; nếu không có thì dùng cấu hình public. Muốn demo hoàn toàn local: tạo `config.json` với `enableDemoRemoteSync: false`.
+
+Khi API offline, vẫn dùng store local qua HTTP localhost. `storage` đồng bộ các tab cùng origin; BroadcastChannel bổ sung tín hiệu invalidation (không truyền nội dung tư vấn). Phiên từng role ở sessionStorage riêng mỗi tab. Các bước dưới dành cho đổi sang một dự án MockAPI khác:
 
 1. Tạo dự án MockAPI của bạn, resource lịch demo, một record ban đầu có các trường: `version` (number) = 1, `revision` (string) = `initial`, `slots` (array) = [], `appointments` (array) = []. MockAPI cấp `id`.
 2. Copy `assets/data/config.example.json` thành `assets/data/config.json` (đã gitignore). Điền URL HTTPS **đến record cụ thể** do MockAPI cấp, bật `enableDemoRemoteSync: true`. Không điền URL collection, token hoặc API key.

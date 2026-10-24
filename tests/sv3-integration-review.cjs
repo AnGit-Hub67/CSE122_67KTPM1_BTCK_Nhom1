@@ -6,7 +6,7 @@ const server=http.createServer((req,res)=>{const p=path.resolve(root,'.'+decodeU
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});const checks=[];
  const pass=s=>{checks.push(s);console.log('PASS '+s);};
  try{
- const context=await browser.newContext(),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const context=await browser.newContext();await context.route("**/assets/data/config.json",route=>route.fulfill({json:{enableDemoRemoteSync:false}}));const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  const base='http://127.0.0.1:'+server.address().port,go=p=>page.goto(base+'/'+p),ready=()=>page.locator('#work-content').waitFor();
  const login=async id=>{await go('login.html');await page.locator('#login-form').waitFor();await page.locator('#account').selectOption(id);await page.locator('#login-form button[type=submit]').click();await page.locator('#login-success').waitFor();assert.equal(await page.evaluate(()=>CampusSession.current()?.id),id);};
  const data=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('campusmind.counselor.v1')));

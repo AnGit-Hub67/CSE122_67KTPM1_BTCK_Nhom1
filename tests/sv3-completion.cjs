@@ -6,7 +6,7 @@ const server=http.createServer((req,res)=>{const file=path.join(root,decodeURICo
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});const checks=[];
  const pass=name=>{checks.push(name);console.log('PASS '+name);};
  try{
-  const context=await browser.newContext(),page=await context.newPage(),other=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const context=await browser.newContext();await context.route("**/assets/data/config.json",route=>route.fulfill({json:{enableDemoRemoteSync:false}}));const page=await context.newPage(),other=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   page.setDefaultTimeout(15000);const base='http://127.0.0.1:'+server.address().port;
   const date=new Date(Date.now()+3*86400000).toISOString().slice(0,10);
   const fixture={slots:[{id:'slot-a',counselorId:'minh-anh',date,start:'09:00',end:'10:00'},{id:'slot-b',counselorId:'quang-huy',date,start:'09:00',end:'10:00'}],appointments:[{id:'a',studentId:'sv-demo-01',studentName:'Sinh viên A',counselorId:'minh-anh',slotId:'slot-a',date,time:'09:00',end:'10:00',status:'Pending'},{id:'b',studentId:'sv-demo-02',studentName:'Sinh viên B',counselorId:'quang-huy',slotId:'slot-b',date,time:'09:00',end:'10:00',status:'Confirmed'}],notes:[],activity:[]};
