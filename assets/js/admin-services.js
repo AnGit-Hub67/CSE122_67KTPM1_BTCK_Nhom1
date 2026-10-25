@@ -58,6 +58,7 @@
       if (version !== loadVersion) return;
       counselors = people;
       $('service-counselorId').replaceChildren(new Option('Chưa phân công', ''), ...people.map(c => new Option(c.name, c.id)));
+      $('feedback').textContent = catalog.mode === 'offline' ? 'Đang dùng danh mục trên thiết bị. Chưa kết nối được nguồn trực tuyến.' : '';
       services = catalog.items; snapshot = catalog.snapshot; render(); $('add-service').disabled = false;
       for (const id of ['service-search', 'status-filter', 'clear-filters']) $(id).disabled = false;
     } catch { if (version !== loadVersion) return; $('load-error').hidden = false; $('result-count').textContent = 'Chưa tải được dữ liệu'; }
@@ -107,7 +108,7 @@
     const success = await persist(next, 'save-error');
     submit.disabled = false;
     if (!success) return;
-    resetFilters(); $('feedback').textContent = editing ? 'Đã cập nhật dịch vụ.' : 'Đã thêm dịch vụ.'; $('service-dialog').close();
+    resetFilters(); $('feedback').textContent = editing ? 'Đã cập nhật dịch vụ.' : 'Đã thêm dịch vụ.'; $('feedback').textContent += store.saveNotice(); $('service-dialog').close();
   });
   $('confirm-archive').addEventListener('click', async () => {
     if (!services.some(s => s.id === archiving && s.status !== 'archived')) return;
@@ -116,7 +117,7 @@
     const success = await persist(next, 'archive-error');
     $('confirm-archive').disabled = false;
     if (!success) return;
-    render(); $('feedback').textContent = 'Đã lưu trữ dịch vụ. Bạn có thể tìm lại bằng bộ lọc “Đã lưu trữ”.'; $('archive-dialog').close();
+    render(); $('feedback').textContent = 'Đã lưu trữ dịch vụ. Bạn có thể tìm lại bằng bộ lọc “Đã lưu trữ”.' + store.saveNotice(); $('archive-dialog').close();
   });
   $('service-search').addEventListener('input', render);
   $('status-filter').addEventListener('change', render);

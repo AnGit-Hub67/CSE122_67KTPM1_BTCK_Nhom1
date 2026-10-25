@@ -283,7 +283,13 @@
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
     status.textContent = "Đang tải dữ liệu…";
-    showState("Đang tải…", "Đang chuẩn bị nội dung dành cho bạn.");
+    results.className = "grid";
+    results.replaceChildren(...Array.from({length: 3}, () => {
+      const card = element("div", undefined, "card loading-skeleton");
+      card.setAttribute("aria-hidden", "true");
+      for (let i = 0; i < 4; i++) card.append(element("span"));
+      return card;
+    }));
     try {
       const response = await fetch("../../assets/data/visitor.json", {
         signal: AbortSignal.timeout(10000),
@@ -292,6 +298,7 @@
       const loaded = validate(await response.json());
       if (page === "services") {
         const catalog = await CampusMindServices.read();
+        feedback.textContent = catalog.mode === 'offline' ? 'Đang dùng danh mục trên thiết bị. Chưa kết nối được nguồn trực tuyến.' : '';
         loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
       }
       if (page === "counselors") {
@@ -309,6 +316,7 @@
       ready = true;
       if (page === "counselors") renderCounselor();
       else {
+        const selectedCategory = category.value;
         category.replaceChildren(
           new Option("Tất cả chủ đề", ""),
           ...[...new Set(data[page].map((item) => item.category))].map(
@@ -322,7 +330,7 @@
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
-        "Vui lòng kiểm tra kết nối rồi thử lại. Nếu mở file trực tiếp, hãy chạy trang qua máy chủ HTTP theo hướng dẫn TASK-12.",
+        "Vui lòng kiểm tra kết nối rồi thử lại. Nội dung bạn đã lưu trên thiết bị vẫn được giữ.",
         "Thử lại",
         load,
       );

@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="assets/css/components.css" />
     <link rel="stylesheet" href="assets/css/responsive.css" />
     <script defer src="assets/js/main.js"></script><script defer src="assets/js/public-copy.js"></script>
-  </head>
+  <link rel="stylesheet" href="assets/css/sv1-experience.css" />
+<script src="assets/js/sv1-theme.js"></script>
+</head>
   <body>
     <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
     <!-- campusmind:header -->
-<header class="site-header"><div class="header-inner"><a class="brand" href="index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="index.html" aria-current="page">Trang chủ</a>
+<header class="site-header"><div class="header-inner"><a class="brand" href="index.html" aria-label="CampusMind — Trang chủ"><img class="brand-logo" src="assets/images/campusmind-logo.png" alt="CampusMind" width="108" height="84" /></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="index.html" aria-current="page">Trang chủ</a>
 <a href="pages/visitor/visitor-service-directory.html">Dịch vụ</a>
 <a href="pages/visitor/visitor-resource-library.html">Tài nguyên</a>
 <a href="pages/visitor/visitor-counselor-detail.html">Chuyên viên</a></nav></div></header>
@@ -27,17 +29,24 @@
           viên.
         </p>
         <div class="actions">
-          <a class="button primary" href="pages/visitor/index.html"
-            >Khám phá CampusMind</a
+          <a class="button primary" href="pages/visitor/visitor-service-directory.html"
+            >Tìm dịch vụ phù hợp</a
           ><a class="button" href="#about">Tìm hiểu thêm</a>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="journey-title">
+        <span class="eyebrow">Bắt đầu từ điều bạn cần</span>
+        <h2 id="journey-title">Tìm hiểu theo nhịp của bạn</h2>
+        <div class="grid">
+          <article class="card"><span class="badge">01 · Khám phá</span><h3>Tìm hình thức hỗ trợ</h3><p>Xem chủ đề, nội dung và thời lượng để chọn dịch vụ phù hợp với nhu cầu của bạn.</p><a href="pages/visitor/visitor-service-directory.html">Khám phá dịch vụ →</a></article>
+          <article class="card"><span class="badge teal">02 · Tìm hiểu</span><h3>Một khoảng dành cho bản thân</h3><p>Đọc và lưu những tài nguyên về học tập, kết nối và đời sống sinh viên.</p><a href="pages/visitor/visitor-resource-library.html">Mở thư viện tài nguyên →</a></article>
+          <article class="card"><span class="badge">03 · Kết nối</span><h3>Xem người đồng hành</h3><p>Tìm hiểu lĩnh vực hỗ trợ, hình thức gặp và khung giờ khả dụng trước khi chọn lịch.</p><a href="pages/visitor/visitor-counselor-detail.html">Xem hồ sơ chuyên viên →</a></article>
         </div>
       </section>
       <section id="about" class="section">
         <h2>Về CampusMind</h2>
         <p>
-          CampusMind là dự án frontend hỗ trợ điều phối sức khỏe tinh thần sinh
-          viên, môn CSE122. Các dịch vụ, hồ sơ và lịch trong bản prototype là dữ
-          liệu minh họa.
+          CampusMind kết nối thông tin dịch vụ, tài nguyên và lịch hỗ trợ trong một không gian dành cho sinh viên. Bạn có thể tìm hiểu từng lựa chọn trước khi quyết định bước tiếp theo.
         </p>
         <p class="notice">
           Bạn có thể khám phá nội dung công khai mà không cần tài khoản. Dữ liệu và thao tác được xử lý trên trình duyệt này, không gửi yêu cầu đến một đơn vị tham vấn. Không nhập thông tin cá nhân thật.
@@ -88,11 +97,11 @@
         <h2 id="privacy-title">Dữ liệu và quyền xem</h2>
         <p>Khách xem danh mục, tài nguyên, hồ sơ chuyên viên và khung giờ khả dụng; các trang công khai không hiển thị tên sinh viên, lý do đặt lịch hoặc ghi chú buổi gặp.</p>
         <p>Phân vai của đồ án: sinh viên xem lịch của mình, chuyên viên xử lý lịch được phân công; quản trị viên quản lý danh mục dịch vụ. Đây là giao diện frontend, chưa có cơ chế phân quyền phía máy chủ.</p>
-        <p>Dữ liệu lưu trong trình duyệt có thể được người dùng cùng thiết bị truy cập hoặc sửa. Không nhập hồ sơ thật. Mục tài nguyên đã lưu chỉ chứa mã tài nguyên; có thể xóa bằng nút Xóa mục đã lưu. Dữ liệu không đồng bộ giữa các thiết bị.</p>
+        <p>Dữ liệu lưu trong trình duyệt có thể được người dùng cùng thiết bị truy cập hoặc sửa. Không nhập hồ sơ thật. Mục tài nguyên đã lưu chỉ chứa mã tài nguyên; có thể xóa bằng nút Xóa mục đã lưu. Danh mục dịch vụ có thể kết nối nguồn trực tuyến nếu được cấu hình; các nội dung còn lại tuân theo phạm vi lưu trữ của từng chức năng. Hồ sơ chuyên viên hiện là dữ liệu minh họa, chưa xác minh thông tin nghề nghiệp.</p>
       </section>
     </main>
     <!-- campusmind:footer -->
-<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="index.html#about">Giới thiệu</a><a href="index.html#contact">Liên hệ</a><a href="index.html#privacy">Dữ liệu và quyền xem</a></nav></div></footer>
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Đồng hành cùng sinh viên</small></div><nav aria-label="Thông tin CampusMind"><a href="index.html#about">Giới thiệu</a><a href="index.html#contact">Liên hệ</a><a href="index.html#privacy">Dữ liệu và quyền xem</a></nav></div></footer>
 <!-- /campusmind:footer -->
   </body>
 </html>
