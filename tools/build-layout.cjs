@@ -66,8 +66,8 @@ for (const file of files(root)) {
   const role = source.match(/data-role="(student|counselor|admin)"/)?.[1];
   const logo = `<img class="brand-logo" src="${href('assets/images/campusmind-logo.png')}" alt="" width="540" height="422"><span class="brand-name">CampusMind</span>`;
   const parts = {
-    header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
-    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small><p>Thông tin minh họa cho mục đích học tập</p></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}</nav></div></footer>`,
+    header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">${logo}</a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
+    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Đồng hành cùng sinh viên</small><p>Thông tin minh họa cho mục đích học tập</p></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}</nav></div></footer>`,
     "visitor-entry": visitorReady
       ? `<div class="actions">${routes
           .slice(1, 4)
@@ -85,7 +85,7 @@ for (const file of files(root)) {
     const menus = {
       student: [['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html'],['Thư viện tài nguyên','pages/visitor/visitor-resource-library.html']],
       counselor: [['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],
-      admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html']]
+      admin: [['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html'],['Khám phá dịch vụ','pages/visitor/visitor-service-directory.html']]
     };
     const dashboard = role === 'student' && exists('pages/student/student-dashboard.html') ? 'pages/student/student-dashboard.html' : `pages/${role}/index.html`;
     const links = [[role==='student'?'Tổng quan sinh viên':role==='admin'?'Đánh giá dịch vụ':'Tổng quan chuyên viên', dashboard], ...menus[role].filter(([,target])=>exists(target)), ...(exists('profile.html') ? [['Hồ sơ','profile.html']] : [])];
@@ -109,6 +109,7 @@ for (const file of files(root)) {
   if (!source.includes('assets/js/demo-sync.js')) output = output.replace(/<script defer src="([^"]*assets\/js\/main.js)"><\/script>/, `<script defer src="${href('assets/js/demo-sync.js')}"></script>$&`);
   output = output.replace(/ data-student-dashboard="[^"]*"/g, '').replace('<body', `<body data-student-dashboard="${exists('pages/student/student-dashboard.html')?'pages/student/student-dashboard.html':'pages/student/index.html'}"`);
   if (!source.includes('assets/js/shared-upgrade.js')) output = output.replace('</head>', `<script defer src="${href('assets/js/shared-upgrade.js')}"></script></head>`);
+  if (!source.includes('assets/css/integration.css')) output = output.replace('</head>', `<link rel="stylesheet" href="${href('assets/css/integration.css')}"></head>`);
   if (!source.includes('assets/css/shared-upgrade.css')) output = output.replace('</head>', `<link rel="stylesheet" href="${href('assets/css/shared-upgrade.css')}"></head>`);
   for (const [key, html] of Object.entries(parts)) {
     output = output.replace(

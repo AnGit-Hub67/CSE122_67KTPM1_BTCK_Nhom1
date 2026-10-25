@@ -1,71 +1,51 @@
-// Shared frontend demo session. Local storage is not server authorization.
 (() => {
-  'use strict';
-  const root=new URL('../../',document.currentScript.src),key='campusmind.session.v1',usersKey='campusmind.sv2.users.v1';
-  const main=document.querySelector('main'),role=['student','admin','counselor'].includes(document.body.dataset.role)?document.body.dataset.role:null;
-  const login=new URL(document.body.dataset.loginRoute||'login.html',root).href;let seeds=[],notice;
-  if(role&&main)main.hidden=true;
-  const current=()=>{
-    const session=JSON.parse(sessionStorage.getItem(key)||'null'),raw=localStorage.getItem(usersKey),users=raw===null?seeds:JSON.parse(raw);
-    if(!Array.isArray(users))throw Error('Dữ liệu tài khoản không hợp lệ.');
-    return users.find(u=>u.id===session?.id&&u.role===session?.role&&u.status==='active')||null;
-  };
-  function render(){
-    let user=null,problem='';try{user=current();}catch{problem='Không đọc được phiên hoặc tài khoản.';}
-    const nav=document.getElementById('primary-navigation');
-    nav?.querySelectorAll('[data-session-link]').forEach(e=>e.remove());
-    const entry=document.createElement('a');entry.dataset.sessionLink='';entry.href=login;entry.textContent=user?user.name+' · Đổi tài khoản':'Đăng nhập';nav?.append(entry);
-    if(user){const exit=document.createElement('button');exit.dataset.sessionLink='';exit.type='button';exit.textContent='Đăng xuất';exit.addEventListener('click',()=>{
-      try{sessionStorage.removeItem(key);sessionStorage.removeItem('campusmind.sv2.student.session.v1');location.reload();}catch{exit.textContent='Không thể đăng xuất — thử lại';}
-    });nav?.append(exit);}
-    document.querySelectorAll('header a,footer a').forEach(a=>{if(new URL(a.href).pathname.endsWith('/ui-kit.html'))a.remove();});
-    if(role&&main){const allowed=!problem&&user?.role===role;main.hidden=!allowed;
-      if(!allowed){if(!notice){notice=document.createElement('p');notice.className='notice';notice.setAttribute('role','alert');main.before(notice);}notice.replaceChildren(document.createTextNode(problem||'Cần đăng nhập đúng vai trò để mở khu vực này. '));const a=document.createElement('a');a.href=login;a.textContent='Đăng nhập';notice.append(a);}
-      else{notice?.remove();notice=null;}
-    }
-    window.dispatchEvent(new CustomEvent('campusmind:session',{detail:user}));
-    return user;
-  }
-  const ready=(async()=>{try{let r=await fetch(new URL('assets/data/sv2.json',root),{signal:AbortSignal.timeout(10000)});if(r.status===404)r=await fetch(new URL('assets/data/login-demo.json',root),{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error();seeds=(await r.json()).users;}catch{seeds=[];}return render();})();
-  window.CampusSession={current,ready,refresh:render};
-  window.addEventListener('storage',e=>{if(e.key===usersKey||e.key===null)render();});
-  window.addEventListener('pageshow',()=>ready.then(render));
-  // SV1 login changes its success/form visibility without navigating.
-  for(const id of ['login-success','login-form']){const e=document.getElementById(id);if(e)new MutationObserver(()=>ready.then(render)).observe(e,{attributes:true,attributeFilter:['hidden']});}
-})();
+ const root=new URL('../../',document.currentScript.src);
+ try{const s=JSON.parse(localStorage.getItem('campusmind.session.v1')||'null');if(s?.mode==='local')sessionStorage.setItem('campusmind.session.v1',JSON.stringify({id:s.id,role:s.role}));else sessionStorage.removeItem('campusmind.session.v1');}catch{}
+ const load=name=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('assets/js/'+name+'.js',root);s.onload=resolve;s.onerror=()=>reject(Error('Không tải được kết nối phiên.'));document.head.append(s);});
+ const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('assets/css/sv2-official.css',root);document.head.append(style);
+ if(!window.CampusShell)load('sv2-shell').catch(()=>{});
 
+ const protectedRole=document.body.dataset.role;
+ const main=document.querySelector('main');if(protectedRole&&main)main.hidden=true;
+ let users=[];
+ const current=()=>{const s=window.CampusAuth?.current();if(!s)return null;if(s.mode!=='local')return s;const rows=JSON.parse(localStorage.getItem('campusmind.sv2.users.v1')||'null')||users;return rows.find(u=>u.id===s.id&&u.role===s.role&&u.status==='active')||null;};
+ const ready=(async()=>{try{
+ if(!window.CampusConfig)await load('sv2-config');if(!window.CampusAPI)await load('sv2-api');if(!window.CampusAuth)await load('sv2-session');
+ const r=await fetch(new URL('assets/data/sv2.json',root));if(!r.ok)throw Error('Không tải được dữ liệu phiên.');users=(await r.json()).users;
+ await CampusAuth.refresh();const user=current();
+ if(protectedRole&&(!user||user.role!==protectedRole||user.status!=='active'||user.role==='counselor'&&CampusAuth.current()?.mode!=='local'&&user.approval!=='approved'))throw Error('Vui lòng đăng nhập đúng vai trò để tiếp tục.');
+ if(main)main.hidden=false;
+ if(user){
+   document.querySelector('.site-header')?.remove();
+   if(user.role==='admin'&&document.querySelector('.sidebar')&&!document.querySelector('.sidebar a[href*="admin-user-management"]')){const a=document.createElement('a');a.textContent='Quản lý người dùng';a.href=new URL('pages/admin/admin-user-management.html',root);(document.querySelector('.sidebar nav')||document.querySelector('.sidebar')).append(a);}
+   if(!document.querySelector('.sidebar')&&main&&!document.querySelector('script[src$="shared-upgrade.js"]')){
+     const shell=document.createElement('div');shell.className='app-shell';main.before(shell);
+     main.querySelector(':scope > .campus-brand')?.remove();const side=document.createElement('aside');side.className='sidebar';const nav=document.createElement('nav');nav.setAttribute('aria-label','Điều hướng vai trò');
+     const links=user.role==='counselor'&&CampusAuth.current()?.mode!=='local'&&user.approval!=='approved'?[['Hồ sơ đã nộp','account-status.html']]:user.role==='student'?[['Không gian Sinh viên','pages/student/student-dashboard.html'],['Tổng quan sinh viên','pages/student/student-dashboard.html'],['Đặt lịch','pages/student/student-booking.html'],['Lịch hẹn','pages/student/student-appointments.html'],['Thư viện','pages/visitor/visitor-resource-library.html'],['Hồ sơ','profile.html']]:user.role==='admin'?[['Quản lý người dùng','pages/admin/admin-user-management.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Đánh giá dịch vụ','pages/admin/index.html']]:[['Khu vực chuyên viên','pages/counselor/index.html'],['Hồ sơ','profile.html']];
+     for(const [label,url] of links){const a=document.createElement('a');a.textContent=label;a.href=new URL(url,root);nav.append(a);}const exit=document.createElement('button');exit.type='button';exit.textContent='Đăng xuất';exit.dataset.logout='';nav.append(exit);side.append(theme,nav);shell.append(side,main);
+     const heading=nav.querySelector('a');if(user.role==='student'&&heading){const h=document.createElement('h2');h.className='workspace-title';h.append(heading);side.prepend(h);}
+     const brand=document.createElement('a');brand.className='campus-brand';brand.href=new URL(CampusAuth.route({...user,mode:CampusAuth.current()?.mode}),root);const logo=document.createElement('img');logo.src=new URL('assets/images/campusmind-logo.png',root);logo.alt='';logo.className='brand-logo';brand.append(logo,document.createTextNode('CampusMind'));side.prepend(brand);
+     nav.id='session-navigation';const toggle=document.createElement('button');toggle.type='button';toggle.className='nav-toggle';toggle.dataset.navToggle='';toggle.textContent='Điều hướng khu vực';toggle.setAttribute('aria-controls',nav.id);side.insertBefore(toggle,nav);window.CampusInitNavigation?.();
+     for(const a of nav.querySelectorAll('a'))if(new URL(a.href).pathname===location.pathname)a.setAttribute('aria-current','page');
+   }
+ }
+
+ return user;
+ }catch(e){const p=document.createElement('p');p.className='notice';p.setAttribute('role','alert');p.textContent=e.message+' ';const a=document.createElement('a');a.href=new URL('sv2-login.html',root);a.textContent='Đăng nhập';p.append(a);main?.before(p);return null;}})();
+ document.addEventListener('click',async e=>{if(!e.target.closest('[data-logout]'))return;try{await CampusAuth.logout();location.href=new URL('sv2-login.html',root);}catch(err){alert(err.message);}});
+ window.CampusSession={current,ready};
+ window.addEventListener('campus-session',()=>{if(protectedRole||document.querySelector('.sidebar'))location.reload();});
+ window.addEventListener('storage',e=>{if(e.key==='campusmind.sv2.users.v1'||e.key===null){try{if(document.querySelector('.sidebar')&&(!current()||(protectedRole&&current().role!==protectedRole)))location.reload();}catch{location.reload();}}});
+ const themeKey='campusmind.theme.v1';const apply=theme=>document.documentElement.dataset.theme=theme==='dark'?'dark':'light';try{apply(localStorage.getItem(themeKey));}catch{}
+ const theme=document.createElement('button');theme.type='button';theme.textContent='Sáng / Tối';theme.setAttribute('aria-label','Chuyển giao diện sáng hoặc tối');theme.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';apply(next);try{localStorage.setItem(themeKey,next);}catch{}});if(!document.querySelector('[data-theme-toggle]')&&!document.querySelector('script[src$="shared-upgrade.js"]'))(document.querySelector('.sidebar')||document.querySelector('main'))?.prepend(theme);
+ window.addEventListener('storage',e=>{if(e.key===themeKey)apply(e.newValue);});
+})();
 // Shared progressive enhancement. Navigation remains visible without JavaScript.
 (() => {
   "use strict";
-  // This parameter preserves navigation context only; it does not grant a role.
-  if (document.body.dataset.page === "services" && new URLSearchParams(location.search).get("from") === "admin") {
-    const root = new URL("../../", document.currentScript.src);
-    const main = document.querySelector("main");
-    if (main && !document.querySelector(".sidebar")) {
-      const shell = document.createElement("div");
-      shell.className = "app-shell";
-      const sidebar = document.createElement("aside");
-      sidebar.className = "sidebar";
-      sidebar.setAttribute("aria-label", "Khu vực Quản trị viên");
-      sidebar.innerHTML = '<strong>Khu vực Quản trị viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"></nav>';
-      const nav = sidebar.querySelector("nav");
-      for (const [label, route] of [["Tổng quan", "pages/admin/index.html"], ["Quản lý dịch vụ", "pages/admin/admin-service-management.html"], ["Khám phá dịch vụ", "pages/visitor/visitor-service-directory.html?from=admin"], ["Trang chủ", "index.html"]]) {
-        const a = document.createElement("a");
-        a.textContent = label;
-        a.href = new URL(route, root).href;
-        if (label === "Khám phá dịch vụ") a.setAttribute("aria-current", "page");
-        nav.append(a);
-      }
-      const note = document.createElement("span");
-      note.className = "sidebar-note";
-      note.textContent = "Quản lý danh mục dịch vụ hỗ trợ sinh viên.";
-      nav.append(note);
-      main.before(shell);
-      shell.append(sidebar, main);
-    }
-  }
   const compact = matchMedia("(max-width: 700px)");
-  document.querySelectorAll("[data-nav-toggle]").forEach((button) => {
+  window.CampusInitNavigation = () => document.querySelectorAll("[data-nav-toggle]").forEach((button) => {
+    if(button.dataset.navReady)return;button.dataset.navReady="true";
     const navigation = document.getElementById(
       button.getAttribute("aria-controls"),
     );
@@ -91,6 +71,7 @@
     compact.addEventListener("change", resize);
     resize();
   });
+  window.CampusInitNavigation();
   document.querySelectorAll("[data-dialog-open]").forEach((button) => {
     button.addEventListener("click", () =>
       document.getElementById(button.dataset.dialogOpen)?.showModal(),

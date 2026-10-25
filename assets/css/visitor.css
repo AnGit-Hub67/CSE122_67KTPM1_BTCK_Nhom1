@@ -1,9 +1,4 @@
 /* Visitor-specific styles; shared primitives live in TASK-11 stylesheets. */
-.suggestion-panel { margin-bottom: 24px; }
-.suggestion-panel form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
-.suggestion-panel label { flex-basis: 100%; }
-.suggestion-panel select { max-width: 100%; min-width: 0; }
-.suggestion-panel .actions { flex-wrap: wrap; }
 .detail-layout {
   display: grid;
   grid-template-columns: 1.7fr 1fr;

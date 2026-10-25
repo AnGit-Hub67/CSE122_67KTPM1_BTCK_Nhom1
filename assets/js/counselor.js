@@ -52,7 +52,7 @@
       const card=element('article','','panel');card.dataset.appointment=a.id;card.tabIndex=-1;
       const avatar=element('span',(a.studentName||'Sinh viên').trim().split(/\s+/).slice(-2).map(s=>s[0]).join(''),'avatar');avatar.setAttribute('aria-hidden','true');card.append(avatar);
       card.append(element('h3',a.studentName||a.id),element('p',`${a.date} · ${a.time} · ${a.id}`),element('span',labels[a.status],'badge'));
-      card.append(element('p','Chủ đề: '+(typeof a.topic==='string'&&a.topic.trim()?a.topic:'Chưa cung cấp')));
+      card.append(element('p','Chủ đề: '+({general:'Trao đổi chung',study:'Học tập',career:'Định hướng',connection:'Kết nối'}[a.topic] || (typeof a.topic==='string'&&a.topic.trim()?a.topic:'Chưa cung cấp'))));
       if(a.reason)card.append(element('p','Lý do đặt lịch: '+a.reason));
       const actions=element('div','','actions');
       if(screen==='counselor-schedule'){const link=element('a','Xem hàng đợi','button');link.href=`counselor-appointment-queue.html?date=${encodeURIComponent(a.date)}`;actions.append(link);}

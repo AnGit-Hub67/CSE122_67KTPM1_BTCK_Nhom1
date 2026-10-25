@@ -100,3 +100,12 @@ Giữ Visitor, catalog adapter và giao diện SV1 hiện có trên dev; bổ su
 Hướng dẫn SV3: [phạm vi](docs/sv3-completion.md), [nâng cấp](docs/sv3-upgrade-2026-10-25.md), [MockAPI](docs/mockapi-setup.md). Config public SV3 vẫn giữ theo nguồn: đồng bộ bật khi không có config local; muốn chạy hoàn toàn local tạo assets/data/config.json với enableDemoRemoteSync false. Catalog SV1 vẫn theo service-config.js, không bị thay bằng cấu hình offline của ZIP tích hợp.
 
 Bản này chỉ ghép SV1 + SV3. Chưa nhập module Student/Auth của SV2: đặt lịch, đăng ký và lịch công khai dựa trên SV2Store vẫn cần PR SV2 và một lượt tích hợp riêng. ZIP full-integrated-v3 chỉ dùng đối chiếu, không sao chép các phụ thuộc SV2 vào PR này.
+
+
+## Tích hợp SV2 sau PR #11
+
+Bản này nối đầy đủ ba phần theo CampusMind-full-integrated-v3.zip: dùng sv2-login.html và CampusAuth/CampusSession, Student booking/dashboard/appointments và Admin Users. Profile dùng profile-sv2.js. Cập nhật các trang và script dùng chung để duy trì luồng booking → Counselor → Student, danh mục → Visitor/Dashboard và profile → hồ sơ công khai.
+
+Catalog service-config.js để endpoint rỗng theo ZIP tích hợp; public config đặt enableDemoRemoteSync false để Git clone không tự bật remote khi thiếu config.json. Có thể cấu hình có chủ đích theo docs/mockapi-setup.md. Các endpoint auth/REST/AI trong sv2-config.js vẫn trống; chưa có xác thực backend thật. Mở bằng HTTP local, không dùng file://.
+
+Kiểm thử bản ghép: node tools/build-layout.cjs --check và node tests/integration.cjs với Playwright/Chromium. Mạng ngoài bị chặn trong integration test; không suy ra API thật đã hoạt động.

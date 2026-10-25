@@ -10,6 +10,7 @@
     return rows;
   }
   async function init(){
+    if (window.CampusSession) await CampusSession.ready;
     let r=await fetch(new URL('assets/data/sv2.json',root),{signal:AbortSignal.timeout(10000)});
     if(r.status===404)r=await fetch(new URL('assets/data/login-demo.json',root),{signal:AbortSignal.timeout(10000)});
     if(!r.ok)throw Error('Không tải được dữ liệu người dùng.');

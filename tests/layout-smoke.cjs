@@ -6,12 +6,6 @@ const path = require("node:path");
 const assert = require("node:assert/strict");
 const root = path.resolve(__dirname, "..");
 const server = http.createServer((req, res) => {
-  // Regression suites must never mutate the configured live catalog.
-  if (new URL(req.url, 'http://localhost').pathname.endsWith('/service-config.js')) {
-    res.setHeader('Content-Type', 'application/javascript');
-    return res.end('window.CampusMindServiceConfig = Object.freeze({endpoint: ""});');
-  }
-
   const file = path.join(
     root,
     decodeURIComponent(new URL(req.url, "http://localhost").pathname),

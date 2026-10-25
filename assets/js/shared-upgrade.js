@@ -26,6 +26,11 @@
   if(channel)channel.onmessage=e=>{if(e.data?.type==='theme')theme(e.data.value);};
   function button(text,attribute){const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute(attribute,'');return b;}
   function enhance(user){
+    if (document.body.dataset.auth) {
+      if (!document.querySelector('[data-theme-toggle]')) document.querySelector('.auth-heading')?.append(button('Đổi giao diện','data-theme-toggle'));
+      try { theme(localStorage.getItem(themeKey)); } catch {}
+      return;
+    }
     const continuation=document.querySelector('#login-continue');
     if(continuation&&['admin','counselor'].includes(user?.role))continuation.href=new URL(`pages/${user.role}/index.html`,root);
     let sidebar=document.querySelector('.sidebar');
@@ -36,11 +41,12 @@
       const group=document.createElement('strong');group.textContent={student:'Không gian Sinh viên',counselor:'Khu vực Chuyên viên',admin:'Khu vực Quản trị viên'}[user.role];sidebar.append(group);
       const toggle=button('Điều hướng khu vực','data-drawer-toggle');toggle.setAttribute('aria-controls','role-navigation');toggle.setAttribute('aria-expanded','false');sidebar.append(toggle);
       const nav=document.createElement('nav');nav.id='role-navigation';nav.setAttribute('aria-label','Điều hướng vai trò');sidebar.append(nav);
-      const menus={student:[['Tổng quan sinh viên',document.body.dataset.studentDashboard||'pages/student/index.html'],['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html']],counselor:[['Tổng quan chuyên viên','pages/counselor/index.html'],['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],admin:[['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html']]};
+      const menus={student:[['Tổng quan sinh viên',document.body.dataset.studentDashboard||'pages/student/index.html'],['Đặt lịch tham vấn','pages/student/student-booking.html'],['Lịch hẹn của tôi','pages/student/student-appointments.html']],counselor:[['Tổng quan chuyên viên','pages/counselor/index.html'],['Lịch làm việc','pages/counselor/counselor-schedule.html'],['Hàng đợi lịch hẹn','pages/counselor/counselor-appointment-queue.html']],admin:[['Bảng tổng quan','pages/admin/admin-dashboard.html'],['Quản lý dịch vụ','pages/admin/admin-service-management.html'],['Quản lý người dùng','pages/admin/admin-user-management.html'],['Khám phá dịch vụ','pages/visitor/visitor-service-directory.html']]};
       const links=[...(user.role==='admin'?[['Đánh giá dịch vụ','pages/admin/index.html']]:[]),...menus[user.role],...(user.role==='student'?[['Thư viện tài nguyên','pages/visitor/visitor-resource-library.html']]:[]),['Hồ sơ','profile.html']];
       for(const [label,path] of links){const a=document.createElement('a');a.href=new URL(path,root);a.textContent=label;nav.append(a);}
       nav.append(button('Đổi giao diện','data-theme-toggle'),button('Đăng xuất','data-logout'));
       checkLinks(nav);
+      if(window.CampusInitNavigation)window.CampusInitNavigation();
       const compact=matchMedia('(max-width:700px)');const resize=()=>{toggle.hidden=!compact.matches;nav.hidden=compact.matches;toggle.setAttribute('aria-expanded',String(!nav.hidden));};compact.addEventListener('change',resize);resize();
       toggle.onclick=()=>{nav.hidden=!nav.hidden;toggle.setAttribute('aria-expanded',String(!nav.hidden));if(!nav.hidden)nav.querySelector('a')?.focus();};
     }
