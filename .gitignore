@@ -21,3 +21,6 @@ Desktop.ini
 *.tmp
 *.swp
 ~$*
+
+# Local API override
+assets/data/config.json
