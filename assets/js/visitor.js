@@ -13,6 +13,7 @@
   let data;
   let saved = new Set();
   let ready = false;
+  let loadVersion = 0;
   const normalize = (value) =>
     value
       .normalize("NFD")
@@ -72,12 +73,19 @@
     renderList();
     search.focus();
   }
-  function toggleSave(resource, target) {
-    const next = new Set(saved);
-    next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
+  async function toggleSave(resource, target) {
     try {
-      localStorage.setItem(storageKey, JSON.stringify([...next]));
-      saved = next;
+      const write = () => {
+        const value = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (!Array.isArray(value) || !value.every(id => typeof id === 'string')) throw new Error('Invalid saved data');
+        const next = new Set(value);
+        next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
+        localStorage.setItem(storageKey, JSON.stringify([...next]));
+        saved = next;
+      };
+      if (navigator.locks) await navigator.locks.request(storageKey, write); else write();
+      const clear = document.querySelector("#clear-saved");
+      if (clear) clear.disabled = saved.size === 0;
       feedback.textContent = `${saved.has(resource.id) ? "Đã lưu" : "Đã bỏ lưu"}: ${resource.title}.`;
       if (savedOnly.checked) {
         renderList();
@@ -100,6 +108,8 @@
   }
   function renderList() {
     if (!ready) return;
+    const clear = document.querySelector("#clear-saved");
+    if (clear) clear.disabled = saved.size === 0;
     const items = data[page].filter(
       (item) =>
         (!category.value || item.category === category.value) &&
@@ -134,13 +144,14 @@
         );
         const actions = element("div", undefined, "actions");
         if (page === "services") {
-          actions.append(
+          if (item.counselorId && data.counselors.some(c => c.id === item.counselorId)) actions.append(
             link(
               "Xem chuyên viên →",
               `visitor-counselor-detail.html?id=${encodeURIComponent(item.counselorId)}`,
               "button",
             ),
           );
+          else { const pending = button("Chưa phân công chuyên viên", () => {}); pending.disabled = true; actions.append(pending); }
         } else {
           actions.append(
             button("Đọc tài nguyên", () => openDialog(item.title, item.body)),
@@ -160,7 +171,7 @@
     );
   }
   function renderCounselor() {
-    const id = new URLSearchParams(location.search).get("id") ?? "minh-anh";
+    const id = new URLSearchParams(location.search).get("id") ?? data.counselors[0]?.id;
     const person = data.counselors.find((item) => item.id === id);
     status.textContent = "";
     if (!person) {
@@ -214,12 +225,19 @@
       availability.append(
         slots,
         button(
-          "Tìm hiểu cách đặt lịch",
-          () =>
-            openDialog("Đặt lịch với chuyên viên", [
-              "Bạn đang xem bản prototype với dữ liệu giả. Chức năng đăng nhập và đặt lịch sẽ được tích hợp ở luồng Student.",
-              "Hiện tại, trang này chỉ cho phép xem hồ sơ và lịch mẫu; chưa gửi yêu cầu hoặc giữ chỗ.",
-            ]),
+          "Đặt lịch với chuyên viên",
+          async (event) => {
+            const target = event.currentTarget;
+            target.disabled = true;
+            try {
+              const url = `../student/student-booking.html?counselor=${encodeURIComponent(person.id)}`;
+              const response = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(10000) });
+              if (response.ok) location.href = url;
+              else openDialog("Trang đặt lịch chưa sẵn sàng", ["Trang đặt lịch chưa có ở phiên bản này; chưa gửi yêu cầu hoặc giữ chỗ."]);
+            } catch {
+              openDialog("Không mở được trang đặt lịch", ["Hãy kiểm tra kết nối rồi thử lại. Chưa gửi yêu cầu hoặc giữ chỗ."]);
+            } finally { target.disabled = false; }
+          },
           "primary",
         ),
       );
@@ -243,14 +261,6 @@
   }
   function validate(value) {
     const fields = {
-      services: [
-        "id",
-        "title",
-        "category",
-        "description",
-        "format",
-        "counselorId",
-      ],
       resources: ["id", "title", "category", "description", "duration"],
       counselors: [
         "id",
@@ -288,16 +298,11 @@
         }
       }
     }
-    if (
-      value.services.some(
-        (service) =>
-          !value.counselors.some((person) => person.id === service.counselorId),
-      )
-    )
-      throw new Error("Missing counselor");
     return value;
   }
   async function load() {
+    const version = ++loadVersion;
+    window.dispatchEvent(new CustomEvent('campusmind:catalog-loading'));
     ready = false;
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
@@ -308,7 +313,13 @@
         signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) throw new Error("Load failed");
-      data = validate(await response.json());
+      const loaded = validate(await response.json());
+      if (page === "services") {
+        const catalog = await CampusMindServices.read();
+        loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
+      }
+      if (version !== loadVersion) return;
+      data = loaded;
       ready = true;
       if (page === "counselors") renderCounselor();
       else {
@@ -319,8 +330,11 @@
           ),
         );
         renderList();
+        window.dispatchEvent(new CustomEvent('campusmind:catalog', { detail: { page, items: data[page] } }));
       }
     } catch {
+      if (version !== loadVersion) return;
+      window.dispatchEvent(new CustomEvent('campusmind:catalog-error'));
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
@@ -329,11 +343,20 @@
         load,
       );
     } finally {
+      if (version !== loadVersion) return;
       results.setAttribute("aria-busy", "false");
       if (controls) controls.disabled = !ready;
     }
   }
   search?.addEventListener("input", renderList);
+  window.addEventListener('campusmind:accept-suggestion', event => {
+    if (!ready || !data[page]?.some(item => item.id === event.detail.id)) return;
+    search.value = event.detail.title;
+    category.value = '';
+    if (savedOnly) savedOnly.checked = false;
+    renderList();
+    search.focus();
+  });
   category?.addEventListener("change", renderList);
   savedOnly?.addEventListener("change", renderList);
   document.querySelector("#reset")?.addEventListener("click", reset);
@@ -341,6 +364,23 @@
     .querySelector("#filters")
     ?.addEventListener("submit", (event) => event.preventDefault());
   if (page === "resources") {
+    const clearDialog = document.querySelector('#clear-saved-dialog');
+    document.querySelector('#clear-saved').addEventListener('click', () => {
+      document.querySelector('#clear-saved-error').textContent = '';
+      clearDialog.showModal();
+    });
+    document.querySelector('#confirm-clear-saved').addEventListener('click', () => {
+      try {
+        localStorage.removeItem(storageKey);
+        saved = new Set();
+        renderList();
+        clearDialog.close();
+        savedOnly.focus();
+        feedback.textContent = 'Đã xóa danh sách tài nguyên đã lưu trên trình duyệt này.';
+      } catch {
+        document.querySelector('#clear-saved-error').textContent = 'Không thể xóa danh sách. Hãy kiểm tra quyền lưu trữ rồi thử lại.';
+      }
+    });
     readSaved();
     window.addEventListener("storage", (event) => {
       if (event.key === storageKey || event.key === null) {
@@ -349,5 +389,8 @@
       }
     });
   }
+  if (page === "services") window.addEventListener("storage", event => {
+    if (event.key === CampusMindServices.key || event.key === null) load();
+  });
   load();
 })();

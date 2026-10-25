@@ -9,24 +9,22 @@
     <link rel="stylesheet" href="../../assets/css/components.css" />
     <link rel="stylesheet" href="../../assets/css/responsive.css" />
     <link rel="stylesheet" href="../../assets/css/admin-services.css" />
-    <script defer src="../../assets/js/main.js"></script>
-    <script defer src="../../assets/js/admin-services.js"></script>
-  </head>
-  <body data-role="admin">
+    <script defer src="../../assets/js/demo-sync.js"></script><script defer src="../../assets/js/main.js"></script>
+    <script defer src="../../assets/js/service-store.js"></script>
+    <script defer src="../../assets/js/service-activity.js"></script><script defer src="../../assets/js/admin-services.js"></script>
+  <script defer src="../../assets/js/shared-upgrade.js"></script><link rel="stylesheet" href="../../assets/css/shared-upgrade.css"></head>
+  <body data-student-dashboard="pages/student/index.html" data-login-route="login.html" data-role="admin">
     <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
     <!-- campusmind:header -->
-<header class="site-header"><div class="header-inner"><a class="brand" href="../../index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="../../index.html">Trang chủ</a>
-<a href="../visitor/visitor-service-directory.html">Dịch vụ</a>
-<a href="../visitor/visitor-resource-library.html">Tài nguyên</a>
-<a href="../visitor/visitor-counselor-detail.html">Chuyên viên</a></nav></div></header>
+
 <!-- /campusmind:header -->
     <div class="app-shell">
       <!-- campusmind:sidebar -->
-<aside class="sidebar" aria-label="Khu vực Quản trị viên"><strong>Khu vực Quản trị viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"><a href="index.html">Tổng quan</a><a href="admin-service-management.html" aria-current="page">Quản lý dịch vụ</a><a href="../visitor/visitor-service-directory.html">Khám phá dịch vụ</a><a href="../../index.html">Trang chủ</a><span class="sidebar-note">Quản lý danh mục dịch vụ hỗ trợ sinh viên.</span></nav></aside>
+<aside class="sidebar" aria-label="Khu vực Quản trị viên"><a class="brand" href="index.html"><img class="brand-logo" src="../../assets/images/campusmind-logo.png" alt="" width="540" height="422"><span class="brand-name">CampusMind</span></a><strong>Khu vực Quản trị viên</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò"><a href="index.html">Đánh giá dịch vụ</a><a href="admin-dashboard.html">Bảng tổng quan</a><a href="admin-service-management.html" aria-current="page">Quản lý dịch vụ</a><a href="../../profile.html">Hồ sơ</a><button type="button" data-theme-toggle>Đổi giao diện</button><button type="button" data-logout>Đăng xuất</button></nav></aside>
 <!-- /campusmind:sidebar -->
       <main id="main" tabindex="-1">
   <section class="service-heading" aria-labelledby="page-title"><div><span class="eyebrow">CampusMind / Quản trị</span><h1 id="page-title">Quản lý dịch vụ</h1><p class="muted">Quản lý các dịch vụ đồng hành cùng sinh viên.</p></div><button id="add-service" class="primary" disabled>+ Thêm dịch vụ</button></section>
-  <p class="notice">Bản demo · Dữ liệu thay đổi chỉ được lưu trên trình duyệt này.</p>
+  <p class="notice">Dữ liệu giả lập cho bài nộp · Thay đổi danh mục được lưu trên trình duyệt này và hiển thị ở khu vực Visitor. Không nhập thông tin cá nhân hay hồ sơ tinh thần.</p>
   <noscript><p class="notice error">Vui lòng bật JavaScript để quản lý dịch vụ.</p></noscript>
   <dl class="service-summary" aria-label="Thống kê dịch vụ"><div><dt>Đang hoạt động</dt><dd id="active-count">—</dd></div><div><dt>Tạm ngưng</dt><dd id="inactive-count">—</dd></div><div><dt>Đã lưu trữ</dt><dd id="archived-count">—</dd></div></dl>
   <section aria-label="Danh sách dịch vụ">
@@ -38,16 +36,17 @@
   </section>
 </main>
     </div>
-<dialog id="service-dialog" class="service-dialog" aria-labelledby="form-title"><h2 id="form-title">Thêm dịch vụ</h2><p class="muted">Tất cả trường đều bắt buộc. Lưu trữ dịch vụ qua thao tác trong bảng.</p><form id="service-form" class="service-form" novalidate>
+<dialog id="service-dialog" class="service-dialog" aria-labelledby="form-title"><h2 id="form-title">Thêm dịch vụ</h2><p class="muted">Các trường trừ chuyên viên đều bắt buộc. Lưu trữ dịch vụ qua thao tác trong bảng.</p><form id="service-form" class="service-form" novalidate>
 <div><label for="service-name">Tên dịch vụ</label><input class="input" id="service-name" name="name" maxlength="100" required aria-describedby="name-error" /><p id="name-error" class="field-error"></p></div>
 <div><label for="service-category">Nhóm dịch vụ</label><select id="service-category" name="category" required aria-describedby="category-error"><option value="">Chọn nhóm</option><option>Tham vấn</option><option>Đồng hành</option><option>Hoạt động nhóm</option><option>Workshop</option></select><p id="category-error" class="field-error"></p></div>
 <div><label for="service-duration">Thời lượng (phút)</label><input class="input" id="service-duration" name="duration" type="number" min="15" max="240" step="5" required aria-describedby="duration-error" /><p id="duration-error" class="field-error"></p></div>
 <div><label for="service-description">Mô tả</label><textarea class="input" id="service-description" name="description" maxlength="500" required aria-describedby="description-error"></textarea><p id="description-error" class="field-error"></p></div>
+<div><label for="service-counselorId">Chuyên viên (không bắt buộc)</label><select id="service-counselorId" name="counselorId" aria-describedby="counselorId-error"><option value="">Chưa phân công</option></select><p id="counselorId-error" class="field-error"></p></div>
 <div><label for="service-status">Trạng thái</label><select id="service-status" name="status" required aria-describedby="status-error"><option value="active">Đang hoạt động</option><option value="inactive">Tạm ngưng</option></select><p id="status-error" class="field-error"></p></div>
 <p id="save-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close>Hủy</button><button class="primary" type="submit">Lưu dịch vụ</button></div></form></dialog>
-<dialog id="archive-dialog" class="service-dialog" aria-labelledby="archive-title" aria-describedby="archive-description"><h2 id="archive-title">Lưu trữ dịch vụ?</h2><p id="archive-description"></p><p class="muted">Dịch vụ vẫn được giữ để tra cứu trong bộ lọc “Đã lưu trữ” và không còn cho phép chỉnh sửa trong bản demo.</p><p id="archive-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close autofocus>Giữ dịch vụ</button><button type="button" id="confirm-archive" class="danger">Lưu trữ dịch vụ</button></div></dialog>
+<dialog id="archive-dialog" class="service-dialog" aria-labelledby="archive-title" aria-describedby="archive-description"><h2 id="archive-title">Lưu trữ dịch vụ?</h2><p id="archive-description"></p><p class="muted">Dịch vụ vẫn được giữ để tra cứu trong bộ lọc “Đã lưu trữ” và được ẩn khỏi danh mục Visitor.</p><p id="archive-error" class="notice error" role="alert" hidden></p><div class="actions"><button type="button" data-dialog-close autofocus>Giữ dịch vụ</button><button type="button" id="confirm-archive" class="danger">Lưu trữ dịch vụ</button></div></dialog>
     <!-- campusmind:footer -->
-<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a><a href="../ui-kit.html">Bộ giao diện</a></nav></div></footer>
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small><p>Thông tin minh họa cho mục đích học tập</p></div><nav aria-label="Thông tin CampusMind"><a href="../../index.html#about">Giới thiệu</a></nav></div></footer><p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>
 <!-- /campusmind:footer -->
   </body>
 </html>

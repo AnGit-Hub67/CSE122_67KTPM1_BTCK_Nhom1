@@ -1,0 +1,7 @@
+.login-panel { max-width: 680px; margin: 0 auto 48px; }
+.login-panel form { display: grid; gap: 16px; }
+.login-panel select { width: 100%; min-width: 0; }
+#login-error { color: #a21838; overflow-wrap: anywhere; }
+#login-success { display: flex; flex-wrap: wrap; gap: 16px; }
+#login-success h2, #login-success p { flex-basis: 100%; margin: 0; }
+#login-success[hidden] { display: none; }
