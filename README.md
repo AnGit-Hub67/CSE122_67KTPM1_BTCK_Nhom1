@@ -7,7 +7,7 @@ Frontend prototype điều phối hỗ trợ sức khỏe tinh thần sinh viên
 - [Repository](https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1)
 - [Trello](https://trello.com/b/tijjtgu7/cse122-campusmind-team-1)
 - [Mockup/Canva do nhóm cung cấp](https://canva.link/j9ofv531qa8gikt) — nhóm cần xác nhận quyền xem công khai.
-- Deploy: chưa xác minh; chủ repo cần bật GitHub Pages từ `main` / root và bổ sung URL sau khi kiểm tra.
+- [Website GitHub Pages](https://angit-hub67.github.io/CSE122_67KTPM1_BTCK_Nhom1/) — triển khai từ `main` / root, HTTPS.
 - OBS: chưa có URL được xác minh; từng sinh viên bổ sung video của mình trước bàn giao.
 
 ## 3. Thành viên và phạm vi
@@ -50,7 +50,7 @@ Mở `sv2-login.html`, mở mục tài khoản cục bộ rồi chọn theo vai 
 - `assets/js/sv2-config.js`: REST, auth và AI proxy mặc định rỗng. Các thao tác yêu cầu backend thật chưa được cấu hình.
 - `assets/js/service-config.js`: `endpoint: ''`, danh mục chạy seed/LocalStorage.
 - `assets/data/config.public.json`: `enableDemoRemoteSync: false`. URL MockAPI công khai được giữ trong cấu hình nhưng đồng bộ mặc định tắt.
-- `assets/data/config.json` nếu tự tạo là cấu hình cục bộ, không commit.
+- `assets/data/config.json` nếu tự tạo chỉ được đọc trên localhost/127.0.0.1/[::1], không commit. Bản deploy đọc thẳng config.public.json để tránh 404 cho override không tồn tại.
 
 Chỉ cấu hình API do nhóm quản lý, có CORS phù hợp. Không đưa API key, token hay mật khẩu vào JS/JSON frontend. Auth và AI thật cần backend/proxy; cấu hình URL không tự tạo backend. Xem [hướng dẫn MockAPI](docs/mockapi-setup.md) như tài liệu tùy chọn, không phải xác nhận đồng bộ đang bật.
 
@@ -70,13 +70,13 @@ node tests/integration.cjs
 Có thể đặt `CHROMIUM_PATH` tới Chrome/Edge đã cài. Integration chặn mạng ngoài localhost và dùng dữ liệu thử riêng. Kết quả kiểm tra ngày 26/10/2026: layout PASS; integration PASS gồm luồng liên thông và 25 trang tại 375/768/1440px, light/dark, không phát hiện pageerror/tràn ngang. Đây là kiểm thử cục bộ, không phải CI hoặc xác nhận deploy/API thật.
 
 ## 12. Vấn đề còn biết
-`tests/sv3-completion.cjs` là test legacy còn chờ selector `#counselor-account` đã bị bỏ. Chưa coi test này hoặc toàn bộ suite cũ là pass; test integration hiện kiểm tra luồng Counselor qua session chung. Còn cần kiểm tra 320px, 1280px, zoom 200%, bàn phím và deploy trên điện thoại theo rubric.
+`tests/sv3-completion.cjs` là test legacy còn chờ selector `#counselor-account` đã bị bỏ. Chưa coi test này hoặc toàn bộ suite cũ là pass; test integration hiện kiểm tra luồng Counselor qua session chung. Bản Pages đã được kiểm tra tự động tại 320/375/768/1280/1440px, hai theme. Còn cần kiểm tra zoom 200%, bàn phím và điện thoại thật theo rubric; viewport giả lập không thay cho điện thoại thật.
 
 ## 13. Git và review
 Mỗi task tạo nhánh từ `dev`, commit có nghĩa theo Conventional Commits, push và mở PR vào `dev`. Thành viên khác review nội dung thực tế. Bản ổn định đi qua PR `dev` → `main`; không push code trực tiếp vào `main`. Giữ nguyên tác giả các commit. Không tạo commit/review giả để tăng đóng góp. Xem [CONTRIBUTING](CONTRIBUTING.md).
 
 ## 14. Deploy
-Chủ repo có quyền admin bật GitHub Pages, nguồn `main`, thư mục `/ (root)`. Sau khi build thành công, kiểm tra trang chủ và các trang con dưới đường dẫn repository, ảnh/CSS/JS/JSON, tài khoản demo, cửa sổ ẩn danh và điện thoại. Chỉ ghi link deploy đã được kiểm tra; sửa lỗi qua nhánh task → PR dev → PR main.
+SV3 (AnGit-Hub67) đã bật GitHub Pages, nguồn `main`, thư mục `/ (root)`, HTTPS. Xem [báo cáo QA/deploy](docs/sv3-pages-qa.md). Sau khi build thành công, kiểm tra trang chủ và các trang con dưới đường dẫn repository, ảnh/CSS/JS/JSON, tài khoản demo, cửa sổ ẩn danh và điện thoại. Chỉ ghi link deploy đã được kiểm tra; sửa lỗi qua nhánh task → PR dev → PR main.
 
 ## 15. Minh chứng và sử dụng AI
 Xem [báo cáo hỗ trợ AI](docs/ai-usage-report.md). Từng sinh viên bổ sung prompt, phần tự sửa/kiểm tra và video OBS thật. `docs/screen-inventory.md` và minh chứng thiết kế trước khi viết code chưa được xác minh trong bản này; bổ sung tài liệu hiện tại không chứng minh được thứ tự lịch sử. Không đánh dấu hoàn tất rubric khi chưa có bằng chứng.
