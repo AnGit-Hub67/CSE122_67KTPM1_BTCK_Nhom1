@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="CampusMind — Đồng hành cùng sinh viên" />
+    <title>Bộ giao diện — CampusMind</title>
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/components.css" />
+    <link rel="stylesheet" href="../assets/css/responsive.css" />
+    <script defer src="../assets/js/main.js"></script><script defer src="../assets/js/public-copy.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+    <!-- campusmind:header -->
+<header class="site-header"><div class="header-inner"><a class="brand" href="../index.html" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính"><a href="../index.html">Trang chủ</a>
+<a href="visitor/visitor-service-directory.html">Dịch vụ</a>
+<a href="visitor/visitor-resource-library.html">Tài nguyên</a>
+<a href="visitor/visitor-counselor-detail.html">Chuyên viên</a></nav></div></header>
+<!-- /campusmind:header -->
+    <main id="main" tabindex="-1">
+      <section class="hero">
+        <span class="eyebrow">CampusMind Design System</span>
+        <h1>Bộ giao diện dùng chung</h1>
+        <p class="lead">
+          Các thành phần nền tảng cho Visitor, Student, Counselor và Admin.
+        </p>
+      </section>
+      <section class="section">
+        <h2>Màu sắc</h2>
+        <div class="swatches">
+          <div class="swatch" style="--color: #5b5fef">
+            Primary<br />#5B5FEF
+          </div>
+          <div class="swatch light" style="--color: #14b8a6">
+            Secondary<br />#14B8A6
+          </div>
+          <div class="swatch light" style="--color: #f43f5e">
+            Danger<br />#F43F5E
+          </div>
+          <div class="swatch" style="--color: #172554">Navy<br />#172554</div>
+          <div class="swatch light" style="--color: #a78bfa">
+            Purple<br />#A78BFA
+          </div>
+        </div>
+        <p class="meta">
+          Màu nút và chữ được điều chỉnh đậm hơn khi cần tăng độ tương phản.
+        </p>
+      </section>
+      <section class="section">
+        <h2>Nút & nhãn</h2>
+        <div class="component-row">
+          <button
+            class="primary"
+            type="button"
+            data-dialog-open="sample-dialog"
+          >
+            Mở hộp thoại</button
+          ><a class="button secondary" href="../index.html">Về trang chủ</a
+          ><button type="button" disabled>Chưa khả dụng</button
+          ><span class="badge">Thông tin</span
+          ><span class="badge teal">Sẵn sàng</span>
+        </div>
+      </section>
+      <section class="section panel">
+        <h2>Trường nhập liệu</h2>
+        <label for="sample-name">Tên hiển thị</label
+        ><input
+          class="input"
+          id="sample-name"
+          placeholder="Nhập tên của bạn"
+          aria-describedby="sample-help"
+        />
+        <p class="meta" id="sample-help">
+          Ví dụ giao diện; thông tin không được gửi hoặc lưu.
+        </p>
+        <label for="sample-error">Email (ví dụ lỗi)</label
+        ><input
+          class="input"
+          id="sample-error"
+          type="email"
+          value="email-khong-hop-le"
+          aria-invalid="true"
+          aria-describedby="sample-error-text"
+        />
+        <p class="field-error" id="sample-error-text">
+          Vui lòng nhập địa chỉ email hợp lệ.
+        </p>
+      </section>
+      <section class="section">
+        <h2>Thông báo & trạng thái</h2>
+        <p class="notice">Thông báo cung cấp ngữ cảnh cho thao tác.</p>
+        <p class="notice success">Ví dụ trạng thái thành công.</p>
+        <p class="notice error">
+          Ví dụ lỗi: chưa thể tải nội dung. Hãy thử lại sau.
+        </p>
+        <div class="state">
+          <h3>Chưa có nội dung</h3>
+          <p>Nội dung sẽ xuất hiện tại đây khi có dữ liệu.</p>
+        </div>
+      </section>
+      <dialog id="sample-dialog" aria-labelledby="sample-title">
+        <h2 id="sample-title">Hộp thoại CampusMind</h2>
+        <p>
+          Dùng Tab để di chuyển, Escape hoặc nút Đóng để quay lại. Nội dung này
+          chỉ minh họa component.
+        </p>
+        <button type="button" data-dialog-close autofocus>Đóng</button>
+      </dialog>
+    </main>
+    <!-- campusmind:footer -->
+<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind"><a href="../index.html#about">Giới thiệu</a><a href="../index.html#contact">Liên hệ</a><a href="../index.html#privacy">Dữ liệu và quyền xem</a></nav></div></footer>
+<!-- /campusmind:footer -->
+  </body>
+</html>
