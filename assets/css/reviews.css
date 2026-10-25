@@ -1,0 +1,29 @@
+.week-scroll { overflow-x:auto; max-width:100%; margin-top:18px; }
+.week-table { border-collapse:collapse; min-width:850px; width:100%; }
+.week-table caption { text-align:left; margin-bottom:12px; }
+.week-table th,.week-table td { border:1px solid var(--border); padding:8px; text-align:center; }
+.week-table th { font-size:13px; }
+.week-cell { width:100%; min-height:65px; padding:8px; font-size:13px; }
+.week-table small { display:block; }
+.week-cell.available { border-bottom:4px solid #14b8a6; }
+.week-cell.booked { border-bottom:4px solid #a78bfa; }
+.week-cell.rest { border-bottom:4px solid #94a3b8; }
+.review-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin:24px 0; }
+.review-metrics strong { display:block; font-size:30px; }
+.review-filters { display:flex; flex-wrap:wrap; gap:16px; margin:20px 0; }
+.review-filters label { display:grid; gap:6px; }
+.review-chart { display:flex; gap:16px; align-items:stretch; }
+.review-chart.vertical { height:230px; align-items:stretch; }
+.review-chart button { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; padding:10px; min-width:0; }
+.review-chart .bar { display:block; width:55%; min-height:3px; background:var(--primary); border-radius:6px 6px 0 0; }
+.review-chart.horizontal { flex-direction:column; }
+.review-chart.horizontal button { display:grid; grid-template-columns:65px 1fr 50px; align-items:center; gap:12px; text-align:left; }
+.review-chart.horizontal .bar { height:18px; min-width:3px; border-radius:4px; }
+.review-chart button[aria-pressed=true] { outline:3px solid var(--primary); outline-offset:2px; }
+.review-stars { color:#936400; letter-spacing:2px; }
+[data-theme=dark] .review-stars { color:#ffd166; }
+.review-comment { border-bottom:1px solid var(--border); padding:20px 0; overflow-wrap:anywhere; }
+.review-comment h3 { margin:0; }
+.review-comment time { display:block; color:var(--muted); font-size:14px; }
+@media(max-width:900px) { .review-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:500px) { .review-metrics { grid-template-columns:1fr; } .review-chart { gap:7px; } .review-chart button { padding:5px; } }

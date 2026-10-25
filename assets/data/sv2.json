@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "studentId": "sv-demo-01",
+  "adminId": "admin-demo-01",
+  "legacyCounselorId": "minh-anh",
+  "horizonDays": 28,
+  "users": [
+    {
+      "id": "sv-demo-01",
+      "name": "Sinh viên Cục bộ 01",
+      "email": "student01@example.test",
+      "role": "student",
+      "status": "active"
+    },
+    {
+      "id": "sv-demo-02",
+      "name": "Sinh viên Cục bộ 02",
+      "email": "student02@example.test",
+      "role": "student",
+      "status": "disabled"
+    },
+    {
+      "id": "minh-anh",
+      "name": "Nguyễn Minh Anh",
+      "email": "minhanh@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "quang-huy",
+      "name": "Trần Quang Huy",
+      "email": "quanghuy@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "thu-ha",
+      "name": "Lê Thu Hà",
+      "email": "thuha@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "admin-demo-01",
+      "name": "Quản trị viên Cục bộ",
+      "email": "admin@example.test",
+      "role": "admin",
+      "status": "active"
+    },
+    {
+      "id": "bao-tran",
+      "name": "Phạm Bảo Trân",
+      "email": "bao-tran@example.test",
+      "role": "counselor",
+      "status": "active",
+      "approval": "approved"
+    },
+    {
+      "id": "duc-minh",
+      "name": "Vũ Đức Minh",
+      "email": "duc-minh@example.test",
+      "role": "counselor",
+      "status": "active",
+      "approval": "approved"
+    },
+    {
+      "id": "ngoc-lan",
+      "name": "Đỗ Ngọc Lan",
+      "email": "ngoc-lan@example.test",
+      "role": "counselor",
+      "status": "active",
+      "approval": "approved"
+    }
+  ],
+  "weeklySlots": [
+    {
+      "counselorId": "minh-anh",
+      "weekday": 1,
+      "start": "09:00",
+      "end": "09:50"
+    },
+    {
+      "counselorId": "minh-anh",
+      "weekday": 3,
+      "start": "14:00",
+      "end": "14:50"
+    },
+    {
+      "counselorId": "minh-anh",
+      "weekday": 5,
+      "start": "10:00",
+      "end": "10:50"
+    },
+    {
+      "counselorId": "quang-huy",
+      "weekday": 2,
+      "start": "15:00",
+      "end": "15:45"
+    },
+    {
+      "counselorId": "quang-huy",
+      "weekday": 4,
+      "start": "09:00",
+      "end": "09:45"
+    },
+    {
+      "counselorId": "bao-tran",
+      "weekday": 1,
+      "start": "13:00",
+      "end": "13:50"
+    },
+    {
+      "counselorId": "bao-tran",
+      "weekday": 3,
+      "start": "09:00",
+      "end": "09:50"
+    },
+    {
+      "counselorId": "bao-tran",
+      "weekday": 5,
+      "start": "14:00",
+      "end": "14:50"
+    },
+    {
+      "counselorId": "duc-minh",
+      "weekday": 1,
+      "start": "13:00",
+      "end": "13:50"
+    },
+    {
+      "counselorId": "duc-minh",
+      "weekday": 3,
+      "start": "09:00",
+      "end": "09:50"
+    },
+    {
+      "counselorId": "duc-minh",
+      "weekday": 5,
+      "start": "14:00",
+      "end": "14:50"
+    },
+    {
+      "counselorId": "ngoc-lan",
+      "weekday": 1,
+      "start": "13:00",
+      "end": "13:50"
+    },
+    {
+      "counselorId": "ngoc-lan",
+      "weekday": 3,
+      "start": "09:00",
+      "end": "09:50"
+    },
+    {
+      "counselorId": "ngoc-lan",
+      "weekday": 5,
+      "start": "14:00",
+      "end": "14:50"
+    },
+    {
+      "counselorId": "thu-ha",
+      "weekday": 2,
+      "start": "10:00",
+      "end": "10:50"
+    },
+    {
+      "counselorId": "thu-ha",
+      "weekday": 4,
+      "start": "14:00",
+      "end": "14:50"
+    },
+    {
+      "counselorId": "thu-ha",
+      "weekday": 5,
+      "start": "09:00",
+      "end": "09:50"
+    }
+  ]
+}
