@@ -51,19 +51,24 @@ for (const file of files(root)) {
   const source = fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n");
   const relative = path.relative(root, file).replaceAll("\\", "/");
   const href = (target) => {
-    const [pathname, fragment] = target.split("#");
+    const [route, fragment] = target.split("#");
+    const [pathname, query] = route.split("?");
     return escape(
       path
         .relative(path.dirname(file), path.join(root, pathname))
-        .replaceAll("\\", "/") + (fragment ? `#${fragment}` : ""),
+        .replaceAll("\\", "/") + (query ? `?${query}` : "") + (fragment ? `#${fragment}` : ""),
     );
   };
   const anchor = ([label, target]) =>
     `<a href="${href(target)}"${relative === target ? ' aria-current="page"' : ""}>${label}</a>`;
   const role = source.match(/data-role="(student|counselor|admin)"/)?.[1];
+  const sv1 = relative === 'index.html' || relative.startsWith('pages/visitor/') || ['pages/admin/index.html', 'pages/admin/admin-service-management.html'].includes(relative);
+  if (!sv1) continue;
+  const brand = sv1 ? '<img class="brand-logo" src="' + href('assets/images/campusmind-logo.png') + '" alt="" width="108" height="84" /><span class="brand-name">CampusMind</span>' : 'Campus<span>Mind</span>';
+  const copyright = sv1 ? '© 2026 CampusMind · Đồng hành cùng sinh viên' : '© 2026 CampusMind · Bản prototype học phần CSE122';
   const parts = {
-    header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">Campus<span>Mind</span></a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
-    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>© 2026 CampusMind · Bản prototype học phần CSE122</small></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}${anchor(["Bộ giao diện", "pages/ui-kit.html"])}</nav></div></footer>`,
+    header: `<header class="site-header"><div class="header-inner"><a class="brand" href="${href("index.html")}" aria-label="CampusMind — Trang chủ">${brand}</a><button type="button" class="nav-toggle" data-nav-toggle aria-controls="primary-navigation" aria-expanded="true" hidden>Menu</button><nav id="primary-navigation" aria-label="Điều hướng chính">${routes.map(anchor).join("\n")}</nav></div></header>`,
+    footer: `<footer class="site-footer"><div class="footer-inner"><div><strong>CampusMind</strong><p>Một điểm tựa trong hành trình sinh viên.</p><small>${copyright}</small><p>Thông tin minh họa cho mục đích học tập</p></div><nav aria-label="Thông tin CampusMind">${anchor(["Giới thiệu", "index.html#about"])}${anchor(["Liên hệ", "index.html#contact"])}${anchor(["Dữ liệu và quyền xem", "index.html#privacy"])}</nav></div></footer><p class="crisis-line">Nếu bạn đang gặp khủng hoảng, hãy gọi 115 hoặc đến cơ sở y tế gần nhất.</p>`,
     "visitor-entry": visitorReady
       ? `<div class="actions">${routes
           .slice(1)
@@ -74,7 +79,7 @@ for (const file of files(root)) {
           .join("")}</div>`
       : '<p class="notice">Các trang dịch vụ, tài nguyên và hồ sơ chuyên viên được tích hợp từ TASK-12.</p>',
     sidebar: role
-      ? `<aside class="sidebar" aria-label="Khu vực ${roles.find((item) => item[1] === role)[0]}"><strong>Khu vực ${roles.find((item) => item[1] === role)[0]}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${anchor(["Tổng quan", `pages/${role}/index.html`])}${role === "admin" ? anchor(["Quản lý dịch vụ", "pages/admin/admin-service-management.html"]) : ""}${anchor(["Khám phá dịch vụ", routes[1][1]])}${anchor(["Trang chủ", "index.html"])}<span class="sidebar-note">${role === "admin" ? "Quản lý danh mục dịch vụ hỗ trợ sinh viên." : "Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò."}</span></nav></aside>`
+      ? `<aside class="sidebar" aria-label="Khu vực ${roles.find((item) => item[1] === role)[0]}"><strong>Khu vực ${roles.find((item) => item[1] === role)[0]}</strong><button type="button" class="nav-toggle" data-nav-toggle aria-controls="role-navigation" aria-expanded="true" hidden>Điều hướng khu vực</button><nav id="role-navigation" aria-label="Điều hướng vai trò">${anchor(["Tổng quan", `pages/${role}/index.html`])}${role === "admin" ? anchor(["Quản lý dịch vụ", "pages/admin/admin-service-management.html"]) : ""}${anchor(["Khám phá dịch vụ", routes[1][1] + (role === "admin" ? "?from=admin" : "")])}${anchor(["Trang chủ", "index.html"])}<span class="sidebar-note">${role === "admin" ? "Quản lý danh mục dịch vụ hỗ trợ sinh viên." : "Các chức năng nghiệp vụ sẽ được bổ sung ở task của từng vai trò."}</span></nav></aside>`
       : "",
   };
   let output = source;
@@ -100,3 +105,4 @@ else
       ? "Shared layouts are up to date."
       : `Updated ${changed} shared layouts.`,
   );
+
