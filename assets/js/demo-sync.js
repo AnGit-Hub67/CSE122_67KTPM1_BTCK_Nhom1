@@ -11,8 +11,10 @@
   function status(message){window.dispatchEvent(new CustomEvent('campusmind:remote-status',{detail:message}));}
   async function config(){
     if(!configPromise)configPromise=(async()=>{try{
-      let r=await fetch(new URL('assets/data/config.json',root),{signal:AbortSignal.timeout(3000)});
-      if(r.status===404)r=await fetch(new URL('assets/data/config.public.json',root),{signal:AbortSignal.timeout(3000)});
+      // A private development override is absent from static deployments.
+      const localHost=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+      let r=await fetch(new URL(localHost?'assets/data/config.json':'assets/data/config.public.json',root),{signal:AbortSignal.timeout(3000)});
+      if(localHost&&r.status===404)r=await fetch(new URL('assets/data/config.public.json',root),{signal:AbortSignal.timeout(3000)});
       if(r.status===404)return null;if(!r.ok)throw Error();const c=await r.json();if(!c.enableDemoRemoteSync)return null;
       const u=new URL(c.mockApiRecordUrl);
       if(u.protocol!=='https:'||!u.hostname.endsWith('.mockapi.io')||u.username||u.password||u.search||u.hash||!/^\/[A-Za-z0-9/_-]+$/.test(u.pathname))throw Error();
