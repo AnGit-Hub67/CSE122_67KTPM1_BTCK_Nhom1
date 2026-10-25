@@ -1,4 +1,3 @@
-// Run with Node.js and Playwright installed; no application build is required.
 const { chromium } = require("playwright");
 const http = require("node:http");
 const fs = require("node:fs");

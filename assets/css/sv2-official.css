@@ -1,0 +1,408 @@
+:root {
+    --surface: #fff;
+    --line: #cbd5e1;
+    --link: #4246c9;
+    --soft: #eef0ff;
+    --good: #0c655f;
+    --text: #1e293b;
+    --muted: #526175
+}
+
+:root[data-theme=dark] {
+    color-scheme: dark;
+    --surface: #182338;
+    --background: #101827;
+    --white: #182338;
+    --text: #e8edf5;
+    --muted: #b5c3d8;
+    --navy: #e8edf5;
+    --line: #52647e;
+    --link: #b4b6ff;
+    --soft: #27354c;
+    --good: #78ddc9
+}
+
+body {
+    background: var(--background);
+    color: var(--text)
+}
+
+a {
+    color: var(--link)
+}
+
+.panel,
+.sidebar,
+dialog,
+.sv2-stat,
+.sv2-table-wrap,
+.auth-card,
+input,
+select,
+textarea,
+button,
+.button {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--line)
+}
+
+.notice,
+.sv2 th,
+.sv2-slot:has(:checked),
+.hero,
+.badge {
+    background: var(--soft);
+    color: var(--text)
+}
+
+.sv2 #work-status {
+    color: var(--good)
+}
+
+.primary {
+    background: #484bd2;
+    color: white
+}
+
+.meta,
+.lead,
+small {
+    color: var(--muted)
+}
+
+.eyebrow {
+    color: var(--link)
+}
+
+.auth-form .check {
+    flex-wrap: wrap
+}
+
+.sv2 #export-summary {
+    margin-bottom: 16px
+}
+
+.auth-layout {
+    max-width: 1060px;
+    margin: auto;
+    padding: 32px 24px
+}
+
+.auth-heading {
+    max-width: 680px;
+    margin: 32px 0
+}
+
+.auth-roles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0
+}
+
+.auth-roles button {
+    padding: 24px;
+    text-align: left
+}
+
+.auth-roles [aria-pressed=true] {
+    border: 2px solid var(--link);
+    background: var(--soft)
+}
+
+.auth-form {
+    max-width: 680px;
+    display: grid;
+    gap: 12px
+}
+
+.auth-form input:not([type=checkbox]),
+.auth-form select,
+.auth-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit
+}
+
+.auth-form label {
+    font-weight: 600
+}
+
+.auth-form fieldset {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px
+}
+
+.auth-card {
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    margin: 24px 0
+}
+
+.auth-form .check {
+    display: flex;
+    align-items: start;
+    gap: 12px
+}
+
+.auth-form .check input {
+    margin-top: 7px
+}
+
+.brand-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain
+}
+
+.sidebar .brand-logo {
+    display: block;
+    margin-bottom: 12px
+}
+
+.sidebar button {
+    width: 100%
+}
+
+.auth-form .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px
+}
+
+.skeleton {
+    min-height: 80px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, var(--soft), var(--surface), var(--soft));
+    background-size: 200%;
+    animation: pulse 1.6s infinite
+}
+
+.sv2 [aria-busy=true]~.skeleton {
+    display: block
+}
+
+@keyframes pulse {
+    to {
+        background-position: 200%
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    * {
+        animation: none !important;
+        scroll-behavior: auto !important
+    }
+}
+
+@media(max-width:700px) {
+    .auth-roles {
+        grid-template-columns: 1fr
+    }
+
+    .auth-roles button {
+        padding: 16px
+    }
+
+    .auth-layout {
+        padding: 20px 16px
+    }
+
+    .auth-card {
+        padding: 18px
+    }
+
+    .auth-form .actions>* {
+        flex: 1
+    }
+
+    .app-shell {
+        display: block
+    }
+
+    .sidebar {
+        width: 100%
+    }
+}
+
+/* Shared theme corrections: main.js loads this sheet across role layouts. */
+.sidebar {
+    border-right: 1px solid var(--line)
+}
+
+.sidebar nav a,
+.sidebar>a,
+.sidebar-note {
+    color: var(--text)
+}
+
+.sidebar nav a:hover {
+    background: var(--soft);
+    color: var(--text)
+}
+
+.sidebar nav a[aria-current=page] {
+    background: #393cb1;
+    color: #fff;
+    box-shadow: none
+}
+
+.sidebar :focus-visible,
+:focus-visible {
+    outline: 3px solid var(--link);
+    outline-offset: 3px
+}
+
+.toolbar,
+.state,
+.card,
+.site-header,
+.site-footer,
+.skip-link {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--line)
+}
+
+.site-header nav a {
+    color: var(--text)
+}
+
+button:hover,
+.button:hover {
+    background: var(--soft);
+    color: var(--text)
+}
+
+a.button.primary,
+button.primary {
+    background: #484bd2;
+    color: #fff;
+    border-color: #484bd2
+}
+
+a.button.primary:hover,
+button.primary:hover {
+    background: #393cb1;
+    color: #fff
+}
+
+[data-theme=dark] .field-error,
+[data-theme=dark] .danger-text {
+    color: #ffb4c3
+}
+
+[data-theme=dark] .notice.error {
+    background: #452438;
+    color: #ffd5df
+}
+
+[data-theme=dark] .notice.success {
+    background: #193e35;
+    color: #b9f4de
+}
+
+[data-theme=dark] .sv2-slot:has(:disabled) {
+    background: #27354c;
+    color: #b5c3d8
+}
+
+[data-theme=dark] button:disabled,
+[data-theme=dark] button:disabled:hover {
+    background: #27354c;
+    color: #b5c3d8
+}
+
+.campus-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 750;
+    text-decoration: none;
+    margin-bottom: 20px;
+    color: var(--text)
+}
+
+.campus-brand .brand-logo {
+    margin: 0;
+    width: 48px;
+    height: 48px
+}
+
+.sidebar .workspace-title {
+    display: block;
+    font-weight: 700;
+    margin-top: 12px
+}
+
+.campus-support {
+    margin-top: 32px;
+    padding: 20px 28px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 14px
+}
+
+.campus-support p {
+    margin: 0 0 8px
+}
+
+.campus-support a {
+    color: var(--link)
+}
+
+.profile-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 24px 0
+}
+
+.profile-benefits article {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface)
+}
+
+.local-registration {
+    margin-top: 24px
+}
+
+.local-registration form {
+    display: grid;
+    gap: 12px;
+    max-width: 680px
+}
+
+.local-registration input,
+.local-registration select {
+    padding: 12px;
+    width: 100%
+}
+
+@media(max-width:700px) {
+    .profile-benefits {
+        grid-template-columns: 1fr
+    }
+
+    .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line)
+    }
+
+    .campus-support {
+        padding: 20px 16px
+    }
+
+    .sidebar nav[hidden] {
+        display: none !important
+    }
+}

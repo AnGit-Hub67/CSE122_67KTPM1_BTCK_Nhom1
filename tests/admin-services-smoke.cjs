@@ -36,7 +36,7 @@ const server = http.createServer((req,res) => {
  await page.getByRole('button',{name:'Lưu trữ: Dịch vụ đã sửa',exact:true}).click();await page.keyboard.press('Escape');assert.equal(await page.locator('#archive-dialog').isVisible(),false);
  await page.getByRole('button',{name:'Lưu trữ: Dịch vụ đã sửa',exact:true}).click();await page.locator('#confirm-archive').click();await page.reload();await page.locator('#status-filter').selectOption('archived');assert.equal(await page.locator('#service-rows tr').count(),2);
  await page.locator('#add-service').click();await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.activeElement.id),'add-service');
- // All navigation and assets resolve under the current relative path.
+ 
  for(const ref of await page.locator('a[href],link[href],script[src]').evaluateAll(es=>es.map(e=>e.href||e.src))){const response=await context.request.get(ref);assert.equal(response.status(),200,ref);}
  await page.evaluate(k=>localStorage.setItem(k,'[]'),key);await page.reload();await page.locator('#empty-state').waitFor();assert.equal(await page.locator('#active-count').innerText(),'0');
  await page.evaluate(k=>localStorage.setItem(k,'broken json'),key);await page.reload();await page.locator('#load-error').waitFor();assert(await page.locator('#add-service').isDisabled());assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),'broken json');

@@ -1,4 +1,3 @@
-// Static HTML stays usable without JS. Run after adding pages or changing routes.
 const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");

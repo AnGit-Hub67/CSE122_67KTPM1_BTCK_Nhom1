@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "topics": [
+    {"id":"study","label":"Sắp xếp việc học","reason":"Bạn chọn tìm hiểu cách sắp xếp việc học.","suggestions":[{"text":"Bạn có thể bắt đầu từ thư viện tài nguyên để tìm mẫu ghi chú và lập kế hoạch học tập.","route":"resources","label":"Mở thư viện tài nguyên"},{"text":"Nếu muốn trao đổi trực tiếp về kế hoạch học tập, bạn có thể xem hồ sơ chuyên viên trước khi chọn buổi gặp.","route":"counselors","label":"Tìm hiểu chuyên viên"}]},
+    {"id":"connection","label":"Tìm hoạt động và kết nối ở trường","reason":"Bạn chọn tìm hiểu các hoạt động và kết nối tại trường.","suggestions":[{"text":"Khám phá mục tài nguyên để tìm các câu hỏi gợi mở về hoạt động và cộng đồng ở trường.","route":"resources","label":"Khám phá tài nguyên"},{"text":"Bạn có thể tìm hiểu chuyên viên và hình thức gặp nếu muốn có một cuộc trao đổi về trải nghiệm ở trường.","route":"counselors","label":"Xem thông tin chuyên viên"}]},
+    {"id":"session","label":"Tìm hiểu buổi tham vấn","reason":"Bạn chọn tìm hiểu cách chuẩn bị một buổi tham vấn.","suggestions":[{"text":"Xem hồ sơ, lĩnh vực và hình thức gặp của chuyên viên để biết thêm về lựa chọn hỗ trợ.","route":"counselors","label":"Xem chuyên viên"},{"text":"Khi đã tìm hiểu thông tin, bạn có thể mở trang đặt lịch để xem ngày và giờ còn trống.","route":"booking","label":"Xem lịch trống"}]}
+  ]
+}

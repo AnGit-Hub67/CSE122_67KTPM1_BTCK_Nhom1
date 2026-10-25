@@ -1,0 +1,149 @@
+.register-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 64px;
+    align-items: start;
+    padding-top: 56px;
+    padding-bottom: 24px
+}
+
+.register-intro {
+    padding-top: 28px
+}
+
+.register-intro h1 {
+    font-size: clamp(30px, 3.2vw, 44px)
+}
+
+.register-benefits {
+    padding-left: 24px;
+    margin: 28px 0;
+    color: var(--navy)
+}
+
+.register-benefits li {
+    padding: 8px 0
+}
+
+.register-panel h2 {
+    margin-top: 0
+}
+
+.register-panel label {
+    margin-top: 16px
+}
+
+.register-panel .input {
+    margin-top: 8px;
+    min-height: 48px
+}
+
+.register-panel .field-error {
+    margin: 6px 0 0;
+    min-height: 0
+}
+
+.register-panel .meta {
+    margin: 8px 0;
+    font-size: 13px
+}
+
+.password-row {
+    display: flex;
+    align-items: start;
+    gap: 8px
+}
+
+.password-row input {
+    min-width: 0;
+    flex: 1
+}
+
+.password-row button {
+    margin: 8px 0 0;
+    min-height: 48px;
+    white-space: nowrap;
+    padding: 8px 12px
+}
+
+#register-submit {
+    width: 100%;
+    margin: 24px 0 0
+}
+
+#register-status {
+    color: #0c655f
+}
+
+#register-success p {
+    overflow-wrap: anywhere
+}
+
+#register-success button {
+    margin-top: 12px
+}
+
+.register-panel[aria-busy=true] {
+    cursor: progress
+}
+
+@media(max-width:900px) {
+    .register-layout {
+        gap: 28px;
+        grid-template-columns: 1fr 1.1fr;
+        padding-top: 32px
+    }
+
+    .password-row {
+        flex-wrap: wrap
+    }
+
+    .password-row input {
+        flex-basis: 100%
+    }
+}
+
+@media(max-width:700px) {
+    .register-layout {
+        grid-template-columns: 1fr;
+        gap: 20px
+    }
+
+    .register-intro {
+        padding-top: 0
+    }
+
+    .register-intro h1 br {
+        display: none
+    }
+
+    .register-benefits {
+        margin: 16px 0
+    }
+
+    .register-panel {
+        padding: 22px
+    }
+
+    .register-page .header-inner nav {
+        gap: 12px
+    }
+
+    .password-row {
+        flex-wrap: nowrap
+    }
+
+    .password-row input {
+        flex-basis: auto
+    }
+}
+
+@media(max-width:380px) {
+    .password-row {
+        flex-wrap: wrap
+    }
+
+    .password-row input {
+        flex-basis: 100%
+    }
+}

@@ -106,7 +106,11 @@
       "initials": "MA",
       "role": "Chuyên viên tham vấn sinh viên",
       "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Thích nghi đại học", "Áp lực học tập", "Giao tiếp"],
+      "expertise": [
+        "Thích nghi đại học",
+        "Áp lực học tập",
+        "Giao tiếp"
+      ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp / Trực tuyến",
       "availability": [
@@ -121,10 +125,16 @@
       "initials": "QH",
       "role": "Chuyên viên hỗ trợ học tập",
       "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Kế hoạch học tập", "Cân bằng sinh hoạt"],
+      "expertise": [
+        "Kế hoạch học tập",
+        "Cân bằng sinh hoạt"
+      ],
       "languages": "Tiếng Việt / Tiếng Anh",
       "format": "Trực tuyến",
-      "availability": ["Thứ Ba · 15:00–15:45", "Thứ Năm · 09:00–09:45"]
+      "availability": [
+        "Thứ Ba · 15:00–15:45",
+        "Thứ Năm · 09:00–09:45"
+      ]
     },
     {
       "id": "thu-ha",
@@ -132,10 +142,71 @@
       "initials": "TH",
       "role": "Chuyên viên tham vấn sinh viên",
       "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ prototype.",
-      "expertise": ["Kết nối cộng đồng", "Mối quan hệ"],
+      "expertise": [
+        "Kết nối cộng đồng",
+        "Mối quan hệ"
+      ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp",
-      "availability": []
+      "availability": [
+        "Thứ Ba · 10:00–10:50",
+        "Thứ Năm · 14:00–14:50",
+        "Thứ Sáu · 09:00–09:50"
+      ]
+    },
+    {
+      "id": "bao-tran",
+      "name": "Phạm Bảo Trân",
+      "initials": "BT",
+      "role": "Định hướng nghề nghiệp",
+      "expertise": [
+        "Định hướng",
+        "Kế hoạch học tập"
+      ],
+      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến",
+      "availability": [
+        "Thứ Hai · 13:00–13:50",
+        "Thứ Tư · 09:00–09:50",
+        "Thứ Sáu · 14:00–14:50"
+      ]
+    },
+    {
+      "id": "duc-minh",
+      "name": "Vũ Đức Minh",
+      "initials": "DM",
+      "role": "Thích nghi môi trường học tập",
+      "expertise": [
+        "Thích nghi đại học",
+        "Cân bằng sinh hoạt"
+      ],
+      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến",
+      "availability": [
+        "Thứ Hai · 13:00–13:50",
+        "Thứ Tư · 09:00–09:50",
+        "Thứ Sáu · 14:00–14:50"
+      ]
+    },
+    {
+      "id": "ngoc-lan",
+      "name": "Đỗ Ngọc Lan",
+      "initials": "NL",
+      "role": "Kết nối và giao tiếp",
+      "expertise": [
+        "Mối quan hệ",
+        "Giao tiếp"
+      ],
+      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến",
+      "availability": [
+        "Thứ Hai · 13:00–13:50",
+        "Thứ Tư · 09:00–09:50",
+        "Thứ Sáu · 14:00–14:50"
+      ]
     }
   ]
 }
