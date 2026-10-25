@@ -91,3 +91,12 @@ Chạy kiểm thử: `node tests/visitor-smoke.cjs`, `node tests/admin-services-
 Ngày 25/10/2026: đã tạo một bản ghi `catalogs/1` từ đúng bốn dịch vụ seed và xác nhận trường `items` là mảng. Kiểm thử live Chromium đã PASS GET/PUT qua CORS, giữ nguyên dữ liệu sau PUT, Visitor ở context độc lập chỉ hiện dịch vụ active, fallback cache khi chặn mạng và quay lại remote khi nối lại. Không đọc/ghi resource `schedules` của SV3.
 
 Nếu trình duyệt từng có khóa `campusmind.admin.services.v1.offline`, trang tiếp tục giữ dữ liệu local để tránh mất thay đổi; thực hiện đối chiếu theo hướng dẫn pending ở trên trước khi xóa khóa đó.
+
+
+## Tích hợp SV3 vào bản SV1 — PR #11
+
+Giữ Visitor, catalog adapter và giao diện SV1 hiện có trên dev; bổ sung Counselor, hàng đợi/lịch hẹn, ghi chú với tóm tắt mô phỏng, profile, Admin Dashboard, review dịch vụ và theme/layout SV3. Chạy `node tools/serve.cjs`, mở http://127.0.0.1:8877/login.html và chọn tài khoản giả lập theo vai trò. Đây chưa phải backend xác thực thật.
+
+Hướng dẫn SV3: [phạm vi](docs/sv3-completion.md), [nâng cấp](docs/sv3-upgrade-2026-10-25.md), [MockAPI](docs/mockapi-setup.md). Config public SV3 vẫn giữ theo nguồn: đồng bộ bật khi không có config local; muốn chạy hoàn toàn local tạo assets/data/config.json với enableDemoRemoteSync false. Catalog SV1 vẫn theo service-config.js, không bị thay bằng cấu hình offline của ZIP tích hợp.
+
+Bản này chỉ ghép SV1 + SV3. Chưa nhập module Student/Auth của SV2: đặt lịch, đăng ký và lịch công khai dựa trên SV2Store vẫn cần PR SV2 và một lượt tích hợp riêng. ZIP full-integrated-v3 chỉ dùng đối chiếu, không sao chép các phụ thuộc SV2 vào PR này.

@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "id": "sv-demo-01",
+      "name": "Sinh viên 01",
+      "email": "student01@example.test",
+      "role": "student",
+      "status": "active"
+    },
+    {
+      "id": "sv-demo-02",
+      "name": "Sinh viên 02",
+      "email": "student02@example.test",
+      "role": "student",
+      "status": "disabled"
+    },
+    {
+      "id": "minh-anh",
+      "name": "Nguyễn Minh Anh",
+      "email": "minhanh@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "quang-huy",
+      "name": "Trần Quang Huy",
+      "email": "quanghuy@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "thu-ha",
+      "name": "Lê Thu Hà",
+      "email": "thuha@example.test",
+      "role": "counselor",
+      "status": "active"
+    },
+    {
+      "id": "admin-demo-01",
+      "name": "Quản trị viên",
+      "email": "admin@example.test",
+      "role": "admin",
+      "status": "active"
+    }
+  ]
+}

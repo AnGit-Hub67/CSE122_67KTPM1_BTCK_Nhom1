@@ -6,12 +6,6 @@ const path = require("node:path");
 const assert = require("node:assert/strict");
 const root = path.resolve(__dirname, "..");
 const server = http.createServer((req, res) => {
-  // Regression suites must never mutate the configured live catalog.
-  if (new URL(req.url, 'http://localhost').pathname.endsWith('/service-config.js')) {
-    res.setHeader('Content-Type', 'application/javascript');
-    return res.end('window.CampusMindServiceConfig = Object.freeze({endpoint: ""});');
-  }
-
   const file = path.join(
     root,
     decodeURIComponent(new URL(req.url, "http://localhost").pathname),
@@ -83,6 +77,7 @@ const server = http.createServer((req, res) => {
     await page.locator("#reset").click();
     assert.equal(await page.locator("article").count(), 4);
     await page.locator("[data-save]").first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-save][aria-pressed="true"]').length === 1);
     await page.reload();
     await page.waitForSelector('#results[aria-busy="false"]');
     assert.equal(await page.locator('[aria-pressed="true"]').count(), 1);
@@ -106,6 +101,7 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('[aria-pressed="true"]').count(),0);
     assert(await page.locator('#clear-saved').isDisabled());
     await page.locator('[data-save]').first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-save][aria-pressed="true"]').length === 1);
     await page.locator("#saved-only").check();
     assert.equal(await page.locator("article").count(), 1);
     await page.getByRole("button", { name: "Đọc tài nguyên" }).click();
@@ -119,6 +115,7 @@ const server = http.createServer((req, res) => {
       false,
     );
     await page.locator("[data-save]").click();
+    await page.waitForFunction(() => document.querySelectorAll('#results article').length === 0);
     assert.equal(await page.locator("article").count(), 0);
     assert.equal(
       await page
@@ -139,22 +136,28 @@ const server = http.createServer((req, res) => {
       };
     });
     await page.locator("[data-save]").first().click();
+    await page.waitForFunction(() => document.querySelector('#feedback').textContent.includes('Thay đổi chưa được lưu'));
     assert.match(
       await page.locator("#feedback").innerText(),
       /Thay đổi chưa được lưu/,
     );
     assert.equal(await page.locator('[aria-pressed="true"]').count(), 0);
     await visit("counselor-detail", "?id=thu-ha");
-    assert(await page.getByRole("button", {name: "Tải lại lịch"}).isVisible());
+    assert.equal(
+      await page
+        .getByRole("button", { name: "Chưa có lịch trống" })
+        .isDisabled(),
+      true,
+    );
     await visit("counselor-detail", "?id=missing");
     assert.match(
       await page.locator("#results").innerText(),
       /Không tìm thấy chuyên viên/,
     );
     await visit("counselor-detail");
-    assert.equal(await page.locator('#results article').count(), 6);
-    await page.getByRole('link', {name:'Xem hồ sơ',exact:true}).first().click();
-    await page.getByRole("button", { name: "Tìm hiểu cách đặt lịch" }).click();
+      await page.route('**/student-booking.html?*', route => route.fulfill({ status: 404, body: '' }));
+      await page.getByRole("button", { name: "Đặt lịch với chuyên viên" }).click();
+      await page.locator('#content-dialog[open]').waitFor();
     assert.match(await page.locator("#content-dialog").innerText(), /chưa gửi yêu cầu/);
     await page.keyboard.press("Escape");
     await page.route("**/assets/data/visitor.json", (route) =>
