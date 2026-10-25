@@ -80,4 +80,3 @@ SV3 (AnGit-Hub67) đã bật GitHub Pages, nguồn `main`, thư mục `/ (root)`
 
 ## 15. Minh chứng và sử dụng AI
 Xem [báo cáo hỗ trợ AI](docs/ai-usage-report.md). Từng sinh viên bổ sung prompt, phần tự sửa/kiểm tra và video OBS thật. `docs/screen-inventory.md` và minh chứng thiết kế trước khi viết code chưa được xác minh trong bản này; bổ sung tài liệu hiện tại không chứng minh được thứ tự lịch sử. Không đánh dấu hoàn tất rubric khi chưa có bằng chứng.
-
