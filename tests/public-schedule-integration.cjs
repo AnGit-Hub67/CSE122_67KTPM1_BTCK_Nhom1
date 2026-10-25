@@ -2,6 +2,12 @@ const {chromium}=require('playwright');
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const root=path.resolve(process.env.SV1_TEST_ROOT||path.join(__dirname,'..'));
 const server=http.createServer((req,res)=>{
+  // Regression suites must never mutate the configured live catalog.
+  if (new URL(req.url, 'http://localhost').pathname.endsWith('/service-config.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+    return res.end('window.CampusMindServiceConfig = Object.freeze({endpoint: ""});');
+  }
+
   const file=path.join(root,decodeURIComponent(new URL(req.url,'http://localhost').pathname));
   if(!file.startsWith(root+path.sep))return res.writeHead(403).end();
   fs.readFile(file,(err,data)=>{if(err)return res.writeHead(404).end();res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.js':'application/javascript','.json':'application/json','.css':'text/css'})[path.extname(file)]||'text/plain');res.end(data);});
