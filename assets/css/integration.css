@@ -1,0 +1,2 @@
+body .hero,body .lead,body .meta{background:transparent}
+.sidebar a[aria-current="page"]{background:var(--accent-soft,var(--soft));color:var(--text)}
