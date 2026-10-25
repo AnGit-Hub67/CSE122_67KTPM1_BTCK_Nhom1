@@ -1,6 +1,7 @@
 (() => {
   "use strict";
   const page = document.body.dataset.page;
+  const siteRoot = new URL('../../', document.currentScript.src);
   const results = document.querySelector("#results");
   const status = document.querySelector("#status");
   const controls = document.querySelector("#controls");
@@ -11,6 +12,7 @@
   const dialog = document.querySelector("#content-dialog");
   const storageKey = "campusmind.visitor.savedResources.v1";
   let data;
+  let publicSlots = [], scheduleError = false;
   let saved = new Set();
   let ready = false;
   let loadVersion = 0;
@@ -73,17 +75,12 @@
     renderList();
     search.focus();
   }
-  async function toggleSave(resource, target) {
+  function toggleSave(resource, target) {
+    const next = new Set(saved);
+    next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
     try {
-      const write = () => {
-        const value = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        if (!Array.isArray(value) || !value.every(id => typeof id === 'string')) throw new Error('Invalid saved data');
-        const next = new Set(value);
-        next.has(resource.id) ? next.delete(resource.id) : next.add(resource.id);
-        localStorage.setItem(storageKey, JSON.stringify([...next]));
-        saved = next;
-      };
-      if (navigator.locks) await navigator.locks.request(storageKey, write); else write();
+      localStorage.setItem(storageKey, JSON.stringify([...next]));
+      saved = next;
       const clear = document.querySelector("#clear-saved");
       if (clear) clear.disabled = saved.size === 0;
       feedback.textContent = `${saved.has(resource.id) ? "Đã lưu" : "Đã bỏ lưu"}: ${resource.title}.`;
@@ -142,6 +139,7 @@
           element("p", item.description),
           element("p", item.format || item.duration, "meta"),
         );
+        if (page === "services") card.append(element("p", "Thời lượng dịch vụ là dự kiến. Xem giờ bắt đầu–kết thúc ở hồ sơ chuyên viên trước khi đặt lịch.", "meta"));
         const actions = element("div", undefined, "actions");
         if (page === "services") {
           if (item.counselorId && data.counselors.some(c => c.id === item.counselorId)) actions.append(
@@ -171,7 +169,30 @@
     );
   }
   function renderCounselor() {
-    const id = new URLSearchParams(location.search).get("id") ?? data.counselors[0]?.id;
+    const id = new URLSearchParams(location.search).get("id");
+    if (!id) {
+      document.querySelector('h1').textContent = 'Gặp gỡ những người đồng hành cùng bạn';
+      status.textContent = `${data.counselors.length} chuyên viên`;
+      results.className = 'grid';
+      results.replaceChildren(...data.counselors.map(person => {
+        const card = element('article', undefined, 'card');
+        const avatar = element('div', person.initials, 'avatar');
+        avatar.setAttribute('aria-hidden', 'true');
+        card.append(avatar, element('h2', [person.qualification, person.name].filter(Boolean).join(' ')),
+          element('p', person.expertise.join(' · ')), element('p', person.experience || 'Chưa bổ sung kinh nghiệm', 'meta'));
+        const slots = publicSlots.filter(slot => slot.counselorId === person.id).slice(0, 3);
+        const list = element('ul', undefined, 'slots');
+        slots.forEach(slot => list.append(element('li', `${slot.date.split('-').reverse().join('/')} · ${slot.start}–${slot.end} · Còn trống`)));
+        card.append(slots.length ? list : element('p', scheduleError ? 'Chưa tải được lịch khả dụng. Vui lòng thử lại sau.' : 'Chưa có lịch trống được công bố.', 'meta'));
+        const actions = element('div', undefined, 'actions');
+        actions.append(link('Xem hồ sơ', `visitor-counselor-detail.html?id=${encodeURIComponent(person.id)}`, 'button'),
+          button('Đặt lịch với chuyên viên', () => book(person.id), 'primary'));
+        card.append(actions, element('small', 'Thông tin minh họa cho mục đích học tập'));
+        return card;
+      }));
+      if (!data.counselors.length) showState('Chưa có chuyên viên', 'Vui lòng quay lại sau.');
+      return;
+    }
     const person = data.counselors.find((item) => item.id === id);
     status.textContent = "";
     if (!person) {
@@ -185,7 +206,7 @@
       return;
     }
     document.title = `${person.name} — CampusMind`;
-    document.querySelector("h1").textContent = person.name;
+    document.querySelector("h1").textContent = [person.qualification, person.name].filter(Boolean).join(' ');
     results.className = "detail-layout";
     const profile = element("section", undefined, "panel");
     profile.setAttribute("aria-label", "Thông tin chuyên viên");
@@ -197,6 +218,9 @@
       element("p", person.bio),
       element("h3", "Lĩnh vực đồng hành"),
     );
+    if (person.experience) profile.append(element('p', person.experience));
+    if (person.organization) profile.append(element('p', person.organization));
+    if (person.email) profile.append(element('p', person.email));
     const tags = element("ul", undefined, "tags");
     person.expertise.forEach((skill) =>
       tags.append(element("li", skill, "badge")),
@@ -209,54 +233,34 @@
     );
     const availability = element("section", undefined, "panel");
     availability.setAttribute("aria-labelledby", "availability-title");
-    const heading = element("h2", "Lịch gặp dự kiến");
+    const heading = element("h2", "Lịch khả dụng");
     heading.id = "availability-title";
-    availability.append(
-      heading,
-      element(
-        "p",
-        "Lịch mẫu theo tuần · Giờ Việt Nam (UTC+7). Đây không phải lịch trống thực tế.",
-        "meta",
-      ),
-    );
-    if (person.availability.length) {
-      const slots = element("ul", undefined, "slots");
-      person.availability.forEach((slot) => slots.append(element("li", slot)));
-      availability.append(
-        slots,
-        button(
-          "Đặt lịch với chuyên viên",
-          async (event) => {
-            const target = event.currentTarget;
-            target.disabled = true;
-            try {
-              const url = `../student/student-booking.html?counselor=${encodeURIComponent(person.id)}`;
-              const response = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(10000) });
-              if (response.ok) location.href = url;
-              else openDialog("Trang đặt lịch chưa sẵn sàng", ["Trang đặt lịch chưa có ở phiên bản này; chưa gửi yêu cầu hoặc giữ chỗ."]);
-            } catch {
-              openDialog("Không mở được trang đặt lịch", ["Hãy kiểm tra kết nối rồi thử lại. Chưa gửi yêu cầu hoặc giữ chỗ."]);
-            } finally { target.disabled = false; }
-          },
-          "primary",
-        ),
-      );
+    availability.append(heading, element("p", "Giờ Việt Nam (UTC+7). Lịch lấy từ nguồn Student/Counselor trên cùng trình duyệt; thời lượng buổi gặp là khoảng từ giờ bắt đầu đến giờ kết thúc.", "meta"));
+    if (scheduleError) {
+      availability.append(element("p", "Chưa đọc được lịch chung. Cần tích hợp Student/Counselor và cho phép lưu trữ trình duyệt. Hồ sơ vẫn có thể xem; không có khung giờ nào được xác nhận là còn trống.", "notice"), button("Tải lại lịch", load));
     } else {
-      availability.append(
-        element("p", "Chuyên viên hiện chưa có lịch tiếp nhận.", "notice"),
-      );
-      const unavailable = button("Chưa có lịch trống", () => {});
-      unavailable.disabled = true;
-      availability.append(unavailable);
+      const available = publicSlots.filter(slot => slot.counselorId === person.id);
+      if (available.length) {
+        const slots = element("ul", undefined, "slots");
+        available.forEach(slot => slots.append(element("li", `${slot.date.split('-').reverse().join('/')} · ${slot.start}–${slot.end}`)));
+        availability.append(slots, button("Đặt lịch với chuyên viên", () => book(person.id), "primary"));
+      } else {
+        availability.append(element("p", "Chưa có lịch trống trong dữ liệu hiện tại. Hãy chọn chuyên viên khác hoặc quay lại sau.", "notice"));
+        const unavailable = button("Chưa có lịch trống", () => {});
+        unavailable.disabled = true;
+        availability.append(unavailable);
+      }
+      const alternatives = [...new Set(publicSlots.map(slot => slot.counselorId))].filter(id => id !== person.id);
+      for (const id of alternatives) {
+        const other = data.counselors.find(c => c.id === id);
+        if (other) availability.append(link(`Xem lịch còn trống: ${other.name}`, `visitor-counselor-detail.html?id=${encodeURIComponent(id)}`, "button"));
+      }
     }
-    availability.append(
-      element(
-        "p",
-        "Bạn có thể quay lại danh mục để khám phá chuyên viên khác.",
-        "meta",
-      ),
-      link("Khám phá dịch vụ khác →", "visitor-service-directory.html"),
-    );
+    availability.append(button("Tìm hiểu cách đặt lịch", () => openDialog("Quy trình đặt lịch", [
+      "Đăng nhập ở khu vực Sinh viên và chọn thời gian. Yêu cầu mới ở trạng thái chờ xác nhận; chuyên viên xác nhận trong khu vực của mình. Xem trạng thái tại Lịch hẹn của tôi.",
+      "Bạn có thể đổi hoặc hủy lịch đang chờ/đã xác nhận khi giờ hẹn còn ở tương lai. Đổi lịch sẽ chuyển yêu cầu về chờ xác nhận. Việc xem hồ sơ chưa gửi yêu cầu hoặc giữ chỗ.",
+      "Thao tác chỉ lưu trên trình duyệt, không gửi email hay tin nhắn và không đồng bộ giữa thiết bị. Không nhập thông tin tham vấn cá nhân thật."
+    ])), link("Khám phá dịch vụ khác →", "visitor-service-directory.html"));
     results.replaceChildren(profile, availability);
   }
   function validate(value) {
@@ -288,7 +292,7 @@
         for (const field of key === "resources"
           ? ["body"]
           : key === "counselors"
-            ? ["expertise", "availability"]
+            ? ["expertise"]
             : []) {
           if (
             !Array.isArray(item[field]) ||
@@ -302,27 +306,46 @@
   }
   async function load() {
     const version = ++loadVersion;
-    window.dispatchEvent(new CustomEvent('campusmind:catalog-loading'));
     ready = false;
+    window.dispatchEvent(new Event("campusmind:catalog-loading"));
     if (controls) controls.disabled = true;
     results.setAttribute("aria-busy", "true");
     status.textContent = "Đang tải dữ liệu…";
-    showState("Đang tải…", "Đang chuẩn bị nội dung dành cho bạn.");
+    results.className = "grid";
+    results.replaceChildren(...Array.from({length: 3}, () => {
+      const card = element("div", undefined, "card loading-skeleton");
+      card.setAttribute("aria-hidden", "true");
+      for (let i = 0; i < 4; i++) card.append(element("span"));
+      return card;
+    }));
     try {
       const response = await fetch("../../assets/data/visitor.json", {
         signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) throw new Error("Load failed");
       const loaded = validate(await response.json());
+      loaded.counselors = window.CampusMindPublicProfiles?.read(loaded.counselors) || loaded.counselors;
       if (page === "services") {
         const catalog = await CampusMindServices.read();
+        feedback.textContent = catalog.mode === 'offline' ? 'Đang dùng danh mục trên thiết bị. Chưa kết nối được nguồn trực tuyến.' : '';
         loaded.services = catalog.items.filter(s => s.status === "active").map(s => ({ ...s, title: s.name, format: `${s.duration} phút` }));
+      }
+      if (page === "counselors") {
+        try {
+          const slots = await Promise.race([CampusMindPublicSchedule.read(), new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))]);
+          if (version !== loadVersion) return;
+          publicSlots = slots; scheduleError = false;
+        } catch {
+          if (version !== loadVersion) return;
+          publicSlots = []; scheduleError = true;
+        }
       }
       if (version !== loadVersion) return;
       data = loaded;
       ready = true;
       if (page === "counselors") renderCounselor();
       else {
+        const selectedCategory = category.value;
         category.replaceChildren(
           new Option("Tất cả chủ đề", ""),
           ...[...new Set(data[page].map((item) => item.category))].map(
@@ -330,15 +353,15 @@
           ),
         );
         renderList();
-        window.dispatchEvent(new CustomEvent('campusmind:catalog', { detail: { page, items: data[page] } }));
+        window.dispatchEvent(new CustomEvent("campusmind:catalog", {detail: {items: data[page]}}));
       }
     } catch {
       if (version !== loadVersion) return;
-      window.dispatchEvent(new CustomEvent('campusmind:catalog-error'));
+      window.dispatchEvent(new Event("campusmind:catalog-error"));
       status.textContent = "Không tải được dữ liệu.";
       showState(
         "Nội dung chưa tải được",
-        "Vui lòng kiểm tra kết nối rồi thử lại. Nếu mở file trực tiếp, hãy chạy trang qua máy chủ HTTP theo hướng dẫn TASK-12.",
+        "Vui lòng kiểm tra kết nối rồi thử lại. Nội dung bạn đã lưu trên thiết bị vẫn được giữ.",
         "Thử lại",
         load,
       );
@@ -348,15 +371,49 @@
       if (controls) controls.disabled = !ready;
     }
   }
-  search?.addEventListener("input", renderList);
+  let bookingBusy = false;
+  async function book(id) {
+    if (bookingBusy) return;
+    bookingBusy = true;
+    try {
+      const user = await window.CampusSession?.ready;
+      const booking = new URL(`pages/student/student-booking.html?counselor=${encodeURIComponent(id)}`, siteRoot);
+      if (user?.role === 'student') {
+        const response = await fetch(booking, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+        if (response.ok) { location.href = booking.href; return; }
+        openDialog('Trang đặt lịch chưa sẵn sàng', ['Vui lòng quay lại sau khi khu vực sinh viên được tích hợp.']);
+        return;
+      }
+      openDialog('Vui lòng đăng nhập trước khi đặt lịch', ['Đăng nhập bằng tài khoản sinh viên để chọn ngày và khung giờ.']);
+      const login = button('Đăng nhập', () => {} , 'primary');
+      login.disabled = true;
+      const body = document.querySelector('#dialog-body');
+      body.append(login);
+      for (const route of ['sv2-login.html', 'login.html']) {
+        const url = new URL(route, siteRoot);
+        const response = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+        if (response.ok) {
+          if (dialog.open && body.contains(login)) {
+            login.disabled = false;
+            login.onclick = () => { url.searchParams.set('role', 'student'); location.href = url.href; };
+          }
+          return;
+        }
+      }
+      if (body.contains(login)) body.append(element('p', 'Trang đăng nhập chưa được tích hợp trong bản này. Bạn vẫn có thể xem hồ sơ và tài nguyên.'));
+    } catch {
+      openDialog('Chưa mở được trang đăng nhập', ['Vui lòng kiểm tra kết nối rồi thử lại.']);
+    } finally { bookingBusy = false; }
+  }
   window.addEventListener('campusmind:accept-suggestion', event => {
-    if (!ready || !data[page]?.some(item => item.id === event.detail.id)) return;
-    search.value = event.detail.title;
-    category.value = '';
+    if (!ready || !['services', 'resources'].includes(page)) return;
+    const selected = data[page].find(item => item.id === event.detail?.id);
+    if (!selected) return;
+    search.value = selected.title; category.value = selected.category;
     if (savedOnly) savedOnly.checked = false;
     renderList();
-    search.focus();
   });
+  search?.addEventListener("input", renderList);
   category?.addEventListener("change", renderList);
   savedOnly?.addEventListener("change", renderList);
   document.querySelector("#reset")?.addEventListener("click", reset);
@@ -392,5 +449,13 @@
   if (page === "services") window.addEventListener("storage", event => {
     if (event.key === CampusMindServices.key || event.key === null) load();
   });
+  if (page === "counselors") {
+    window.addEventListener("storage", event => {
+      if ([null, "campusmind.counselor.v1", "campusmind.sv2.users.v1"].includes(event.key)) load();
+    });
+    window.addEventListener("pageshow", event => { if (event.persisted) load(); });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+    setInterval(() => { if (!document.hidden && ready) load(); }, 60000);
+  }
   load();
 })();

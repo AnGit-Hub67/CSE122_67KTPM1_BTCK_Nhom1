@@ -45,3 +45,6 @@ body[data-page="counselors"] .results-bar {
   font-size: 14px;
 }
 @media (max-width: 900px) { .detail-layout { grid-template-columns: 1fr; } }
+
+.detail-layout > * { min-width: 0; overflow-wrap: anywhere; }
+.detail-layout .button { margin: 4px 0; }

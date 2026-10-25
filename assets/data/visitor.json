@@ -57,17 +57,15 @@
       "role": "Chuyên viên tham vấn sinh viên",
       "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Áp lực học tập",
         "Thích nghi đại học",
         "Áp lực học tập",
         "Giao tiếp"
       ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp / Trực tuyến",
-      "availability": [
-        "Thứ Hai · 09:00–09:50",
-        "Thứ Tư · 14:00–14:50",
-        "Thứ Sáu · 10:00–10:50"
-      ]
+      "qualification": "ThS.",
+      "experience": "5 năm kinh nghiệm (minh họa)"
     },
     {
       "id": "quang-huy",
@@ -76,15 +74,14 @@
       "role": "Chuyên viên hỗ trợ học tập",
       "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Định hướng nghề nghiệp",
         "Kế hoạch học tập",
         "Cân bằng sinh hoạt"
       ],
       "languages": "Tiếng Việt / Tiếng Anh",
       "format": "Trực tuyến",
-      "availability": [
-        "Thứ Ba · 15:00–15:45",
-        "Thứ Năm · 09:00–09:45"
-      ]
+      "qualification": "ThS.",
+      "experience": "6 năm kinh nghiệm (minh họa)"
     },
     {
       "id": "thu-ha",
@@ -93,12 +90,56 @@
       "role": "Chuyên viên tham vấn sinh viên",
       "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Tình cảm",
         "Kết nối cộng đồng",
         "Mối quan hệ"
       ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp",
-      "availability": []
+      "qualification": "ThS.",
+      "experience": "7 năm kinh nghiệm (minh họa)"
+    },
+    {
+      "id": "bao-linh",
+      "name": "Phạm Bảo Linh",
+      "initials": "BL",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
+      "expertise": [
+        "Lo âu và trầm cảm"
+      ],
+      "experience": "5 năm kinh nghiệm (minh họa)",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến"
+    },
+    {
+      "id": "duc-an",
+      "name": "Vũ Đức An",
+      "initials": "DA",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
+      "expertise": [
+        "Giấc ngủ và stress"
+      ],
+      "experience": "5 năm kinh nghiệm (minh họa)",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến"
+    },
+    {
+      "id": "mai-chi",
+      "name": "Đỗ Mai Chi",
+      "initials": "MC",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
+      "expertise": [
+        "Thích nghi môi trường mới"
+      ],
+      "experience": "5 năm kinh nghiệm (minh họa)",
+      "languages": "Tiếng Việt",
+      "format": "Trực tiếp / Trực tuyến"
     }
   ]
 }

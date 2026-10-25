@@ -1,5 +1,6 @@
-(() => {
+(async () => {
   'use strict';
+  if (window.CampusSession && (await window.CampusSession.ready)?.role !== 'admin') return;
   const store = window.CampusMindServices;
   let snapshot = null, counselors = [], loadVersion = 0;
   const $ = (id) => document.getElementById(id);
@@ -57,14 +58,17 @@
       if (version !== loadVersion) return;
       counselors = people;
       $('service-counselorId').replaceChildren(new Option('Chưa phân công', ''), ...people.map(c => new Option(c.name, c.id)));
+      $('feedback').textContent = catalog.mode === 'offline' ? 'Đang dùng danh mục trên thiết bị. Chưa kết nối được nguồn trực tuyến.' : '';
       services = catalog.items; snapshot = catalog.snapshot; render(); $('add-service').disabled = false;
       for (const id of ['service-search', 'status-filter', 'clear-filters']) $(id).disabled = false;
     } catch { if (version !== loadVersion) return; $('load-error').hidden = false; $('result-count').textContent = 'Chưa tải được dữ liệu'; }
     finally { if (version !== loadVersion) return; $('loading-state').hidden = true; $('service-results').setAttribute('aria-busy', 'false'); }
   }
   async function persist(next, errorId) {
-    try { snapshot = await store.write(next, snapshot); services = next; return true; }
-    catch (cause) { const error = $(errorId); error.textContent = cause.message.includes('tab khác') ? cause.message : 'Không thể lưu thay đổi. Kiểm tra quyền hoặc dung lượng lưu trữ của trình duyệt rồi thử lại. Nội dung bạn nhập vẫn được giữ.'; error.hidden = false; return false; }
+    try {
+      if (window.CampusSession && window.CampusSession.current()?.role !== 'admin') throw new Error('Phiên quản trị không còn hợp lệ. Đăng nhập lại.');
+      snapshot = await store.write(next, snapshot); services = next; return true; }
+    catch (cause) { const error = $(errorId); error.textContent = (cause.message.includes('tab khác') || cause.message.includes('Phiên quản trị')) ? cause.message : 'Không thể lưu thay đổi. Kiểm tra quyền hoặc dung lượng lưu trữ của trình duyệt rồi thử lại. Nội dung bạn nhập vẫn được giữ.'; error.hidden = false; return false; }
   }
   function resetFilters() { $('service-search').value = ''; $('status-filter').value = 'all'; render(); }
   function openForm(service, button) {
@@ -104,7 +108,7 @@
     const success = await persist(next, 'save-error');
     submit.disabled = false;
     if (!success) return;
-    resetFilters(); $('feedback').textContent = editing ? 'Đã cập nhật dịch vụ.' : 'Đã thêm dịch vụ.'; $('service-dialog').close();
+    resetFilters(); $('feedback').textContent = editing ? 'Đã cập nhật dịch vụ.' : 'Đã thêm dịch vụ.'; $('feedback').textContent += store.saveNotice(); $('service-dialog').close();
   });
   $('confirm-archive').addEventListener('click', async () => {
     if (!services.some(s => s.id === archiving && s.status !== 'archived')) return;
@@ -113,7 +117,7 @@
     const success = await persist(next, 'archive-error');
     $('confirm-archive').disabled = false;
     if (!success) return;
-    render(); $('feedback').textContent = 'Đã lưu trữ dịch vụ. Bạn có thể tìm lại bằng bộ lọc “Đã lưu trữ”.'; $('archive-dialog').close();
+    render(); $('feedback').textContent = 'Đã lưu trữ dịch vụ. Bạn có thể tìm lại bằng bộ lọc “Đã lưu trữ”.' + store.saveNotice(); $('archive-dialog').close();
   });
   $('service-search').addEventListener('input', render);
   $('status-filter').addEventListener('change', render);
