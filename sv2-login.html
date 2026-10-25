@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Đăng nhập — CampusMind</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/sv2-official.css">
+    <script defer src="assets/js/sv2-config.js"></script>
+    <script defer src="assets/js/sv2-api.js"></script>
+    <script defer src="assets/js/sv2-session.js"></script>
+    <script defer src="assets/js/main.js"></script>
+    <script defer src="assets/js/sv2-store.js"></script>
+    <script defer src="assets/js/auth.js"></script>
+    <script src="assets/js/sv2-shell.js"></script>
+</head>
+
+<body data-auth="login">
+    <main class="auth-layout"><a href="index.html"><img class="brand-logo" src="assets/images/campusmind-logo.png"
+                alt="CampusMind"></a>
+        <div class="auth-heading">
+            <h1>Đăng nhập</h1>
+            <p>Bạn không cần phải trải qua điều này một mình.</p>
+        </div>
+        <div class="auth-roles" role="group" aria-label="Chọn vai trò"><button type="button"
+                data-role-choice="student">Sinh viên</button><button type="button" data-role-choice="counselor">Chuyên
+                viên tâm lý</button><button type="button" data-role-choice="admin">Quản trị viên</button></div>
+        <section class="auth-card">
+            <h2 id="role-title"></h2>
+            <p id="auth-status" role="status" aria-live="polite"></p>
+            <form id="auth-form" class="auth-form"><label for="identifier">Email hoặc số điện thoại *</label><input
+                    id="identifier" name="identifier" type="text" required autocomplete="username"><label
+                    for="password">Mật khẩu *</label><input id="password" name="password" type="password" required
+                    minlength="8" maxlength="128" autocomplete="off"><button id="show-password" type="button"
+                    aria-pressed="false">Hiện mật khẩu</button><label class="check"><input id="remember"
+                        type="checkbox">Ghi nhớ đăng nhập trên thiết bị này</label>
+                <section id="challenge" hidden>
+                    <h3>Xác minh với máy chủ</h3><label for="verification-id">Mã hồ sơ / yêu cầu</label><input
+                        id="verification-id" name="verification-id" type="text"><label for="otp">Mã OTP</label><input
+                        id="otp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code"
+                        maxlength="12"><label for="captcha-token">Mã xác nhận từ nhà cung cấp captcha</label><input
+                        id="captcha-token" name="captcha-token" type="text">
+                    <p class="meta">OTP, captcha và thời gian khóa do máy chủ quyết định. Không có mã mặc định để vượt
+                        qua.</p><button id="verify" type="button">Xác minh email</button>
+                </section>
+                <div class="actions"><button class="primary" id="auth-submit">Đăng nhập</button><button id="forgot"
+                        type="button">Quên mật khẩu</button><a id="register-link" href="register.html">Tạo tài khoản
+                        sinh viên</a></div>
+            </form>
+        </section>
+        <details class="auth-card">
+            <summary>Tiếp tục với dữ liệu cục bộ</summary>
+            <p>Chỉ dùng dữ liệu giả định. Lựa chọn này không xác thực danh tính, không kết nối chuyên viên thật và không
+                cung cấp bảo mật máy chủ. Không nhập thông tin sức khỏe cá nhân.</p><label for="account">Tài khoản cục
+                bộ</label><select id="account"></select><button id="local-enter" type="button">Mở không gian cục
+                bộ</button>
+        </details>
+    </main>
+</body>
+
+</html>
