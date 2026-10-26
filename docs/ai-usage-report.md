@@ -6,7 +6,7 @@ Cập nhật: 26/10/2026. Công cụ có bằng chứng: **Codex**; chưa xác n
 
 Prompt trong phiên chung và các phiên tiếp nối được phân loại theo **nhiệm vụ được hỗ trợ**, không mặc nhiên xác nhận sinh viên phụ trách là người nhập prompt. Tài khoản commit/review không chứng minh ai tự viết hoặc tự kiểm tra code. Các trích đoạn dưới đây lấy từ hội thoại đã đối chiếu; kết quả lịch sử chỉ áp dụng cho mốc trong nguồn, không phải kiểm thử chạy lại khi lập báo cáo.
 
-## SV1 — doctorfalcon
+## SV1 — Doãn Tuấn Nghĩa (doctorfalcon)
 
 **Phạm vi:** TASK-12 Visitor Service Directory, Resource Library, Counselor Detail; TASK-16 Admin Service Management; giao diện công khai, navigation/accessibility. **Công cụ:** Codex.
 
@@ -29,7 +29,7 @@ Prompt trong phiên chung và các phiên tiếp nối được phân loại the
 - Lỗi tự phát hiện, cách tự sửa và diff: **[CẦN SV1 BỔ SUNG]**.
 - Cách tự kiểm chứng, ngày/kết quả và video: **[CẦN SV1 BỔ SUNG]**.
 
-## SV2 — lehaianh30102007-hub
+## SV2 — Lê Hải Anh (lehaianh30102007-hub)
 
 **Phạm vi:** TASK-13 Student Dashboard/Booking/Appointments; TASK-17 Admin User Management; TASK-18 store/session/auth/register, dữ liệu/API và AI UX. **Công cụ:** Codex.
 
@@ -53,7 +53,7 @@ Prompt trong phiên chung và các phiên tiếp nối được phân loại the
 - Phần tự sửa sau khi nhận ZIP và commit/diff: **[CẦN SV2 BỔ SUNG]**.
 - Cách tự kiểm chứng, ngày/kết quả và video: **[CẦN SV2 BỔ SUNG]**.
 
-## SV3 — AnGit-Hub67
+## SV3 — Vũ Khánh An (AnGit-Hub67)
 
 **Phạm vi:** TASK-11 layout; TASK-14 Counselor; TASK-15 Admin Dashboard; AI mock, responsive, tích hợp/QA/deploy thuộc phần SV3. **Công cụ:** Codex.
 
@@ -99,4 +99,14 @@ ID phục vụ tra cứu trong lịch sử của người có quyền truy cập
 
 ## Xác nhận trước khi nộp
 
-Mỗi sinh viên điền thông tin thực về công cụ, prompt bổ sung có nguồn, phần tự làm, lỗi tự sửa, kiểm thử tự thực hiện và URL OBS có thể xem. Chưa xác minh được video riêng hoặc nội dung [playlist nhóm cung cấp](https://www.youtube.com/playlist?list=PLW791Q36zdro). Báo cáo này chưa xác nhận hoàn tất ĐK5/tiêu chí 7.3 hay toàn bộ rubric.
+Mỗi sinh viên điền thông tin thực về công cụ, prompt bổ sung có nguồn, phần tự làm, lỗi tự sửa, kiểm thử tự thực hiện và URL OBS có thể xem. Người dùng đã xác nhận họ tên và playlist từng sinh viên ngày 26/10/2026; xem bảng dưới đây. Chưa xác minh nội dung/quyền xem playlist hoặc video riêng. Báo cáo này chưa xác nhận hoàn tất ĐK5/tiêu chí 7.3 hay toàn bộ rubric.
+
+## Playlist OBS theo sinh viên
+
+| Sinh viên | Họ tên | Playlist |
+|---|---|---|
+| SV1 | Doãn Tuấn Nghĩa | [Video SV1](https://www.youtube.com/playlist?list=PLW791Q36zdro) |
+| SV2 | Lê Hải Anh | [Video SV2](https://youtube.com/playlist?list=PLT0-SlKPwchE&si=e5V-T6V0sKWc5x9S) |
+| SV3 | Vũ Khánh An | [Video SV3](https://youtube.com/playlist?list=PLJL2Iv-yK-68&si=Qv022_IZfgSUQ6N5) |
+
+Việc gán playlist theo xác nhận của người dùng không chứng minh người đó đã nhập mọi prompt ở mục tương ứng. Các trường xác nhận phần tự làm và tự kiểm chứng vẫn cần được bổ sung.
