@@ -1,82 +1,93 @@
 # CampusMind
 
-## 1. Giới thiệu
-Frontend prototype điều phối hỗ trợ sức khỏe tinh thần sinh viên, môn CSE122, nhóm 1. Bản phát hành tích hợp phần việc SV1, SV2 và SV3; dữ liệu mặc định là dữ liệu giả trên thiết bị.
+Frontend prototype hỗ trợ điều phối sức khỏe tinh thần sinh viên, môn CSE122, nhóm 1.
 
-## 2. Liên kết dự án
-- [Repository](https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1)
-- [Trello](https://trello.com/b/tijjtgu7/cse122-campusmind-team-1)
-- [Mockup/Canva do nhóm cung cấp](https://canva.link/j9ofv531qa8gikt) — nhóm cần xác nhận quyền xem công khai.
-- [Website GitHub Pages](https://angit-hub67.github.io/CSE122_67KTPM1_BTCK_Nhom1/) — triển khai từ `main` / root, HTTPS.
-- OBS: chưa có URL được xác minh; từng sinh viên bổ sung video của mình trước bàn giao.
+## Liên kết dự án
 
-## 3. Thành viên và phạm vi
-| Sinh viên | GitHub | Phạm vi chính |
-|---|---|---|
-| SV1 | doctorfalcon | Visitor, quản lý dịch vụ, design system, navigation và accessibility |
-| SV2 | lehaianh30102007-hub | Student, đặt lịch, tài khoản, quản lý người dùng, dữ liệu/API và AI UX |
-| SV3 | AnGit-Hub67 | Counselor, ghi chú, Admin Dashboard, responsive QA, tích hợp và deploy |
+- Repository: https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1
+- Trello: https://trello.com/b/tijjtgu7/cse122-campusmind-team-1
+- TASK-01: https://trello.com/c/FfMO7XNp
 
-Mỗi người cần hiểu và trình bày phần việc thực tế. Việc tạo/merge PR không thay thế bằng chứng code, review, OBS và vấn đáp.
+## Phạm vi
 
-## 4. Chức năng đã tích hợp
-Visitor xem dịch vụ/chuyên viên/tài nguyên và lưu gợi ý. Student đặt lịch và theo dõi lịch hẹn. Counselor xác nhận lịch, ghi chú, chỉnh sửa tóm tắt mô phỏng và hoàn thành buổi gặp. Admin quản lý dịch vụ/người dùng và xem hoạt động. Hồ sơ công khai và lịch dùng dữ liệu chung trong cùng trình duyệt.
+CampusMind gồm bốn vai trò: Visitor, Student, Counselor và Admin. Nhóm triển khai giao diện bằng HTML, CSS và JavaScript, sử dụng dữ liệu giả và LocalStorage cho prototype. Ba chức năng AI được mô phỏng theo TASK-19.
 
-## 5. Công nghệ
-HTML, CSS, JavaScript thuần, JSON, LocalStorage và session phía trình duyệt. Không cần bước build để chạy giao diện. Node.js dùng cho máy chủ phát triển, sinh layout và kiểm thử; Playwright dùng cho kiểm thử trình duyệt.
+TASK-11 bổ sung cấu trúc frontend, trang chủ, navbar/footer và sidebar dùng chung, cùng bộ component responsive. Xem [hướng dẫn layout và tích hợp](docs/task-11-layout.md). Các khung Student/Counselor/Admin chưa có chức năng nghiệp vụ hoặc xác thực.
 
-## 6. Cấu trúc hiện tại
-- `pages/`: trang theo vai trò.
-- `assets/css/`: CSS chung và theo module; có `responsive.css`.
-- `assets/js/`: session, API, store, nghiệp vụ; có `main.js`, `sv2-api.js`.
-- `assets/data/`: JSON seed và cấu hình công khai.
-- `docs/`, `tests/`, `tools/`: tài liệu, kiểm thử, công cụ.
+## Bắt đầu
 
-Cấu trúc đang chạy dùng `assets/css` và `assets/js`; chưa tương ứng hoàn toàn tên đường dẫn `css/style.css`, `js/api.js`, `js/modules/` trong rubric. Không đổi tên/di chuyển tùy tiện vì các trang đang tham chiếu cấu trúc này.
+Chạy bản frontend từ thư mục repo với `python -m http.server 8080`, rồi mở `http://localhost:8080/`. Không cần backend hoặc build. Xem bộ component tại `pages/ui-kit.html`.
 
-## 7. Chạy trên máy
-Clone repository, chuyển nhánh `main` để chạy bản phát hành, hoặc `dev` để kiểm tra bản tích hợp. Trong thư mục repo:
-
-```sh
-node tools/serve.cjs
+```bash
+git clone https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1.git
+cd CSE122_67KTPM1_BTCK_Nhom1
+git switch dev
+git pull --ff-only origin dev
 ```
 
-Mở `http://127.0.0.1:8877/`. Có thể dùng VS Code Live Server từ thư mục gốc. Luôn dùng HTTP, không mở HTML bằng `file://` vì trang dùng fetch JSON. Seed cục bộ không cần API bên ngoài; đây không phải ứng dụng PWA được bảo đảm hoạt động khi mất mạng hoàn toàn.
+Các nhánh cũ `docs`, `feature`, `fix` đã đổi thành `legacy-docs`, `legacy-feature`, `legacy-fix`. Xem [hướng dẫn cập nhật bản clone](docs/project-init.md).
 
-## 8. Tài khoản thử nghiệm
-Mở `sv2-login.html`, mở mục tài khoản cục bộ rồi chọn theo vai trò. Các ID kiểm thử gồm `sv-demo-01`, `minh-anh`, `admin-demo-01`. Đây là session demo; không có bảo vệ/phân quyền máy chủ. Không nhập dữ liệu cá nhân hoặc ghi chú tham vấn thật.
+## Nhánh và Pull Request
 
-## 9. Cấu hình API
-- `assets/js/sv2-config.js`: REST, auth và AI proxy mặc định rỗng. Các thao tác yêu cầu backend thật chưa được cấu hình.
-- `assets/js/service-config.js`: `endpoint: ''`, danh mục chạy seed/LocalStorage.
-- `assets/data/config.public.json`: `enableDemoRemoteSync: false`. URL MockAPI công khai được giữ trong cấu hình nhưng đồng bộ mặc định tắt.
-- `assets/data/config.json` nếu tự tạo chỉ được đọc trên localhost/127.0.0.1/[::1], không commit. Bản deploy đọc thẳng config.public.json để tránh 404 cho override không tồn tại.
+| Nhánh | Mục đích |
+|---|---|
+| `main` | Bản ổn định để bàn giao/demo |
+| `dev` | Tích hợp công việc của nhóm |
+| `docs/<ten-cong-viec>` | Tài liệu, thiết kế và hướng dẫn |
+| `feature/<ten-chuc-nang>` | Chức năng hoặc giao diện mới |
+| `fix/<ten-loi>` | Sửa lỗi |
+| `chore/<ten-cong-viec>` | Cấu hình và công việc bảo trì |
 
-Chỉ cấu hình API do nhóm quản lý, có CORS phù hợp. Không đưa API key, token hay mật khẩu vào JS/JSON frontend. Auth và AI thật cần backend/proxy; cấu hình URL không tự tạo backend. Xem [hướng dẫn MockAPI](docs/mockapi-setup.md) như tài liệu tùy chọn, không phải xác nhận đồng bộ đang bật.
+Mỗi task dùng một nhánh từ `dev`. Mở PR vào `dev`, có một thành viên khác review rồi mới merge. Nhóm chỉ đưa bản tích hợp đã kiểm tra từ `dev` vào `main`.
 
-## 10. Dữ liệu và giới hạn
-Dữ liệu liên thông qua LocalStorage trên cùng origin/trình duyệt, không mặc nhiên đồng bộ giữa thiết bị. AI hiện dùng dữ liệu/mẫu mô phỏng, không phải tư vấn y khoa. Không xóa toàn bộ LocalStorage để xử lý lỗi nếu cần giữ dữ liệu. Trước khi bật remote, sao lưu và đối chiếu dữ liệu; API công khai không phù hợp hồ sơ riêng tư.
+Xem [CONTRIBUTING.md](CONTRIBUTING.md) để biết quy tắc branch, commit, review và xử lý xung đột.
 
-## 11. Kiểm thử
-Cài Playwright trong môi trường phát triển nếu chưa có:
+## Phân công
 
-```sh
-npm install --no-save --package-lock=false playwright
-npx playwright install chromium
-node tools/build-layout.cjs --check
-node tests/integration.cjs
-```
+| Thành viên | Phần phụ trách chính |
+|---|---|
+| SV1 | Visitor, Admin Service, phối hợp thiết kế và tài liệu |
+| SV2 | Student, Admin User, Mock Data và LocalStorage |
+| SV3 | Git workflow, layout chung, Counselor, Admin Dashboard và AI mock |
 
-Có thể đặt `CHROMIUM_PATH` tới Chrome/Edge đã cài. Integration chặn mạng ngoài localhost và dùng dữ liệu thử riêng. Kết quả kiểm tra ngày 26/10/2026: layout PASS; integration PASS gồm luồng liên thông và 25 trang tại 375/768/1440px, light/dark, không phát hiện pageerror/tràn ngang. Đây là kiểm thử cục bộ, không phải CI hoặc xác nhận deploy/API thật.
+Tên tài khoản GitHub tương ứng SV1/SV2/SV3 được nhóm xác nhận riêng. Checklist Trello hiện ghi nhận đã mời đủ thành viên.
 
-## 12. Vấn đề còn biết
-`tests/sv3-completion.cjs` là test legacy còn chờ selector `#counselor-account` đã bị bỏ. Chưa coi test này hoặc toàn bộ suite cũ là pass; test integration hiện kiểm tra luồng Counselor qua session chung. Bản Pages đã được kiểm tra tự động tại 320/375/768/1280/1440px, hai theme. Còn cần kiểm tra zoom 200%, bàn phím và điện thoại thật theo rubric; viewport giả lập không thay cho điện thoại thật.
+## Trạng thái khởi tạo
 
-## 13. Git và review
-Mỗi task tạo nhánh từ `dev`, commit có nghĩa theo Conventional Commits, push và mở PR vào `dev`. Thành viên khác review nội dung thực tế. Bản ổn định đi qua PR `dev` → `main`; không push code trực tiếp vào `main`. Giữ nguyên tác giả các commit. Không tạo commit/review giả để tăng đóng góp. Xem [CONTRIBUTING](CONTRIBUTING.md).
+- Repo, `main` và `dev` đã tồn tại.
+- Bộ tài liệu gồm README, CONTRIBUTING và mẫu PR.
+- Nhánh `docs/project-init` chứa tài liệu để nhóm review và tích hợp vào `dev`.
+- TASK-01 khởi tạo quy trình; TASK-11 bổ sung frontend và layout dùng chung.
 
-## 14. Deploy
-SV3 (AnGit-Hub67) đã bật GitHub Pages, nguồn `main`, thư mục `/ (root)`, HTTPS. Xem [báo cáo QA/deploy](docs/sv3-pages-qa.md). Sau khi build thành công, kiểm tra trang chủ và các trang con dưới đường dẫn repository, ảnh/CSS/JS/JSON, tài khoản demo, cửa sổ ẩn danh và điện thoại. Chỉ ghi link deploy đã được kiểm tra; sửa lỗi qua nhánh task → PR dev → PR main.
 
-## 15. Minh chứng và sử dụng AI
-Xem [báo cáo hỗ trợ AI](docs/ai-usage-report.md). Từng sinh viên bổ sung prompt, phần tự sửa/kiểm tra và video OBS thật. `docs/screen-inventory.md` và minh chứng thiết kế trước khi viết code chưa được xác minh trong bản này; bổ sung tài liệu hiện tại không chứng minh được thứ tự lịch sử. Không đánh dấu hoàn tất rubric khi chưa có bằng chứng.
+## SV1 — nâng cấp ngày 25/10/2026
+
+TASK-12 và TASK-16 giữ nguyên phạm vi Trello. Logo dùng lại nguyên tệp người dùng cung cấp đã có trong bản SV3; không tạo chứng nhận, số liệu thành tích hoặc chuyên viên thật. Tham khảo cách phân nhóm dịch vụ, hồ sơ và bước tiếp theo của https://mindcare.vn/dich-vu-tham-van-tri-lieu-tam-ly/; không sao chép nội dung, hình ảnh hay thương hiệu.
+
+- Trang chủ, Visitor và Admin Services dùng logo, skeleton, trạng thái empty/error/retry/success; hỗ trợ bàn phím, reduced motion, responsive và dark/light.
+- Theme dùng `campusmind.theme.v1` và BroadcastChannel `campusmind.ui.v1`, tương thích shared design của SV3. CSS bổ sung chỉ nạp trên SV1; không đổi nghiệp vụ SV2/SV3.
+- CRUD danh mục và Visitor dùng chung `service-store.js`, khóa `campusmind.admin.services.v1`, storage event và BroadcastChannel `campusmind.services.v1`. Giữ bộ lọc khi nhận cập nhật.
+
+### Cấu hình MockAPI (tùy chọn)
+
+Trong `assets/js/service-config.js`, `endpoint` hiện trỏ đến bản ghi catalog do chủ dự án cung cấp: `https://6add2cd4fa5e73d4ab2de718.mockapi.io/api/v1/catalogs/1`. Đây là URL dữ liệu công khai, không phải khóa xác thực; repo không chứa key. Để đổi môi trường, dùng URL HTTPS của **một bản ghi catalog có sẵn** thuộc MockAPI của nhóm; để chạy local-only, đặt chuỗi rỗng. Bản ghi có trường `items` kiểu Array; khởi tạo bằng toàn bộ mảng trong `assets/data/admin-services.json`. Adapter GET bản ghi và PUT `{ "items": [...] }`; ID dịch vụ nằm trong mảng nên không phụ thuộc ID do MockAPI sinh. Cần cho phép CORS GET/PUT và Content-Type JSON. Không trỏ vào URL collection trả về mảng bản ghi. URL không được chứa tài khoản, mật khẩu, query hoặc fragment. Đây là cấu hình triển khai, không phải dữ liệu người dùng nhập.
+
+Không cấu hình: đọc seed/localStorage và lưu nội bộ. Có cấu hình: đọc nguồn trực tuyến, cache dữ liệu hợp lệ, làm mới khi trang đang mở mỗi 30 giây. Lỗi mạng/timeout/HTTP/schema: dùng cache hợp lệ hoặc seed và báo đang dùng danh mục trên thiết bị. Dữ liệu local hỏng vẫn báo lỗi và không bị tự ghi đè.
+
+Nếu lưu trực tuyến không xác nhận được, giữ thay đổi local và đánh dấu `campusmind.admin.services.v1.offline`. Không tự phát lại PUT vì có thể ghi đè thay đổi từ thiết bị khác. Trong trạng thái này các lần tải/lưu tiếp theo dùng local. Để nối lại: sao lưu danh mục local, đối chiếu và cập nhật bản ghi MockAPI thủ công; sau khi hai bản khớp, xóa riêng khóa `.offline` trong công cụ trình duyệt rồi tải lại. Không xóa toàn bộ localStorage. UI không báo thành công trực tuyến khi chỉ lưu offline.
+
+### Giới hạn phải giữ rõ
+
+Đây vẫn là frontend học phần dùng dữ liệu **mock**, kể cả khi giao diện không mang nhãn “demo”. Danh tính, chuyên môn và lịch seed không phải xác nhận của người/chuyên viên thật. Không có chứng nhận hay cam kết bảo mật. Không nhập hồ sơ sức khỏe, ghi chú tham vấn hoặc thông tin cá nhân thật. MockAPI chỉ chứa danh mục công khai; không có xác thực/phân quyền máy chủ trong nhánh SV1. Không dùng endpoint công khai này làm backend production.
+
+Web Locks + snapshot bảo vệ ghi giữa các tab cùng origin; fallback không có khóa nguyên tử. Kiểm tra dữ liệu remote trước PUT giúp phát hiện thay đổi đã xảy ra, nhưng MockAPI không có compare-and-swap nên không bảo đảm xử lý hai thiết bị ghi đồng thời. Nếu PUT thành công rồi localStorage lỗi, thao tác có thể đã tới server; tải lại và đối chiếu trước khi thử lại.
+
+Lịch công khai chỉ chiếu counselorId/date/start/end từ `SV2Store.available`; không hiển thị thông tin lịch hẹn riêng tư. Nhánh SV1 độc lập không chứa `sv2-store.js` hoặc trang booking, nên hiển thị lỗi lịch có thử lại; chỉ bật đặt lịch khi nguồn chung thực sự trả về giờ trống. Cần tích hợp nhánh SV2/SV3 được nhóm duyệt để có luồng đặt lịch hoàn chỉnh. Không merge vào dev/final trong lần nâng cấp này.
+
+Chạy kiểm thử: `node tests/visitor-smoke.cjs`, `node tests/admin-services-smoke.cjs`, `node tests/sv1-integration.cjs`, `node tests/layout-smoke.cjs`, `node tests/sv1-upgrade.cjs`, `node tools/build-layout.cjs --check`. Cần Playwright và Chromium. Các bộ kiểm thử hồi quy cấp cấu hình endpoint rỗng và dùng network interception khi cần, không ghi vào API thật. Bộ `tests/sv1-mockapi-live.cjs` chạy riêng khi đặt `SV1_LIVE_API=1`: GET và PUT lại danh mục không đổi qua trình duyệt, kiểm tra Visitor ở context độc lập và fallback/reconnect. Không chạy live test tự động khi chưa chủ động bật. Kiểm thử lịch tích hợp: đặt `SV1_TEST_ROOT` tới bản tích hợp SV1 + SV2 rồi chạy `node tests/public-schedule-integration.cjs`.
+
+### Kết nối thực tế sau khi chủ dự án tạo resource
+
+Ngày 25/10/2026: đã tạo một bản ghi `catalogs/1` từ đúng bốn dịch vụ seed và xác nhận trường `items` là mảng. Kiểm thử live Chromium đã PASS GET/PUT qua CORS, giữ nguyên dữ liệu sau PUT, Visitor ở context độc lập chỉ hiện dịch vụ active, fallback cache khi chặn mạng và quay lại remote khi nối lại. Không đọc/ghi resource `schedules` của SV3.
+
+Nếu trình duyệt từng có khóa `campusmind.admin.services.v1.offline`, trang tiếp tục giữ dữ liệu local để tránh mất thay đổi; thực hiện đối chiếu theo hướng dẫn pending ở trên trước khi xóa khóa đó.
