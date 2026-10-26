@@ -8,16 +8,26 @@ Frontend prototype điều phối hỗ trợ sức khỏe tinh thần sinh viên
 - [Trello](https://trello.com/b/tijjtgu7/cse122-campusmind-team-1)
 - [Thiết kế Canva do nhóm cung cấp](https://www.canva.com/design/DAHZFwJb2RM/ccayXXID6SeELUIiNR-KoQ/edit) — nhóm cần xác nhận quyền xem; xem [tài liệu thiết kế](docs/projectproposal.md).
 - [Website GitHub Pages](https://angit-hub67.github.io/CSE122_67KTPM1_BTCK_Nhom1/) — triển khai từ `main` / root, HTTPS.
-- [Playlist YouTube/OBS do nhóm cung cấp](https://www.youtube.com/playlist?list=PLW791Q36zdro) — chưa xác minh nội dung playlist hoặc URL từng video; không thay thế minh chứng mỗi màn hình một video.
+- **[Mở báo cáo lịch sử sử dụng AI — SV1, SV2, SV3](docs/ai-usage-report.md)** — prompt theo nhiệm vụ, phần AI hỗ trợ, lỗi/cách sửa và phần cần từng sinh viên xác nhận.
+
+### Video OBS theo sinh viên
+
+Thông tin sinh viên sở hữu playlist do người dùng xác nhận ngày 26/10/2026. Chưa xác minh nội dung/quyền xem hoặc URL video riêng; playlist không thay thế minh chứng mỗi màn hình một video.
+
+| Sinh viên | Họ tên | Playlist YouTube/OBS |
+|---|---|---|
+| SV1 | Doãn Tuấn Nghĩa | [Mở playlist SV1](https://www.youtube.com/playlist?list=PLW791Q36zdro) |
+| SV2 | Lê Hải Anh | [Mở playlist SV2](https://youtube.com/playlist?list=PLT0-SlKPwchE&si=e5V-T6V0sKWc5x9S) |
+| SV3 | Vũ Khánh An | [Mở playlist SV3](https://youtube.com/playlist?list=PLJL2Iv-yK-68&si=Qv022_IZfgSUQ6N5) |
 
 Khi xác minh được từng video, bổ sung bảng **Mã màn hình | Tên màn hình | Link video YouTube** theo screen inventory. Hiện chưa có ánh xạ màn hình–video đủ bằng chứng nên chưa điền URL video riêng; từng sinh viên cần cung cấp link và kiểm tra quyền xem trước bàn giao.
 
 ## 3. Thành viên và phạm vi
-| Sinh viên | GitHub | Phạm vi chính |
+| Sinh viên / Họ tên | GitHub | Phạm vi chính |
 |---|---|---|
-| SV1 | doctorfalcon | Visitor, quản lý dịch vụ, design system, navigation và accessibility |
-| SV2 | lehaianh30102007-hub | Student, đặt lịch, tài khoản, quản lý người dùng, dữ liệu/API và AI UX |
-| SV3 | AnGit-Hub67 | Counselor, ghi chú, Admin Dashboard, responsive QA, tích hợp và deploy |
+| SV1 — Doãn Tuấn Nghĩa | doctorfalcon | Visitor, quản lý dịch vụ, design system, navigation và accessibility |
+| SV2 — Lê Hải Anh | lehaianh30102007-hub | Student, đặt lịch, tài khoản, quản lý người dùng, dữ liệu/API và AI UX |
+| SV3 — Vũ Khánh An | AnGit-Hub67 | Counselor, ghi chú, Admin Dashboard, responsive QA, tích hợp và deploy |
 
 Mỗi người cần hiểu và trình bày phần việc thực tế. Việc tạo/merge PR không thay thế bằng chứng code, review, OBS và vấn đáp.
 
