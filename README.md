@@ -6,9 +6,11 @@ Frontend prototype điều phối hỗ trợ sức khỏe tinh thần sinh viên
 ## 2. Liên kết dự án
 - [Repository](https://github.com/AnGit-Hub67/CSE122_67KTPM1_BTCK_Nhom1)
 - [Trello](https://trello.com/b/tijjtgu7/cse122-campusmind-team-1)
-- [Mockup/Canva do nhóm cung cấp](https://canva.link/j9ofv531qa8gikt) — nhóm cần xác nhận quyền xem công khai.
+- [Thiết kế Canva do nhóm cung cấp](https://www.canva.com/design/DAHZFwJb2RM/ccayXXID6SeELUIiNR-KoQ/edit) — nhóm cần xác nhận quyền xem; xem [tài liệu thiết kế](docs/projectproposal.md).
 - [Website GitHub Pages](https://angit-hub67.github.io/CSE122_67KTPM1_BTCK_Nhom1/) — triển khai từ `main` / root, HTTPS.
-- OBS: chưa có URL được xác minh; từng sinh viên bổ sung video của mình trước bàn giao.
+- [Playlist YouTube/OBS do nhóm cung cấp](https://www.youtube.com/playlist?list=PLW791Q36zdro) — chưa xác minh nội dung playlist hoặc URL từng video; không thay thế minh chứng mỗi màn hình một video.
+
+Khi xác minh được từng video, bổ sung bảng **Mã màn hình | Tên màn hình | Link video YouTube** theo screen inventory. Hiện chưa có ánh xạ màn hình–video đủ bằng chứng nên chưa điền URL video riêng; từng sinh viên cần cung cấp link và kiểm tra quyền xem trước bàn giao.
 
 ## 3. Thành viên và phạm vi
 | Sinh viên | GitHub | Phạm vi chính |
@@ -79,4 +81,4 @@ Mỗi task tạo nhánh từ `dev`, commit có nghĩa theo Conventional Commits,
 SV3 (AnGit-Hub67) đã bật GitHub Pages, nguồn `main`, thư mục `/ (root)`, HTTPS. Xem [báo cáo QA/deploy](docs/sv3-pages-qa.md). Sau khi build thành công, kiểm tra trang chủ và các trang con dưới đường dẫn repository, ảnh/CSS/JS/JSON, tài khoản demo, cửa sổ ẩn danh và điện thoại. Chỉ ghi link deploy đã được kiểm tra; sửa lỗi qua nhánh task → PR dev → PR main.
 
 ## 15. Minh chứng và sử dụng AI
-Xem [báo cáo hỗ trợ AI](docs/ai-usage-report.md). Từng sinh viên bổ sung prompt, phần tự sửa/kiểm tra và video OBS thật. `docs/screen-inventory.md` và minh chứng thiết kế trước khi viết code chưa được xác minh trong bản này; bổ sung tài liệu hiện tại không chứng minh được thứ tự lịch sử. Không đánh dấu hoàn tất rubric khi chưa có bằng chứng.
+Xem [báo cáo AI theo nhiệm vụ SV1, SV2, SV3](docs/ai-usage-report.md): prompt có nguồn, phần AI hỗ trợ, lỗi/cách khắc phục và các trường xác nhận phần tự làm, tự kiểm chứng. Prompt phiên chung được phân loại theo nhiệm vụ, không mặc nhiên xác nhận ai nhập prompt. Từng sinh viên bổ sung thông tin cá nhân và video OBS thật. `docs/screen-inventory.md` và minh chứng thiết kế trước khi viết code chưa được xác minh trong bản này; bổ sung tài liệu hiện tại không chứng minh được thứ tự lịch sử. Không đánh dấu hoàn tất rubric khi chưa có bằng chứng.
