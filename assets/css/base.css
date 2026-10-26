@@ -15,9 +15,11 @@
   --space-md: 16px;
   --space-lg: 24px;
 }
+
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   font-family: Inter, Arial, sans-serif;
@@ -25,15 +27,18 @@ body {
   background: var(--background);
   line-height: 1.65;
 }
+
 a {
   color: #4246c9;
   text-underline-offset: 4px;
 }
+
 button,
 input,
 select {
   font: inherit;
 }
+
 button,
 .button {
   min-height: 44px;
@@ -45,34 +50,41 @@ button,
   color: var(--text);
   font-weight: 600;
 }
+
 button:hover,
 .button:hover {
   background: #eef0ff;
 }
+
 button:disabled {
   cursor: not-allowed;
   color: #526175;
   background: #e2e8f0;
 }
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
 }
+
 .primary {
   background: #484bd2;
   border-color: #484bd2;
   color: white;
 }
+
 .primary:hover {
   background: #393cb1;
   color: white;
 }
+
 :focus-visible {
   outline: 3px solid #4246c9;
   outline-offset: 4px;
 }
+
 [hidden] {
   display: none !important;
 }
@@ -82,15 +94,18 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 main {
   width: 100%;
   flex: 1;
 }
+
 img,
 svg {
   max-width: 100%;
   height: auto;
 }
+
 button:disabled:hover {
   background: #e2e8f0;
   color: var(--muted);

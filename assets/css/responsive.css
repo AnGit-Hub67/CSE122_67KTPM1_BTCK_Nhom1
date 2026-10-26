@@ -13,8 +13,8 @@
   .header-inner,
   main,
   .footer-inner {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-left: 50px;
+    padding-right: 50px;
   }
   nav {
     gap: 18px;

@@ -55,8 +55,9 @@
       "name": "Nguyễn Minh Anh",
       "initials": "MA",
       "role": "Chuyên viên tham vấn sinh viên",
-      "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ prototype.",
+      "bio": "Đồng hành cùng sinh viên trong các câu chuyện về học tập, thay đổi môi trường và các mối quan hệ. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Áp lực học tập",
         "Thích nghi đại học",
         "Áp lực học tập",
         "Giao tiếp"
@@ -64,105 +65,81 @@
       "languages": "Tiếng Việt",
       "format": "Trực tiếp / Trực tuyến",
       "qualification": "ThS.",
-      "experience": "5 năm kinh nghiệm (minh họa)",
-      "availability": [
-        "Thứ Hai · 09:00–09:50",
-        "Thứ Tư · 14:00–14:50",
-        "Thứ Sáu · 10:00–10:50"
-      ]
+      "experience": "5 năm kinh nghiệm (minh họa)"
     },
     {
       "id": "quang-huy",
       "name": "Trần Quang Huy",
       "initials": "QH",
       "role": "Chuyên viên hỗ trợ học tập",
-      "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ prototype.",
+      "bio": "Hỗ trợ sinh viên khám phá mục tiêu và sắp xếp nhịp học tập. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Định hướng nghề nghiệp",
         "Kế hoạch học tập",
         "Cân bằng sinh hoạt"
       ],
       "languages": "Tiếng Việt / Tiếng Anh",
       "format": "Trực tuyến",
       "qualification": "ThS.",
-      "experience": "6 năm kinh nghiệm (minh họa)",
-      "availability": [
-        "Thứ Ba · 15:00–15:45",
-        "Thứ Năm · 09:00–09:45"
-      ]
+      "experience": "6 năm kinh nghiệm (minh họa)"
     },
     {
       "id": "thu-ha",
       "name": "Lê Thu Hà",
       "initials": "TH",
       "role": "Chuyên viên tham vấn sinh viên",
-      "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ prototype.",
+      "bio": "Đồng hành trong các hoạt động nhóm và câu chuyện kết nối của sinh viên. Hồ sơ này là dữ liệu giả phục vụ học phần.",
       "expertise": [
+        "Tình cảm",
         "Kết nối cộng đồng",
         "Mối quan hệ"
       ],
       "languages": "Tiếng Việt",
       "format": "Trực tiếp",
       "qualification": "ThS.",
-      "experience": "7 năm kinh nghiệm (minh họa)",
-      "availability": [
-        "Thứ Ba · 10:00–10:50",
-        "Thứ Năm · 14:00–14:50",
-        "Thứ Sáu · 09:00–09:50"
-      ]
+      "experience": "7 năm kinh nghiệm (minh họa)"
     },
     {
-      "id": "bao-tran",
-      "name": "Phạm Bảo Trân",
-      "initials": "BT",
-      "role": "Định hướng nghề nghiệp",
+      "id": "bao-linh",
+      "name": "Phạm Bảo Linh",
+      "initials": "BL",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
       "expertise": [
-        "Định hướng",
-        "Kế hoạch học tập"
+        "Lo âu và trầm cảm"
       ],
-      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "experience": "5 năm kinh nghiệm (minh họa)",
       "languages": "Tiếng Việt",
-      "format": "Trực tiếp / Trực tuyến",
-      "availability": [
-        "Thứ Hai · 13:00–13:50",
-        "Thứ Tư · 09:00–09:50",
-        "Thứ Sáu · 14:00–14:50"
-      ]
+      "format": "Trực tiếp / Trực tuyến"
     },
     {
-      "id": "duc-minh",
-      "name": "Vũ Đức Minh",
-      "initials": "DM",
-      "role": "Thích nghi môi trường học tập",
+      "id": "duc-an",
+      "name": "Vũ Đức An",
+      "initials": "DA",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
       "expertise": [
-        "Thích nghi đại học",
-        "Cân bằng sinh hoạt"
+        "Giấc ngủ và stress"
       ],
-      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "experience": "5 năm kinh nghiệm (minh họa)",
       "languages": "Tiếng Việt",
-      "format": "Trực tiếp / Trực tuyến",
-      "availability": [
-        "Thứ Hai · 13:00–13:50",
-        "Thứ Tư · 09:00–09:50",
-        "Thứ Sáu · 14:00–14:50"
-      ]
+      "format": "Trực tiếp / Trực tuyến"
     },
     {
-      "id": "ngoc-lan",
-      "name": "Đỗ Ngọc Lan",
-      "initials": "NL",
-      "role": "Kết nối và giao tiếp",
+      "id": "mai-chi",
+      "name": "Đỗ Mai Chi",
+      "initials": "MC",
+      "qualification": "ThS.",
+      "role": "Chuyên viên tham vấn sinh viên",
+      "bio": "Hồ sơ minh họa cho hoạt động học tập, không đại diện cho chuyên viên hoặc dịch vụ thực tế.",
       "expertise": [
-        "Mối quan hệ",
-        "Giao tiếp"
+        "Thích nghi môi trường mới"
       ],
-      "bio": "Hồ sơ giả định cho mục đích học tập, không đại diện chuyên viên cung cấp dịch vụ thật.",
+      "experience": "5 năm kinh nghiệm (minh họa)",
       "languages": "Tiếng Việt",
-      "format": "Trực tiếp / Trực tuyến",
-      "availability": [
-        "Thứ Hai · 13:00–13:50",
-        "Thứ Tư · 09:00–09:50",
-        "Thứ Sáu · 14:00–14:50"
-      ]
+      "format": "Trực tiếp / Trực tuyến"
     }
   ]
 }
