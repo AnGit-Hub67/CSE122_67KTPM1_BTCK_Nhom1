@@ -198,7 +198,7 @@
     if (!person) {
       showState(
         "Không tìm thấy chuyên viên",
-        "Hồ sơ này không tồn tại hoặc đường dẫn không chính xác.",
+        "Hồ sơ này không tồn tại hoặc đường dẫn không chính xác. Vui lòng quay lại danh mục dịch vụ để chọn chuyên viên",
       );
       results.append(
         link("Về danh mục dịch vụ", "visitor-service-directory.html", "button"),

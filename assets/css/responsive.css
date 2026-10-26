@@ -90,9 +90,3 @@
     transition: none !important;
   }
 }
-@media(max-width: 600px){
-  body[data-page="resources"]#results .actions{
-    flex-direction: column;
-    align-items:stretch;
-  }
-}
